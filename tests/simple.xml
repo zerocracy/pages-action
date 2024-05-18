@@ -1,0 +1,17 @@
+<fb dob="2024-05-18T22:22:22Z" factbase_version="0.0.0">
+    <f>
+        <award>15</award>
+        <payee>yegor256</payee>
+        <reason>for being a good boy</reason>
+    </f>
+    <f>
+        <award>-25</award>
+        <payee>yegor256</payee>
+        <reason>for being a bad boy</reason>
+    </f>
+    <f>
+        <award>30</award>
+        <payee>linus</payee>
+        <reason>for a new release</reason>
+    </f>
+</fb>
