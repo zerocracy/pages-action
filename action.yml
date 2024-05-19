@@ -29,7 +29,7 @@ inputs:
   verbose:
     description: 'Log as much debug information as possible'
     required: false
-  dir:
+  output:
     description: 'Directory path with YAML, XML, JSON and other files generated'
     required: false
     default: 'pages'

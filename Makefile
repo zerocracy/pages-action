@@ -34,7 +34,7 @@ target/html/%.html: target/fb/%.fb
 	export INPUT_VERBOSE=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
-	export INPUT_PAGES=$$(dirname $@)
+	export INPUT_OUTPUT=$$(dirname $@)
 	./entry.sh
 
 target/fb/%.fb: tests/%.yml
