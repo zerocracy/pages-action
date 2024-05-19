@@ -25,7 +25,7 @@ set -e
 set -x
 set -o pipefail
 
-SAXON=/usr/local/opt/Saxon.jar
+SAXON=/usr/local/Saxon.jar
 
 export GLI_DEBUG=true
 

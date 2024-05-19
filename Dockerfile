@@ -27,7 +27,7 @@ LABEL "maintainer"="Yegor Bugayenko"
 
 RUN gem install judges
 
-RUN wget --no-verbose -O /usr/local/opt/Saxon.jar \
+RUN wget --no-verbose -O /usr/local/Saxon.jar \
     https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
 
 WORKDIR /home

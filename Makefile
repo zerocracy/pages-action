@@ -23,7 +23,7 @@
 .SHELLFLAGS: -c
 .ONESHELL:
 .PHONY: clean entry test
-SAXON=/usr/local/opt/Saxon.jar
+SAXON=/usr/local/Saxon.jar
 
 entry: target/foo.fb test
 	export GITHUB_WORKSPACE=.
