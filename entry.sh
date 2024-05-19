@@ -26,8 +26,11 @@ set -x
 set -o pipefail
 
 SAXON=/usr/local/Saxon.jar
-
-export GLI_DEBUG=true
+if [ ! -e "${SAXON}" ]; then
+    echo "There is not Saxon JAR at this path: ${SAXON}."
+    echo "Because of this, XSLT transformations won't work."
+    exit 1
+fi
 
 # Convert the factbase to a few human-readable formats
 if [ -z "${GITHUB_WORKSPACE}" ]; then
@@ -40,6 +43,7 @@ cd "${GITHUB_WORKSPACE}"
 declare -a gopts=()
 if [ -n "${INPUT_VERBOSE}" ]; then
     gopts+=("--verbose")
+    export GLI_DEBUG=true
 fi
 
 # Convert the factbase to a few human-readable formats
@@ -60,5 +64,4 @@ done
 # Build a summary HTML.
 index="${INPUT_FACTBASE%.*}.${f}"
 judges "${gopts[@]}" print --format xml "${INPUT_FACTBASE}" "${index}"
-java -jar ${SAXON} "-s:${index}" -xsl:xsl/index.xsl "-o:${INPUT_FACTBASE%.*}.html"
-
+java -jar ${SAXON} "-s:${index}" -xsl:xsl/index.xsl "-o:${INPUT_FACTBASE%.*}.html" -Tnormal version=0.0.0

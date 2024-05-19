@@ -22,26 +22,24 @@
 
 .SHELLFLAGS: -c
 .ONESHELL:
-.PHONY: clean entry test
-SAXON=/usr/local/Saxon.jar
+.PHONY: clean
 
-entry: target/foo.fb test
+YAMLS = $(wildcard tests/*.yml)
+FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
+HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
+
+all: $(HTMLS)
+
+target/html/%.html: target/fb/%.fb
+	export INPUT_VERBOSE=yes
 	export GITHUB_WORKSPACE=.
-	export INPUT_FACTBASE=target/foo.fb
-	export INPUT_PAGES=target/pages
+	export INPUT_FACTBASE=$<
+	export INPUT_PAGES=$$(dirname $@)
 	./entry.sh
 
-target/foo.fb: Makefile
-	mkdir -p target/judges/foo
-	echo '$$fb.insert.foo = 42' > target/judges/foo/foo.rb
-	judges update --max-cycles 5 target/judges $@
-
-test:
-	mkdir -p target/html
-	for i in $$(ls tests/*.xml); do
-		name=$$(basename "$${i%.*}")
-		java -jar "$(SAXON)" "-s:$${i}" -xsl:xsl/index.xsl "-o:target/html/$${name}.html"
-	done
+target/fb/%.fb: tests/%.yml
+	mkdir -p target/fb
+	judges import $< $@
 
 clean:
 	rm -rf target

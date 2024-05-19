@@ -20,20 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: make
+name: yamllint
 'on':
   push:
+    branches:
+      - master
   pull_request:
+    branches:
+      - master
 jobs:
-  make:
+  yamllint:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          sudo wget --no-verbose -O /usr/local/Saxon.jar \
-            https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2
-      - run: gem install judges
-      - run: make
+      - uses: ibiqlik/action-yamllint@v3
