@@ -64,4 +64,4 @@ done
 # Build a summary HTML.
 index="${INPUT_FACTBASE%.*}.${f}"
 judges "${gopts[@]}" print --format xml "${INPUT_FACTBASE}" "${index}"
-java -jar ${SAXON} "-s:${index}" -xsl:xsl/index.xsl "-o:${INPUT_FACTBASE%.*}.html" -Tnormal version=0.0.0
+java -jar ${SAXON} "-s:${index}" -xsl:xsl/index.xsl "-o:${INPUT_FACTBASE%.*}.html" version=0.0.0
