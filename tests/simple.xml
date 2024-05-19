@@ -1,15 +1,20 @@
 <fb dob="2024-05-18T22:22:22Z" factbase_version="0.0.0">
     <f>
+        <time>2024-05-18T22:22:22.8492Z</time>
         <award>15</award>
         <payee>yegor256</payee>
         <reason>for being a good boy</reason>
+        <href>https://github.com/yegor256/judges/issues/111</href>
     </f>
     <f>
+        <time>2024-05-15T22:22:22.8492Z</time>
         <award>-25</award>
         <payee>yegor256</payee>
         <reason>for being a bad boy</reason>
+        <href>https://github.com/yegor256/judges/issues/111</href>
     </f>
     <f>
+        <time>2024-04-18T22:22:22.8492Z</time>
         <award>30</award>
         <payee>linus</payee>
         <reason>for a new release</reason>

@@ -22,12 +22,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0">
+  <xsl:function name="z:award">
+    <xsl:param name="a"/>
+    <xsl:if test="$a &gt; 0">
+      <xsl:text>+</xsl:text>
+    </xsl:if>
+    <xsl:value-of select="$a"/>
+  </xsl:function>
   <xsl:template match="/" mode="awards">
-    <table id="awards">
+    <table id="awards" border="1">
       <colgroup>
         <col/>
         <col style="width: 2.5em;"/>
+        <col style="width: 2em;"/>
+        <col/>
+        <col/>
         <col/>
       </colgroup>
       <thead>
@@ -38,11 +48,14 @@ SOFTWARE.
           <th>
             <xsl:text></xsl:text>
           </th>
-          <th>
+          <th colspan="2">
             <xsl:text>Programmer</xsl:text>
           </th>
           <th>
             <xsl:text>Score</xsl:text>
+          </th>
+          <th>
+            <xsl:text></xsl:text>
           </th>
         </tr>
       </thead>
@@ -68,7 +81,7 @@ SOFTWARE.
       <td class="avatar">
         <img src="https://github.com/{$name}.png" width="64" height="64"/>
       </td>
-      <td>
+      <td colspan="2">
         <a>
           <xsl:attribute name="href">
             <xsl:text>https://github.com/</xsl:text>
@@ -79,13 +92,64 @@ SOFTWARE.
         </a>
       </td>
       <td class="right">
-        <xsl:variable name="sum" select="sum(/fb/f[payee=$name and award]/award)"/>
-        <xsl:if test="$sum &gt; 0">
-          <xsl:text>+</xsl:text>
-        </xsl:if>
-        <xsl:value-of select="$sum"/>
+        <xsl:value-of select="z:award(sum(/fb/f[payee=$name and award]/award))"/>
+      </td>
+      <td>
+        <xsl:text></xsl:text>
       </td>
     </tr>
+    <xsl:for-each select="/fb/f[payee=$name and award]">
+      <tr>
+        <xsl:attribute name="programmer">
+          <xsl:value-of select="$name"/>
+        </xsl:attribute>
+        <td>
+          <xsl:text></xsl:text>
+        </td>
+        <td>
+          <xsl:text></xsl:text>
+        </td>
+        <td>
+          <xsl:text></xsl:text>
+        </td>
+        <td>
+          <xsl:value-of select="reason"/>
+        </td>
+        <td class="right">
+          <xsl:choose>
+            <xsl:when test="href">
+              <a>
+                <xsl:attribute name="href">
+                  <xsl:value-of select="href"/>
+                </xsl:attribute>
+                <xsl:value-of select="z:award(award)"/>
+              </a>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="z:award(award)"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </td>
+        <td>
+          <xsl:variable name="age" select="number((current-dateTime() - xs:dateTime(time)) div xs:dayTimeDuration('P1D'))"/>
+          <xsl:choose>
+            <xsl:when test="$age &lt; 1">
+              <xsl:text>today</xsl:text>
+            </xsl:when>
+            <xsl:when test="$age &lt; 7">
+              <xsl:text>this week</xsl:text>
+            </xsl:when>
+            <xsl:when test="$age &lt; 99">
+              <xsl:value-of select="floor($age)"/>
+              <xsl:text>d ago</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>earlier</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </td>
+      </tr>
+    </xsl:for-each>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>
