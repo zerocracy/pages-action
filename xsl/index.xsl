@@ -97,6 +97,12 @@ SOFTWARE.
                 <xsl:text> (it's big)</xsl:text>
               </xsl:if>
               <xsl:text>.</xsl:text>
+              <br/>
+              <xsl:text>Made by </xsl:text>
+              <a href="https://www.zerocracy.com">
+                <xsl:text>Zerocracy</xsl:text>
+              </a>
+              <xsl:text>.</xsl:text>
             </p>
           </footer>
         </section>
