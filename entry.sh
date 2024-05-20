@@ -68,4 +68,4 @@ java -jar ${SAXON} \
     "-xsl:xsl/index.xsl" \
     "-o:${INPUT_OUTPUT}/${name}.html" \
     "version=${VERSION}" \
-    "source=${name}.xml"
+    "name=${name}"

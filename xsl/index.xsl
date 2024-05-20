@@ -25,13 +25,15 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:import href="awards.xsl"/>
   <xsl:output method="xml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
+  <xsl:param name="name"/>
   <xsl:param name="version"/>
-  <xsl:param name="source"/>
   <xsl:template match="/">
     <html>
       <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-        <title>zerocracy</title>
+        <title>
+          <xsl:value-of select="{$name}"/>
+        </title>
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <link rel="icon" href="https://www.zerocracy.com/logo.svg" type="image/svg"/>
@@ -90,7 +92,7 @@ SOFTWARE.
               <xsl:text>.</xsl:text>
               <br/>
               <xsl:text>The XML with all the data </xsl:text>
-              <a href="{$source}">
+              <a href="{$name}.xml">
                 <xsl:text>is here</xsl:text>
               </a>
               <xsl:if test="fb/@size > 100000">
