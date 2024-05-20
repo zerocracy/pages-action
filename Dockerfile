@@ -27,7 +27,7 @@ LABEL "maintainer"="Yegor Bugayenko"
 
 RUN apt-get update -y --fix-missing \
   && apt-get -y install --no-install-recommends \
-    openjdk-17-jdk=17.0.10+7-1~22.04.1 \
+    openjdk-17-jdk \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
