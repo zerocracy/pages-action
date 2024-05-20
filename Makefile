@@ -33,13 +33,13 @@ YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
 JUDGES = /code/gems/judges/bin/judges
-DIRS = target/html target/fb
+DIRS = target target/html target/fb
 
 export
 
 all: $(HTMLS)
 
-target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile | target/html
+target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css | target/html
 	export INPUT_VERBOSE=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
@@ -51,6 +51,9 @@ target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile | target/html
 
 target/fb/%.fb: tests/%.yml Makefile | target/fb
 	$(JUDGES) import $< $@
+
+target/css/main.css: sass/*.scss | target
+	sass --no-source-map --style=compressed --no-quiet --stop-on-error $< $@
 
 clean:
 	rm -rf target

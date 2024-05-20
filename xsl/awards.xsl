@@ -75,14 +75,14 @@ SOFTWARE.
   <xsl:template name="programmer">
     <xsl:param name="name"/>
     <tr>
-      <td class="num right">
+      <td class="ff right">
         <xsl:text>#</xsl:text>
         <xsl:value-of select="position()"/>
       </td>
       <td class="avatar">
         <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
       </td>
-      <td colspan="2">
+      <td colspan="2" class="ff">
         <a>
           <xsl:attribute name="href">
             <xsl:text>https://github.com/</xsl:text>
@@ -115,7 +115,7 @@ SOFTWARE.
         <td>
           <xsl:value-of select="reason"/>
         </td>
-        <td class="right">
+        <td class="ff right">
           <xsl:choose>
             <xsl:when test="href">
               <a>

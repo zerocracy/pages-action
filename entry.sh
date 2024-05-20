@@ -22,7 +22,6 @@
 # SOFTWARE.
 
 set -e
-set -x
 set -o pipefail
 
 SAXON=/usr/local/Saxon.jar
@@ -63,9 +62,11 @@ for f in yaml xml json; do
 done
 
 # Build a summary HTML.
+css=$(cat target/css/main.css)
 java -jar ${SAXON} \
     "-s:${INPUT_OUTPUT}/${name}.xml" \
     "-xsl:xsl/index.xsl" \
     "-o:${INPUT_OUTPUT}/${name}.html" \
     "version=${VERSION}" \
-    "name=${name}"
+    "name=${name}" \
+    "css=${css}"

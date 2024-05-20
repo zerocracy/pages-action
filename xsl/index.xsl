@@ -25,6 +25,7 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:import href="awards.xsl"/>
   <xsl:output method="xml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
+  <xsl:param name="css"/>
   <xsl:param name="name"/>
   <xsl:param name="version"/>
   <xsl:template match="/">
@@ -46,18 +47,7 @@ SOFTWARE.
           <xsl:text> </xsl:text>
         </script>
         <style>
-          td, th { font-family: monospace; font-size: 18px; line-height: 1em; }
-          td.top { vertical-align: middle; }
-          .num { text-align: right; }
-          .left { border-bottom: 0; }
-          section { width: auto; }
-          header { text-align: center; }
-          footer { text-align: center; font-size: 0.8em; line-height: 1.2em; color: gray; }
-          article { border: 0; }
-          td.avatar { vertical-align: middle; text-align: center; }
-          td.avatar img { width: 1.5em; height: 1.5em; vertical-align: middle; }
-          .subtitle { font-size: 0.8em; line-height: 1em; color: gray; }
-          .sorter { cursor: pointer; }
+          <xsl:value-of select="$css"/>
         </style>
       </head>
       <body>
@@ -65,8 +55,11 @@ SOFTWARE.
           <header>
             <p>
               <a href="">
-                <img src="https://www.zerocracy.com/logo.svg" style="width:64px" alt="Zerocracy"/>
+                <img src="https://www.zerocracy.com/logo.svg" alt="Zerocracy"/>
               </a>
+              <span>
+                <xsl:value-of select="$name"/>
+              </span>
             </p>
           </header>
           <article>
