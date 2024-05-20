@@ -20,26 +20,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-.SHELLFLAGS: -c
+.SHELLFLAGS: -e -o pipefail -c
 .ONESHELL:
-.PHONY: clean
+.PHONY: clean all
+.SILENT:
+
+SHELL = bash
 
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
+JUDGES = /code/gems/judges/bin/judges
+DIRS = target/html target/fb
+
+export
 
 all: $(HTMLS)
 
-target/html/%.html: target/fb/%.fb
+target/html/%.html: target/fb/%.fb xsl/*.xsl | target/html
 	export INPUT_VERBOSE=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
-	export INPUT_OUTPUT=$$(dirname $@)
+	fb=$$(basename $<)
+	fb=$${fb%.*}
+	export INPUT_OUTPUT=target/output/$${fb}
 	./entry.sh
+	cp target/output/$${fb}/$${fb}.html target/html
 
-target/fb/%.fb: tests/%.yml
-	mkdir -p target/fb
-	judges import $< $@
+target/fb/%.fb: tests/%.yml | target/fb
+	$(JUDGES) import $< $@
 
 clean:
 	rm -rf target
+
+$(DIRS):
+	mkdir -p "$@"

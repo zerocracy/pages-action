@@ -33,29 +33,29 @@ SOFTWARE.
   <xsl:template match="/" mode="awards">
     <table id="awards" border="1">
       <colgroup>
-        <col/>
+        <col style="width: 2em;"/>
         <col style="width: 2.5em;"/>
         <col style="width: 2em;"/>
-        <col/>
+        <col style="width: 40em;"/>
         <col/>
         <col/>
       </colgroup>
       <thead>
         <tr>
-          <th>
-            <xsl:text></xsl:text>
+          <th class="right">
+            <xsl:text>#</xsl:text>
           </th>
           <th>
             <xsl:text></xsl:text>
           </th>
           <th colspan="2">
-            <xsl:text>Programmer</xsl:text>
+            <xsl:text>Programmer / Award Reason</xsl:text>
           </th>
-          <th>
+          <th class="right">
             <xsl:text>Score</xsl:text>
           </th>
           <th>
-            <xsl:text></xsl:text>
+            <xsl:text>Date</xsl:text>
           </th>
         </tr>
       </thead>
@@ -65,6 +65,7 @@ SOFTWARE.
   <xsl:template match="fb" mode="awards">
     <tbody>
       <xsl:for-each-group select="f[payee and award]" group-by="payee">
+        <xsl:sort select="sum(award)" data-type="number" order="descending"/>
         <xsl:call-template name="programmer">
           <xsl:with-param name="name" select="payee/text()"/>
         </xsl:call-template>
@@ -74,12 +75,12 @@ SOFTWARE.
   <xsl:template name="programmer">
     <xsl:param name="name"/>
     <tr>
-      <td class="num">
+      <td class="num right">
         <xsl:text>#</xsl:text>
         <xsl:value-of select="position()"/>
       </td>
       <td class="avatar">
-        <img src="https://github.com/{$name}.png" width="64" height="64"/>
+        <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
       </td>
       <td colspan="2">
         <a>
@@ -92,14 +93,16 @@ SOFTWARE.
         </a>
       </td>
       <td class="right">
-        <xsl:value-of select="z:award(sum(/fb/f[payee=$name and award]/award))"/>
+        <a href="" onclick="$('.p_').hide(); $('.p_{$name}').show(); console.log('show {$name}'); return false;">
+          <xsl:value-of select="z:award(sum(/fb/f[payee=$name and award]/award))"/>
+        </a>
       </td>
       <td>
         <xsl:text></xsl:text>
       </td>
     </tr>
     <xsl:for-each select="/fb/f[payee=$name and award]">
-      <tr>
+      <tr class="p_ p_{$name}" style="display: none;">
         <xsl:attribute name="programmer">
           <xsl:value-of select="$name"/>
         </xsl:attribute>

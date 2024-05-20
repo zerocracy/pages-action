@@ -55,13 +55,12 @@ if [ -z "${INPUT_OUTPUT}" ]; then
 fi
 mkdir -p "${INPUT_OUTPUT}"
 
+name=$(basename "${INPUT_FACTBASE}")
+name="${name%.*}"
+
 for f in yaml xml json; do
-    target="${INPUT_FACTBASE%.*}.${f}"
-    judges "${gopts[@]}" print --format "${f}" "${INPUT_FACTBASE}" "${target}"
-    mv "${target}" "${INPUT_OUTPUT}"
+    "${JUDGES}" "${gopts[@]}" print --format "${f}" "${INPUT_FACTBASE}" "${INPUT_OUTPUT}/${name}.${f}"
 done
 
 # Build a summary HTML.
-index="${INPUT_FACTBASE%.*}.${f}"
-judges "${gopts[@]}" print --format xml "${INPUT_FACTBASE}" "${index}"
-java -jar ${SAXON} "-s:${index}" -xsl:xsl/index.xsl "-o:${INPUT_FACTBASE%.*}.html" version=0.0.0
+java -jar ${SAXON} "-s:${INPUT_OUTPUT}/${name}.xml" -xsl:xsl/index.xsl "-o:${INPUT_OUTPUT}/${name}.html" version=0.0.0

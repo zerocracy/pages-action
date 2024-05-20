@@ -31,9 +31,8 @@ RUN apt-get update -y --fix-missing \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-RUN gem install judges
-
-RUN wget --no-verbose -O /usr/local/Saxon.jar \
+RUN gem install judges:0.0.29 \
+  && wget --no-verbose -O /usr/local/Saxon.jar \
     https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
 
 WORKDIR /home

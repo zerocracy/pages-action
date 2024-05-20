@@ -42,19 +42,6 @@ SOFTWARE.
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js">
           <xsl:text> </xsl:text>
         </script>
-        <script type="text/javascript">
-          $(function() {
-            $("#metrics").tablesorter({
-              textExtraction: function(node) {
-                var attr = $(node).attr('data-sort-value');
-                if (typeof attr !== 'undefined' &amp;&amp; attr !== false) {
-                  return attr;
-                }
-                return $(node).text();
-              }
-            });
-          });
-        </script>
         <style>
           td, th { font-family: monospace; font-size: 18px; line-height: 1em; }
           td.top { vertical-align: middle; }
@@ -76,7 +63,7 @@ SOFTWARE.
           <header>
             <p>
               <a href="">
-                <img src="https://www.zerocracy.com/logo.svg" style="width:64px"/>
+                <img src="https://www.zerocracy.com/logo.svg" style="width:64px" alt="Zerocracy"/>
               </a>
             </p>
           </header>
@@ -107,10 +94,5 @@ SOFTWARE.
         </section>
       </body>
     </html>
-  </xsl:template>
-  <xsl:template match="node()|@*">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>
