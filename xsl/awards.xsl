@@ -38,7 +38,7 @@ SOFTWARE.
         <col style="width: 2em;"/>
         <col style="width: 40em;"/>
         <col/>
-        <col/>
+        <col style="width: 15em;"/>
       </colgroup>
       <thead>
         <tr>
@@ -46,7 +46,7 @@ SOFTWARE.
             <xsl:text>#</xsl:text>
           </th>
           <th>
-            <xsl:text></xsl:text>
+            <xsl:text> </xsl:text>
           </th>
           <th colspan="2">
             <xsl:text>Programmer / Award Reason</xsl:text>
@@ -55,7 +55,7 @@ SOFTWARE.
             <xsl:text>Score</xsl:text>
           </th>
           <th>
-            <xsl:text>Date</xsl:text>
+            <xsl:text> </xsl:text>
           </th>
         </tr>
       </thead>
@@ -98,22 +98,19 @@ SOFTWARE.
         </a>
       </td>
       <td>
-        <xsl:text></xsl:text>
+        <xsl:text> </xsl:text>
       </td>
     </tr>
     <xsl:for-each select="/fb/f[payee=$name and award]">
       <tr class="p_ p_{$name}" style="display: none;">
-        <xsl:attribute name="programmer">
-          <xsl:value-of select="$name"/>
-        </xsl:attribute>
         <td>
-          <xsl:text></xsl:text>
+          <xsl:text> </xsl:text>
         </td>
         <td>
-          <xsl:text></xsl:text>
+          <xsl:text> </xsl:text>
         </td>
         <td>
-          <xsl:text></xsl:text>
+          <xsl:text> </xsl:text>
         </td>
         <td>
           <xsl:value-of select="reason"/>
@@ -153,10 +150,5 @@ SOFTWARE.
         </td>
       </tr>
     </xsl:for-each>
-  </xsl:template>
-  <xsl:template match="node()|@*">
-    <xsl:copy>
-      <xsl:apply-templates select="node()|@*"/>
-    </xsl:copy>
   </xsl:template>
 </xsl:stylesheet>

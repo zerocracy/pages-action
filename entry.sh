@@ -63,4 +63,9 @@ for f in yaml xml json; do
 done
 
 # Build a summary HTML.
-java -jar ${SAXON} "-s:${INPUT_OUTPUT}/${name}.xml" -xsl:xsl/index.xsl "-o:${INPUT_OUTPUT}/${name}.html" version=0.0.0
+java -jar ${SAXON} \
+    "-s:${INPUT_OUTPUT}/${name}.xml" \
+    "-xsl:xsl/index.xsl" \
+    "-o:${INPUT_OUTPUT}/${name}.html" \
+    "version=${VERSION}" \
+    "source=${name}.xml"

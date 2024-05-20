@@ -25,6 +25,8 @@
 .PHONY: clean all
 .SILENT:
 
+VERSION = 0.0.0
+
 SHELL = bash
 
 YAMLS = $(wildcard tests/*.yml)
@@ -37,7 +39,7 @@ export
 
 all: $(HTMLS)
 
-target/html/%.html: target/fb/%.fb xsl/*.xsl | target/html
+target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile | target/html
 	export INPUT_VERBOSE=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
@@ -47,7 +49,7 @@ target/html/%.html: target/fb/%.fb xsl/*.xsl | target/html
 	./entry.sh
 	cp target/output/$${fb}/$${fb}.html target/html
 
-target/fb/%.fb: tests/%.yml | target/fb
+target/fb/%.fb: tests/%.yml Makefile | target/fb
 	$(JUDGES) import $< $@
 
 clean:

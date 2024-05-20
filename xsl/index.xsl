@@ -26,6 +26,7 @@ SOFTWARE.
   <xsl:import href="awards.xsl"/>
   <xsl:output method="xml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:param name="version"/>
+  <xsl:param name="source"/>
   <xsl:template match="/">
     <html>
       <head>
@@ -52,8 +53,7 @@ SOFTWARE.
           footer { text-align: center; font-size: 0.8em; line-height: 1.2em; color: gray; }
           article { border: 0; }
           td.avatar { vertical-align: middle; text-align: center; }
-          td.avatar img,
-          td.orgs img { width: 1.5em; height: 1.5em; vertical-align: middle; }
+          td.avatar img { width: 1.5em; height: 1.5em; vertical-align: middle; }
           .subtitle { font-size: 0.8em; line-height: 1em; color: gray; }
           .sorter { cursor: pointer; }
         </style>
@@ -80,14 +80,22 @@ SOFTWARE.
               <xsl:value-of select="$version"/>
               <xsl:text>) on </xsl:text>
               <xsl:value-of select="fb/@dob"/>
-              <xsl:text>; factbase version is </xsl:text>
-              <xsl:value-of select="fb/@factbase_version"/>
+              <br/>
+              <xsl:text>FB: </xsl:text>
+              <xsl:value-of select="count(fb/f)"/>
+              <xsl:text> facts, </xsl:text>
+              <xsl:value-of select="fb/@size"/>
+              <xsl:text> bytes, version </xsl:text>
+              <xsl:value-of select="fb/@version"/>
               <xsl:text>.</xsl:text>
               <br/>
-              <xsl:text>The XML with the data </xsl:text>
-              <a href="index.xml">
+              <xsl:text>The XML with all the data </xsl:text>
+              <a href="{$source}">
                 <xsl:text>is here</xsl:text>
               </a>
+              <xsl:if test="fb/@size > 100000">
+                <xsl:text> (it's big)</xsl:text>
+              </xsl:if>
               <xsl:text>.</xsl:text>
             </p>
           </footer>
