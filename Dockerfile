@@ -38,6 +38,6 @@ RUN wget --no-verbose -O /usr/local/Saxon.jar \
 
 WORKDIR /home
 COPY entry.sh /home
-COPY xsl /home
+COPY xsl /home/xsl
 
 ENTRYPOINT ["/home/entry.sh"]
