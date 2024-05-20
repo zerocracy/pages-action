@@ -82,20 +82,30 @@ SOFTWARE.
       <td class="avatar">
         <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
       </td>
-      <td colspan="2" class="ff">
-        <a>
-          <xsl:attribute name="href">
-            <xsl:text>https://github.com/</xsl:text>
+      <td colspan="2">
+        <span class="ff">
+          <a>
+            <xsl:attribute name="href">
+              <xsl:text>https://github.com/</xsl:text>
+              <xsl:value-of select="$name"/>
+            </xsl:attribute>
+            <xsl:text>@</xsl:text>
             <xsl:value-of select="$name"/>
-          </xsl:attribute>
-          <xsl:text>@</xsl:text>
-          <xsl:value-of select="$name"/>
+          </a>
+        </span>
+        <xsl:text> (</xsl:text>
+        <xsl:variable name="c" select="count(/fb/f[payee=$name and award]/award)"/>
+        <a href="" onclick="$('.p_{$name}').show(); return false;">
+          <xsl:value-of select="$c"/>
+          <xsl:text> award</xsl:text>
+          <xsl:if test="$c &gt; 1">
+            <xsl:text>s</xsl:text>
+          </xsl:if>
         </a>
+        <xsl:text>)</xsl:text>
       </td>
       <td class="right">
-        <a href="" onclick="$('.p_').hide(); $('.p_{$name}').show(); console.log('show {$name}'); return false;">
-          <xsl:value-of select="z:award(sum(/fb/f[payee=$name and award]/award))"/>
-        </a>
+        <xsl:value-of select="z:award(sum(/fb/f[payee=$name and award]/award))"/>
       </td>
       <td>
         <xsl:text> </xsl:text>
