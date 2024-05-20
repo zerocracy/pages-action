@@ -25,6 +25,12 @@ FROM ruby:3.3
 LABEL "repository"="https://github.com/zerocracy/pages-action"
 LABEL "maintainer"="Yegor Bugayenko"
 
+RUN apt-get update -y --fix-missing \
+  && apt-get -y install --no-install-recommends \
+    openjdk-17-jdk=17.0.10+7-1~22.04.1 \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN gem install judges
 
 RUN wget --no-verbose -O /usr/local/Saxon.jar \
