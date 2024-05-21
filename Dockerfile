@@ -32,7 +32,11 @@ RUN apt-get update -y --fix-missing \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g sass@1.77.2
+RUN rm -rf /usr/lib/node_modules \
+  && curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh \
+  && bash /tmp/nodesource_setup.sh \
+  && apt-get -y install nodejs \
+  && npm install -g sass@1.77.2
 
 RUN gem install judges:0.0.31 \
   && wget --no-verbose -O /usr/local/Saxon.jar \
