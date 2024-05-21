@@ -24,6 +24,10 @@
 set -e
 set -o pipefail
 
+if [ -z "${JUDGES}" ]; then
+    JUDGES=judges
+fi
+
 SAXON=/usr/local/Saxon.jar
 if [ ! -e "${SAXON}" ]; then
     echo "There is not Saxon JAR at this path: ${SAXON}."
