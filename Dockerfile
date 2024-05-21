@@ -41,7 +41,7 @@ RUN rm -rf /usr/lib/node_modules \
     nodejs \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && npm install -g sass@1.77.2
+  && npm install -g sass@1.77.1
 
 RUN gem install judges:0.0.31 \
   && curl -sL -o /usr/local/Saxon.jar \
