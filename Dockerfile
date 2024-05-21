@@ -32,7 +32,7 @@ RUN apt-get update -y --fix-missing \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-RUN gem install sass:1.76.0 judges:0.0.29 \
+RUN gem install sass:1.76.0 judges:0.0.31 \
   && wget --no-verbose -O /usr/local/Saxon.jar \
     https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
 
