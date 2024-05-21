@@ -35,5 +35,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
-      - run: gem install judges
+      - run: gem install judges:0.0.31
+      - run: gem install sass:1.76.0
       - run: make
