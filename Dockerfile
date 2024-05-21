@@ -34,7 +34,7 @@ RUN apt-get update -y --fix-missing \
 
 # hadolint ignore=DL3008
 RUN rm -rf /usr/lib/node_modules \
-  && curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh \
+  && curl -sL -o /tmp/nodesource_setup.sh https://deb.nodesource.com/setup_18.x \
   && bash /tmp/nodesource_setup.sh \
   && apt-get update -y --fix-missing \
   && apt-get -y install --no-install-recommends nodejs \
@@ -43,7 +43,7 @@ RUN rm -rf /usr/lib/node_modules \
   && npm install -g sass@1.77.2
 
 RUN gem install judges:0.0.31 \
-  && wget --no-verbose -O /usr/local/Saxon.jar \
+  && curl -sL -o /usr/local/Saxon.jar \
     https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
 
 WORKDIR /home
