@@ -32,7 +32,7 @@ SHELL = bash
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
-JUDGES = /code/gems/judges/bin/judges
+JUDGES = judges
 DIRS = target target/html target/fb
 
 export
