@@ -47,7 +47,7 @@ RUN gem install judges:0.0.31 \
   && curl -sL -o /usr/local/Saxon.jar \
     https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
 
-RUN make
+RUN make && tree
 
 WORKDIR /home
 COPY entry.sh /home
