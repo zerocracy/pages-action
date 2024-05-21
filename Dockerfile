@@ -25,6 +25,7 @@ FROM ruby:3.3
 LABEL "repository"="https://github.com/zerocracy/pages-action"
 LABEL "maintainer"="Yegor Bugayenko"
 
+# hadolint disable=DL3008
 RUN apt-get update -y --fix-missing \
   && apt-get -y install --no-install-recommends \
     openjdk-17-jdk \
