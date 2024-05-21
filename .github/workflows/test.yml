@@ -33,7 +33,7 @@ jobs:
         with:
           ruby-version: 3.2
       - run: gem install judges:0.0.31
-      - run: judges --verbose eval test.fb '$fb.insert.foo = 42'
+      - run: judges --verbose eval test.fb "\$fb.insert.foo = 42"
       - uses: ./
         with:
           verbose: true
