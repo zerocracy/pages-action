@@ -69,7 +69,7 @@ done
 css=$(cat target/css/main.css)
 java -jar ${SAXON} \
     "-s:${INPUT_OUTPUT}/${name}.xml" \
-    "-xsl:xsl/index.xsl" \
+    "-xsl:target/xsl/index.xsl" \
     "-o:${INPUT_OUTPUT}/${name}.html" \
     "version=${VERSION}" \
     "name=${name}" \

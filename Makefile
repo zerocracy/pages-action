@@ -33,11 +33,16 @@ YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
 JUDGES = judges
-DIRS = target target/html target/fb
+DIRS = target target/html target/fb target/xsl target/css
 
 export
 
-all: $(HTMLS)
+all: target/css/main.css target/xsl/index.xsl test
+
+test: $(HTMLS)
+
+target/xsl/index.xsl: target/xsl
+	cp xsl/*.xsl target/xsl
 
 target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css | target/html
 	export INPUT_VERBOSE=yes
