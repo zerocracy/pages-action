@@ -19,27 +19,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-FROM ruby:3.3
-
-LABEL "repository"="https://github.com/zerocracy/pages-action"
-LABEL "maintainer"="Yegor Bugayenko"
-
-# hadolint ignore=DL3008
-RUN apt-get update -y --fix-missing \
-  && apt-get -y install --no-install-recommends \
-    openjdk-17-jdk \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-RUN npm install -g sass@1.77.2
-
-RUN gem install judges:0.0.31 \
-  && wget --no-verbose -O /usr/local/Saxon.jar \
-    https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
-
-WORKDIR /home
-COPY entry.sh /home
-COPY xsl /home/xsl
-
-ENTRYPOINT ["/home/entry.sh"]
+---
+name: test
+'on':
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./
+        with:
+          verbose: true
+          output: pages
+          factbase: test.fb

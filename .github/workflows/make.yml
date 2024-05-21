@@ -29,6 +29,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 16
       - run: |
           sudo wget --no-verbose -O /usr/local/Saxon.jar \
             https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
@@ -36,5 +39,5 @@ jobs:
         with:
           ruby-version: 3.2
       - run: gem install judges:0.0.31
-      - run: gem install sass:1.76.0
+      - run: npm install -g sass
       - run: make
