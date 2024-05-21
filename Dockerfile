@@ -37,7 +37,8 @@ RUN rm -rf /usr/lib/node_modules \
   && curl -sL -o /tmp/nodesource_setup.sh https://deb.nodesource.com/setup_18.x \
   && bash /tmp/nodesource_setup.sh \
   && apt-get update -y --fix-missing \
-  && apt-get -y install --no-install-recommends nodejs \
+  && apt-get -y install --no-install-recommends \
+    nodejs \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && npm install -g sass@1.77.2
