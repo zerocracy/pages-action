@@ -52,6 +52,6 @@ COPY Makefile /home
 COPY entry.sh /home
 COPY sass /home/sass
 COPY xsl /home/xsl
-RUN make --directory=/home
+RUN make --directory=/home --no-silent
 
-ENTRYPOINT ["/home/entry.sh"]
+ENTRYPOINT ["/home/entry.sh", "/home"]

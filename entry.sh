@@ -28,6 +28,12 @@ if [ -z "${JUDGES}" ]; then
     JUDGES=judges
 fi
 
+if [ -z "$1" ]; then
+    SELF=$(pwd)
+else
+    SELF=$1
+fi
+
 SAXON=/usr/local/Saxon.jar
 if [ ! -e "${SAXON}" ]; then
     echo "There is not Saxon JAR at this path: ${SAXON}."
@@ -66,10 +72,10 @@ for f in yaml xml json; do
 done
 
 # Build a summary HTML.
-css=$(cat target/css/main.css)
+css=$(cat "${SELF}/target/css/main.css")
 java -jar ${SAXON} \
     "-s:${INPUT_OUTPUT}/${name}.xml" \
-    "-xsl:target/xsl/index.xsl" \
+    "-xsl:${SELF}/target/xsl/index.xsl" \
     "-o:${INPUT_OUTPUT}/${name}.html" \
     "version=${VERSION}" \
     "name=${name}" \
