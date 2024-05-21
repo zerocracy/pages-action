@@ -32,10 +32,14 @@ RUN apt-get update -y --fix-missing \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
+# hadolint ignore=DL3008
 RUN rm -rf /usr/lib/node_modules \
   && curl -sL https://deb.nodesource.com/setup_18.x -o /tmp/nodesource_setup.sh \
   && bash /tmp/nodesource_setup.sh \
-  && apt-get -y install nodejs \
+  && apt-get update -y --fix-missing \
+  && apt-get -y install --no-install-recommends nodejs \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
   && npm install -g sass@1.77.2
 
 RUN gem install judges:0.0.31 \
