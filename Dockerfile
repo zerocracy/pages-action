@@ -40,18 +40,14 @@ RUN rm -rf /usr/lib/node_modules \
   && apt-get -y install --no-install-recommends \
     nodejs \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && npm install -g sass@1.77.1
-
-RUN gem install judges:0.0.31 \
-  && curl -sL -o /usr/local/Saxon.jar \
-    https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /home
 COPY Makefile /home
 COPY entry.sh /home
 COPY sass /home/sass
 COPY xsl /home/xsl
+RUN make --directory=/home --no-silent install
 RUN make --directory=/home --no-silent
 
 ENTRYPOINT ["/home/entry.sh", "/home"]

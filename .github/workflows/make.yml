@@ -35,5 +35,5 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
-      - run: sudo make install
+      - run: make install
       - run: make

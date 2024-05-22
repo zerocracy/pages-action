@@ -36,13 +36,6 @@ else
     SELF=$1
 fi
 
-SAXON=/usr/local/Saxon.jar
-if [ ! -e "${SAXON}" ]; then
-    echo "There is not Saxon JAR at this path: ${SAXON}."
-    echo "Because of this, XSLT transformations won't work."
-    exit 1
-fi
-
 # Convert the factbase to a few human-readable formats
 if [ -z "${GITHUB_WORKSPACE}" ]; then
     echo 'Probably you are running this script not from GitHub Actions.'
@@ -75,7 +68,7 @@ done
 
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")
-java -jar ${SAXON} \
+java -jar "${SELF}/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.xml" \
     "-xsl:${SELF}/target/xsl/index.xsl" \
     "-o:${INPUT_OUTPUT}/${name}.html" \
