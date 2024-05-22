@@ -23,10 +23,7 @@
 docker:
   image: yegor256/rultor-image:1.23.1
 install: |
-  sudo npm install -g sass@1.77.1
-  sudo gem install judges
-  sudo wget --no-verbose -O /usr/local/Saxon.jar \
-    https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
+  sudo make install
 merge:
   script: |-
     sudo docker build "$(pwd)"

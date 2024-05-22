@@ -61,5 +61,10 @@ $(CSS): sass/*.scss | target
 clean:
 	rm -rf target
 
+install:
+	wget --no-verbose -O /usr/local/Saxon.jar https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
+	gem install judges:0.0.31
+	npm install -g sass@1.77.2
+
 $(DIRS):
 	mkdir -p "$@"

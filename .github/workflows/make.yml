@@ -32,12 +32,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 16
-      - run: |
-          sudo wget --no-verbose -O /usr/local/Saxon.jar \
-            https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
-      - run: gem install judges:0.0.31
-      - run: npm install -g sass
+      - run: sudo make install
       - run: make
