@@ -37,9 +37,7 @@ CSS = target/css/main.css
 
 export
 
-all: $(CSS) $(XSLS) test
-
-test: $(HTMLS)
+all: $(CSS) $(XSLS) $(HTMLS)
 
 target/xsl/%.xsl: xsl/%.xsl
 	cp xsl/*.xsl target/xsl
