@@ -68,7 +68,7 @@ done
 
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")
-java -jar "${SELF}/saxon.jar" \
+java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.xml" \
     "-xsl:${SELF}/target/xsl/index.xsl" \
     "-o:${INPUT_OUTPUT}/${name}.html" \

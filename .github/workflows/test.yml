@@ -32,7 +32,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2
-      - run: gem install judges:0.0.31
+      - run: make install
       - run: judges --verbose eval test.fb "\$fb.insert.foo = 42"
       - uses: ./
         with:
