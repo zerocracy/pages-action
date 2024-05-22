@@ -39,8 +39,8 @@ export
 
 all: $(CSS) $(XSLS) $(HTMLS)
 
-target/xsl/%.xsl: xsl/%.xsl
-	cp xsl/*.xsl target/xsl
+target/xsl/%.xsl: xsl/%.xsl | target/xsl
+	cp $< $@
 
 target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css | target/html
 	export INPUT_VERBOSE=yes
