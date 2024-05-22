@@ -47,7 +47,6 @@ COPY Makefile /home
 COPY entry.sh /home
 COPY sass /home/sass
 COPY xsl /home/xsl
-RUN make --directory=/home --no-silent install
-RUN make --directory=/home --no-silent
+RUN make --directory=/home --no-silent install all
 
 ENTRYPOINT ["/home/entry.sh", "/home"]
