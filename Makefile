@@ -22,7 +22,7 @@
 
 .SHELLFLAGS: -e -o pipefail -c
 .ONESHELL:
-.PHONY: clean all
+.PHONY: clean all install
 .SILENT:
 
 SHELL = bash
