@@ -24,6 +24,7 @@ docker:
   image: yegor256/rultor-image:1.23.1
 install: |
   sudo npm install -g sass@1.77.1
+  sudo gem install judges
 merge:
   script: |-
     sudo docker build "$(pwd)"
