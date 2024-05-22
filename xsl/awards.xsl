@@ -30,7 +30,12 @@ SOFTWARE.
     </xsl:if>
     <xsl:value-of select="$a"/>
   </xsl:function>
-  <xsl:template match="/" mode="awards">
+  <xsl:template match="/[fb[not(f)]]" mode="awards">
+    <p>
+      <xsl:text>No awards as of yet.</xsl:text>
+    </p>
+  </xsl:template>
+  <xsl:template match="/[fb/f]" mode="awards">
     <table id="awards" border="1">
       <colgroup>
         <col style="width: 2em;"/>

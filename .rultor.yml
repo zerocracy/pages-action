@@ -29,5 +29,6 @@ release:
   pre: false
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
-    sed -i -e "s/^0.0.0/${tag}/" Dockerfile
+    sed -i -e "s/^0.0.0/${tag}/" entry.sh
     sudo docker build "$(pwd)"
+    make

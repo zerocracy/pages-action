@@ -25,8 +25,6 @@
 .PHONY: clean all
 .SILENT:
 
-VERSION = 0.0.0
-
 SHELL = bash
 
 YAMLS = $(wildcard tests/*.yml)
