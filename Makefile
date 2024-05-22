@@ -30,16 +30,18 @@ SHELL = bash
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
+XSLS = $(subst xsl/,target/xsl/,$(wildcard xsl/*.xsl))
 JUDGES = judges
 DIRS = target target/html target/fb target/xsl target/css
+CSS = target/css/main.css
 
 export
 
-all: target/css/main.css target/xsl/index.xsl test
+all: $(CSS) $(XSLS) test
 
 test: $(HTMLS)
 
-target/xsl/index.xsl: target/xsl
+target/xsl/%.xsl: xsl/%.xsl
 	cp xsl/*.xsl target/xsl
 
 target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css | target/html
@@ -55,7 +57,7 @@ target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.c
 target/fb/%.fb: tests/%.yml Makefile | target/fb
 	$(JUDGES) import $< $@
 
-target/css/main.css: sass/*.scss | target
+$(CSS): sass/*.scss | target
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error $< $@
 
 clean:
