@@ -88,7 +88,11 @@ SOFTWARE.
               </a>
               <xsl:text>: </xsl:text>
               <xsl:value-of select="count(fb/f)"/>
-              <xsl:text> facts, </xsl:text>
+              <xsl:text> fact</xsl:text>
+              <xsl:if test="count(fb/f) != 1">
+                <xsl:text>s</xsl:text>
+              </xsl:if>
+              <xsl:text>, </xsl:text>
               <xsl:value-of select="fb/@size"/>
               <xsl:text> bytes, version </xsl:text>
               <xsl:value-of select="fb/@version"/>
