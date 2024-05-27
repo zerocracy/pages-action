@@ -82,7 +82,10 @@ SOFTWARE.
               <xsl:text>) on </xsl:text>
               <xsl:value-of select="fb/@dob"/>
               <br/>
-              <xsl:text>FB: </xsl:text>
+              <a href="https://github.com/yegor256/factbase">
+                <xsl:text>Factbase</xsl:text>
+              </a>
+              <xsl:text>: </xsl:text>
               <xsl:value-of select="count(fb/f)"/>
               <xsl:text> facts, </xsl:text>
               <xsl:value-of select="fb/@size"/>
