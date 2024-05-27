@@ -62,7 +62,9 @@ clean:
 	rm -rf target
 
 install: target
-	wget --no-verbose -O target/saxon.jar https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
+	if [ ! -e target/saxon.jar ]; then
+		wget --no-verbose -O target/saxon.jar https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
+	fi
 	gem install judges:0.0.34
 	npm install -g sass@1.77.2
 
