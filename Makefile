@@ -34,6 +34,7 @@ XSLS = $(subst xsl/,target/xsl/,$(wildcard xsl/*.xsl))
 JUDGES = judges
 DIRS = target target/html target/fb target/xsl target/css
 CSS = target/css/main.css
+SAXON = target/saxon.jar
 
 export
 
@@ -42,7 +43,7 @@ all: $(CSS) $(XSLS) $(HTMLS)
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp $< $@
 
-target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css | target/html
+target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css $(SAXON) | target/html
 	export INPUT_VERBOSE=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
@@ -55,16 +56,16 @@ target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.c
 target/fb/%.fb: tests/%.yml Makefile | target/fb
 	$(JUDGES) import $< $@
 
-$(CSS): sass/*.scss | target
+$(CSS): sass/*.scss | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error $< $@
 
 clean:
 	rm -rf target
 
-install: target
-	if [ ! -e target/saxon.jar ]; then
-		wget --no-verbose -O target/saxon.jar https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
-	fi
+$(SAXON): | target
+	wget --no-verbose -O $(SAXON) https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
+
+install: $(SAXON) | target
 	gem install judges:0.0.34
 	npm install -g sass@1.77.2
 
