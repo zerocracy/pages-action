@@ -67,7 +67,7 @@ $(SAXON): | target
 
 install: $(SAXON) | target
 	gem install judges:0.0.34
-	npm install -g sass@1.77.2
+	npm --no-color install -g sass@1.77.2
 
 $(DIRS):
 	mkdir -p "$@"
