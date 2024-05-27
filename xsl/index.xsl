@@ -43,7 +43,7 @@ SOFTWARE.
         </title>
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-        <link rel="icon" href="https://www.zerocracy.com/logo.svg" type="image/svg"/>
+        <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
         <link href="https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css" rel="stylesheet"/>
         <link href="https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css" rel="stylesheet"/>
         <xsl:call-template name="javascript">
@@ -61,7 +61,7 @@ SOFTWARE.
           <header>
             <p>
               <a href="">
-                <img src="https://www.zerocracy.com/logo.svg" alt="Zerocracy"/>
+                <img src="https://www.zerocracy.com/svg/logo.svg" alt="Zerocracy"/>
               </a>
               <span>
                 <xsl:value-of select="$name"/>
