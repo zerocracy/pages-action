@@ -81,6 +81,7 @@ SOFTWARE.
               <xsl:value-of select="$version"/>
               <xsl:text>) on </xsl:text>
               <xsl:value-of select="fb/@dob"/>
+              <xsl:text>.</xsl:text>
               <br/>
               <a href="https://github.com/yegor256/factbase">
                 <xsl:text>Factbase</xsl:text>
