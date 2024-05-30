@@ -42,7 +42,7 @@ release:
     git add action.yml
     git commit -m "version set to ${tag}"
     make
-    repo=zerocracy/pages-action
+    repo=yegor256/pages-action
     sudo docker build "$(pwd)" --tag "${repo}:${tag}"
     cat ../docker-password | sudo docker login --password-stdin -u yegor256
     sudo docker push "${repo}:${tag}"
