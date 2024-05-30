@@ -42,6 +42,7 @@ release:
     make
     repo=zerocracy/pages-action
     sudo docker build "$(pwd)" --tag "${repo}:${tag}"
-    cat ../docker-password | sudo docker login --password-stdin --username yegor256
+    cat ../docker-password | \
+      sudo docker login --password-stdin --username yegor256
     sudo docker push "${repo}:${tag}"
     sudo docker push "${repo}:latest"
