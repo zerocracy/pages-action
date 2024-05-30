@@ -44,6 +44,7 @@ release:
     make
     repo=yegor256/pages-action
     sudo docker build "$(pwd)" --tag "${repo}:${tag}"
+    sudo docker build "$(pwd)" --tag "${repo}:latest"
     cat ../docker-password | sudo docker login --password-stdin -u yegor256
     sudo docker push "${repo}:${tag}"
     sudo docker push "${repo}:latest"
