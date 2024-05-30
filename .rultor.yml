@@ -22,6 +22,8 @@
 ---
 docker:
   image: yegor256/rultor-image:1.23.1
+assets:
+  docker-password: yegor256/home#assets/docker-password
 install: |
   sudo make install clean "--directory=$(pwd)"
 merge:
@@ -33,7 +35,13 @@ release:
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
     sed -i -e "s/0.0.0/${tag}/" entry.sh
+    sed -i -e "s/0.0.0/${tag}/" Dockerfile
     git add entry.sh
+    git add Dockerfile
     git commit -m "version set to ${tag}"
-    sudo docker build "$(pwd)"
     make
+    repo=zerocracy/pages-action
+    sudo docker build "$(pwd)" --tag "${repo}:${tag}"
+    cat ../docker-password | sudo docker login --password-stdin --username yegor256
+    sudo docker push "${repo}:${tag}"
+    sudo docker push "${repo}:latest"
