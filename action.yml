@@ -24,7 +24,7 @@ name: 'pages-action'
 description: 'Build static pages from a Factbase'
 runs:
   using: 'docker'
-  image: Dockerfile
+  image: 'docker://zerocracy:pages-action@0.0.0'
 inputs:
   verbose:
     description: 'Log as much debug information as possible'

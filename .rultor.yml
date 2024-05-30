@@ -36,13 +36,14 @@ release:
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
     sed -i -e "s/0.0.0/${tag}/" entry.sh
     sed -i -e "s/0.0.0/${tag}/" Dockerfile
+    sed -i -e "s/0.0.0/${tag}/" action.yml
     git add entry.sh
     git add Dockerfile
+    git add action.yml
     git commit -m "version set to ${tag}"
     make
     repo=zerocracy/pages-action
     sudo docker build "$(pwd)" --tag "${repo}:${tag}"
-    cat ../docker-password | \
-      sudo docker login --password-stdin --username yegor256
+    cat ../docker-password | sudo docker login --password-stdin -u yegor256
     sudo docker push "${repo}:${tag}"
     sudo docker push "${repo}:latest"
