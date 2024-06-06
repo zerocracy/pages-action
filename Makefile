@@ -27,6 +27,9 @@
 
 SHELL = bash
 
+JUDGES_VERSION=0.3.0
+FACTBASE_VERSION=0.0.43
+
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
@@ -66,7 +69,8 @@ $(SAXON): | target
 	wget --no-verbose -O $(SAXON) https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
 
 install: $(SAXON) | target
-	gem install judges:0.0.34
+	gem install factbase:$(FACTBASE_VERSION)
+	gem install judges:$(JUDGES_VERSION)
 	npm --no-color install -g sass@1.77.2
 
 $(DIRS):
