@@ -27,8 +27,8 @@
 
 SHELL = bash
 
-JUDGES_VERSION=0.3.0
-FACTBASE_VERSION=0.0.43
+JUDGES_VERSION=0.8.0
+FACTBASE_VERSION=0.0.49
 
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})

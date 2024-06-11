@@ -14,3 +14,5 @@ In order to test this action, just run (provided, you have
 ```bash
 make
 ```
+
+Should work.
