@@ -20,12 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-.SHELLFLAGS: -e -o pipefail -c
 .ONESHELL:
 .PHONY: clean all install
 .SILENT:
-
-SHELL = bash
+.SHELLFLAGS := -e -o pipefail -c
+SHELL := bash
 
 JUDGES_VERSION=0.8.0
 FACTBASE_VERSION=0.0.49
@@ -47,7 +46,6 @@ target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp $< $@
 
 target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css $(SAXON) | target/html
-	set -e
 	export INPUT_VERBOSE=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
@@ -70,7 +68,6 @@ $(SAXON): | target
 	wget --no-verbose -O $(SAXON) https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
 
 install: $(SAXON) | target
-	set -e
 	gem install factbase:$(FACTBASE_VERSION)
 	gem install judges:$(JUDGES_VERSION)
 	npm --no-color install -g sass@1.77.2
