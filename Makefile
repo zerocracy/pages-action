@@ -26,8 +26,8 @@
 .SHELLFLAGS := -e -o pipefail -c
 SHELL := bash
 
-JUDGES_VERSION=0.8.0
-FACTBASE_VERSION=0.0.49
+JUDGES_VERSION=0.13.1
+FACTBASE_VERSION=0.0.55
 
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
