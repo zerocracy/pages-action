@@ -8,7 +8,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
+copies of the Software, and to permit persons to who_namem the Software is
 furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
@@ -68,10 +68,10 @@ SOFTWARE.
         </tr>
       </thead>
       <tbody>
-        <xsl:for-each-group select="f[who and award]" group-by="who">
+        <xsl:for-each-group select="f[who_name and award]" group-by="who_name">
           <xsl:sort select="sum(award)" data-type="number" order="descending"/>
           <xsl:call-template name="programmer">
-            <xsl:with-param name="name" select="who/text()"/>
+            <xsl:with-param name="name" select="who_name/text()"/>
           </xsl:call-template>
         </xsl:for-each-group>
       </tbody>
@@ -101,7 +101,7 @@ SOFTWARE.
           </a>
         </span>
         <xsl:text> (</xsl:text>
-        <xsl:variable name="c" select="count(/fb/f[who=$name and award]/award)"/>
+        <xsl:variable name="c" select="count(/fb/f[who_name=$name and award]/award)"/>
         <a href="" onclick="$('.p_{$name}').show(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
@@ -112,13 +112,13 @@ SOFTWARE.
         <xsl:text>)</xsl:text>
       </td>
       <td class="right">
-        <xsl:value-of select="z:award(sum(/fb/f[who=$name and award]/award))"/>
+        <xsl:value-of select="z:award(sum(/fb/f[who_name=$name and award]/award))"/>
       </td>
       <td>
         <xsl:text> </xsl:text>
       </td>
     </tr>
-    <xsl:for-each select="/fb/f[who=$name and award]">
+    <xsl:for-each select="/fb/f[who_name=$name and award]">
       <tr class="p_ p_{$name}" style="display: none;">
         <td>
           <xsl:text> </xsl:text>
