@@ -45,7 +45,10 @@ RUN rm -rf /usr/lib/node_modules \
 
 WORKDIR /home
 COPY Makefile /home
+COPY Gemfile /home
+COPY Rakefile /home
 COPY entry.sh /home
+COPY judges /home/judges
 COPY sass /home/sass
 COPY xsl /home/xsl
 RUN make --directory=/home --no-silent install all
