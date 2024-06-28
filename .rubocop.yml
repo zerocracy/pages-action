@@ -20,21 +20,41 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: 'pages-action'
-description: 'Build static pages from a Factbase'
-runs:
-  using: 'docker'
-  image: 'docker://yegor256/pages-action:latest'
-inputs:
-  verbose:
-    description: 'Log as much debug information as possible'
-    required: false
-    default: false
-  output:
-    description: 'Directory path with YAML, XML, JSON and other files generated'
-    required: false
-    default: 'pages'
-  factbase:
-    description: 'Path of the factbase file'
-    required: true
-    default: 'default.fb'
+AllCops:
+  Exclude:
+    - 'vendor/**/*'
+  DisplayCopNames: true
+  TargetRubyVersion: 3.2
+  SuggestExtensions: false
+  NewCops: enable
+
+Naming/FileName:
+  Regex: !ruby/regexp '/^[a-z-._]*$/'
+Style/GlobalVars:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Lint/NestedMethodDefinition:
+  Enabled: false
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+Layout/CaseIndentation:
+  Enabled: false
+Naming/MethodParameterName:
+  MinNameLength: 2

@@ -68,10 +68,10 @@ SOFTWARE.
         </tr>
       </thead>
       <tbody>
-        <xsl:for-each-group select="f[payee and award]" group-by="payee">
+        <xsl:for-each-group select="f[who and award]" group-by="who">
           <xsl:sort select="sum(award)" data-type="number" order="descending"/>
           <xsl:call-template name="programmer">
-            <xsl:with-param name="name" select="payee/text()"/>
+            <xsl:with-param name="name" select="who/text()"/>
           </xsl:call-template>
         </xsl:for-each-group>
       </tbody>
@@ -101,7 +101,7 @@ SOFTWARE.
           </a>
         </span>
         <xsl:text> (</xsl:text>
-        <xsl:variable name="c" select="count(/fb/f[payee=$name and award]/award)"/>
+        <xsl:variable name="c" select="count(/fb/f[who=$name and award]/award)"/>
         <a href="" onclick="$('.p_{$name}').show(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
@@ -112,13 +112,13 @@ SOFTWARE.
         <xsl:text>)</xsl:text>
       </td>
       <td class="right">
-        <xsl:value-of select="z:award(sum(/fb/f[payee=$name and award]/award))"/>
+        <xsl:value-of select="z:award(sum(/fb/f[who=$name and award]/award))"/>
       </td>
       <td>
         <xsl:text> </xsl:text>
       </td>
     </tr>
-    <xsl:for-each select="/fb/f[payee=$name and award]">
+    <xsl:for-each select="/fb/f[who=$name and award]">
       <tr class="p_ p_{$name}" style="display: none;">
         <td>
           <xsl:text> </xsl:text>

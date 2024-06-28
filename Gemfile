@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # MIT License
 #
 # Copyright (c) 2024 Zerocracy
@@ -19,22 +21,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
----
-name: 'pages-action'
-description: 'Build static pages from a Factbase'
-runs:
-  using: 'docker'
-  image: 'docker://yegor256/pages-action:latest'
-inputs:
-  verbose:
-    description: 'Log as much debug information as possible'
-    required: false
-    default: false
-  output:
-    description: 'Directory path with YAML, XML, JSON and other files generated'
-    required: false
-    default: 'pages'
-  factbase:
-    description: 'Path of the factbase file'
-    required: true
-    default: 'default.fb'
+
+source 'https://rubygems.org'
+
+gem 'fbe', '~>0.0'
+gem 'judges', '~>0.8'
+gem 'rake', '13.2.1'
+gem 'rubocop', '1.64.1'

@@ -66,6 +66,8 @@ for f in yaml xml json; do
     "${JUDGES}" "${gopts[@]}" print --format "${f}" "${INPUT_FACTBASE}" "${INPUT_OUTPUT}/${name}.${f}"
 done
 
+"${JUDGES}" "${gopts[@]}" update "${INPUT_FACTBASE}" "${SELF}/judges/"
+
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")
 java -jar "${SELF}/target/saxon.jar" \

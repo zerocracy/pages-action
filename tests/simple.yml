@@ -23,18 +23,18 @@
 -
   time: 2024-05-18T22:22:22.8492Z
   award: 15
-  payee: yegor256
+  who: 526301
   reason: for being a good boy
   href: https://github.com/yegor256/judges/issues/111
 -
   time: 2024-05-15T22:22:22.8492Z
   award: -24
-  payee: yegor256
+  who: 6305016
   reason: for being a bad boy
   href: https://github.com/yegor256/judges/issues/111
 -
   time: 2024-05-15T22:22:22.8492Z
   award: 55
-  payee: torvalds
+  who: 6305016
   reason: for new release
   href: https://github.com/yegor256/judges/issues/111

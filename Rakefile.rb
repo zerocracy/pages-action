@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # MIT License
 #
 # Copyright (c) 2024 Zerocracy
@@ -19,22 +21,30 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
----
-name: 'pages-action'
-description: 'Build static pages from a Factbase'
-runs:
-  using: 'docker'
-  image: 'docker://yegor256/pages-action:latest'
-inputs:
-  verbose:
-    description: 'Log as much debug information as possible'
-    required: false
-    default: false
-  output:
-    description: 'Directory path with YAML, XML, JSON and other files generated'
-    required: false
-    default: 'pages'
-  factbase:
-    description: 'Path of the factbase file'
-    required: true
-    default: 'default.fb'
+
+require 'rubygems'
+require 'rake'
+require 'rake/clean'
+
+task default: %i[clean test judges rubocop]
+
+require 'rake/testtask'
+desc 'Run all unit tests'
+Rake::TestTask.new(:test) do |test|
+  test.libs << 'lib' << 'test'
+  test.pattern = 'test/**/test_*.rb'
+  test.warning = true
+  test.verbose = false
+end
+
+desc 'Test all judges'
+task :judges do
+  live = ARGV.include?('--live') ? '' : '--disable live'
+  sh "judges --verbose test #{live} --no-log judges"
+end
+
+require 'rubocop/rake_task'
+desc 'Run RuboCop on all directories'
+RuboCop::RakeTask.new(:rubocop) do |task|
+  task.fail_on_error = true
+end
