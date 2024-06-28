@@ -66,7 +66,20 @@ for f in yaml xml json; do
     "${JUDGES}" "${gopts[@]}" print --format "${f}" "${INPUT_FACTBASE}" "${INPUT_OUTPUT}/${name}.${f}"
 done
 
-"${JUDGES}" "${gopts[@]}" update "${INPUT_FACTBASE}" "${SELF}/judges/"
+declare -a options=()
+while IFS= read -r o; do
+    v=$(echo "${o}" | xargs)
+    if [ "${v}" = "" ]; then continue; fi
+    options+=("--option=${v}")
+done <<< "${INPUT_OPTIONS}"
+
+"${JUDGES}" "${gopts[@]}" update \
+    --no-log \
+    --quiet \
+    --no-summary \
+    --max-cycles 1 \
+    "${options[@]}" \
+    "${SELF}/judges/" "${INPUT_FACTBASE}"
 
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")

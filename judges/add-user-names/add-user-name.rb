@@ -28,6 +28,8 @@ require 'fbe/conclude'
 Fbe.conclude do
   on '(and (exists who) (not (exists who_name)))'
   consider do |f|
-    f.who_name = Fbe.octo.user_name_by_id(f.who)
+    n = Fbe.octo.user_name_by_id(f.who)
+    f.who_name = n
+    $loog.debug("User ##{f.who} is actually @#{f.who_name}")
   end
 end
