@@ -80,13 +80,16 @@ done <<< "${INPUT_OPTIONS}"
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
+"${JUDGES}" "${gopts[@]}" print --format xml "${INPUT_FACTBASE}" "${INPUT_OUTPUT}/${name}.rich.xml"
 
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")
+html=${INPUT_OUTPUT}/${name}.html
 java -jar "${SELF}/target/saxon.jar" \
-    "-s:${INPUT_OUTPUT}/${name}.xml" \
+    "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/index.xsl" \
-    "-o:${INPUT_OUTPUT}/${name}.html" \
+    "-o:${html}" \
     "version=${VERSION}" \
     "name=${name}" \
     "css=${css}"
+echo "HTML generated at ${html}"
