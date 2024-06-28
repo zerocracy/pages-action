@@ -80,7 +80,7 @@ SOFTWARE.
               <xsl:text> plugin (</xsl:text>
               <xsl:value-of select="$version"/>
               <xsl:text>) on </xsl:text>
-              <xsl:value-of select="fb/@dob"/>
+              <xsl:value-of select="current-dateTime()"/>
               <xsl:text>.</xsl:text>
               <br/>
               <a href="https://github.com/yegor256/factbase">
