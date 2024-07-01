@@ -130,7 +130,7 @@ SOFTWARE.
           <xsl:text> </xsl:text>
         </td>
         <td>
-          <xsl:value-of select="reason"/>
+          <xsl:value-of select="why"/>
         </td>
         <td class="ff right">
           <xsl:choose>
