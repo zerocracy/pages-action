@@ -62,7 +62,11 @@ SOFTWARE.
           <header>
             <p>
               <a href="">
-                <img src="$logo" alt="Zerocracy"/>
+                <img alt="logo">
+                  <xsl:attribute name="src">
+                    <xsl:value-of select="$name"/>
+                  </xsl:attribute>
+                </img>
               </a>
               <span>
                 <xsl:value-of select="$name"/>
