@@ -27,6 +27,7 @@ SOFTWARE.
   <xsl:output method="xml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:param name="css"/>
   <xsl:param name="name"/>
+  <xsl:param name="logo"/>
   <xsl:param name="version"/>
   <xsl:template name="javascript">
     <xsl:param name="url"/>
@@ -61,7 +62,7 @@ SOFTWARE.
           <header>
             <p>
               <a href="">
-                <img src="https://www.zerocracy.com/svg/logo.svg" alt="Zerocracy"/>
+                <img src="$logo" alt="Zerocracy"/>
               </a>
               <span>
                 <xsl:value-of select="$name"/>

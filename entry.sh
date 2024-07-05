@@ -91,5 +91,6 @@ java -jar "${SELF}/target/saxon.jar" \
     "-o:${html}" \
     "version=${VERSION}" \
     "name=${name}" \
+    "logo=${INPUT_LOGO}" \
     "css=${css}"
 echo "HTML generated at ${html}"
