@@ -22,12 +22,15 @@
  * SOFTWARE.
 **/
 
+$black: #131515;
+$gray: #98b6b1;
+
 section {
     width: auto;
 }
 
 footer {
-    color: gray;
+    color: $gray;
     font-size: 0.8em;
     line-height: 1.2em;
     text-align: center;
@@ -45,7 +48,7 @@ header {
         vertical-align: middle;
     }
     span {
-        background-color: black;
+        background-color: $black;
         border-radius: .2em;
         color: white;
         font-size: 2em;
