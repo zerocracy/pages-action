@@ -22,13 +22,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="z">
   <xsl:import href="awards.xsl"/>
   <xsl:output method="xml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:param name="css"/>
   <xsl:param name="name"/>
   <xsl:param name="logo"/>
   <xsl:param name="version"/>
+  <xsl:function name="z:pmp">
+    <xsl:param name="fb"/>
+    <xsl:param name="area"/>
+    <xsl:param name="param"/>
+    <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area]"/>
+    <xsl:if test="not($a)">
+      <xsl:message terminate="yes">
+        <xsl:text>There is no PMP fact for the area '</xsl:text>
+        <xsl:value-of select="$area"/>
+        <xsl:text>'</xsl:text>
+      </xsl:message>
+    </xsl:if>
+    <xsl:variable name="v" select="$a/*[name()=$param]/text()"/>
+    <xsl:if test="not($v)">
+      <xsl:message terminate="yes">
+        <xsl:text>There is no parameter '</xsl:text>
+        <xsl:value-of select="$param"/>
+        <xsl:text>' in the PMP artifact for the '</xsl:text>
+        <xsl:value-of select="$area"/>
+        <xsl:text>' area</xsl:text>
+      </xsl:message>
+    </xsl:if>
+    <xsl:value-of select="$v"/>
+  </xsl:function>
   <xsl:template name="javascript">
     <xsl:param name="url"/>
     <script type="text/javascript" src="{$url}">

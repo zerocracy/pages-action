@@ -21,6 +21,10 @@
 # SOFTWARE.
 ---
 -
+  what: pmp
+  area: hr
+  days_of_running_balance: 28
+-
   time: 2024-05-18T22:22:22.8492Z
   award: 15
   who: 526301

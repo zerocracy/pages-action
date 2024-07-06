@@ -44,6 +44,7 @@ target/xsl/%.xsl: xsl/%.xsl | target/xsl
 
 target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css $(SAXON) | target/html
 	export INPUT_VERBOSE=yes
+	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
 	fb=$$(basename $<)
