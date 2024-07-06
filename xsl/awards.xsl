@@ -33,7 +33,7 @@ SOFTWARE.
   <xsl:template match="/" mode="awards">
       <xsl:apply-templates select="/fb" mode="awards"/>
   </xsl:template>
-  <xsl:template match="/fb[not(f)]" mode="awards">
+  <xsl:template match="/fb[not(f[who_name and award])]" mode="awards">
     <p>
       <xsl:text>No awards as of yet.</xsl:text>
     </p>

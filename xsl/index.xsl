@@ -64,7 +64,14 @@ SOFTWARE.
               <a href="">
                 <img alt="logo">
                   <xsl:attribute name="src">
-                    <xsl:value-of select="$name"/>
+                    <xsl:choose>
+                      <xsl:when test="$logo = ''">
+                        <xsl:text>https://www.zerocracy.com/svg/logo.svg</xsl:text>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:value-of select="$logo"/>
+                      </xsl:otherwise>
+                    </xsl:choose>
                   </xsl:attribute>
                 </img>
               </a>

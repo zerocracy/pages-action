@@ -24,9 +24,11 @@
 
 require 'rubygems'
 require 'rake'
-require 'rake/clean'
 
 task default: %i[clean test judges rubocop]
+
+require 'rake/clean'
+CLEAN.include('target', 'test')
 
 require 'rake/testtask'
 desc 'Run all unit tests'
