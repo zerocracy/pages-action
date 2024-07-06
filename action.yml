@@ -28,17 +28,13 @@ runs:
 inputs:
   verbose:
     description: 'Log as much debug information as possible'
-    required: false
     default: false
   output:
     description: 'Directory path with YAML, XML, JSON and other files generated'
-    required: false
     default: 'pages'
   factbase:
     description: 'Path of the factbase file'
-    required: true
     default: 'default.fb'
   logo:
     description: 'URL of the logo to put on the HTML page'
-    required: true
     default: 'https://www.zerocracy.com/svg/logo.svg'
