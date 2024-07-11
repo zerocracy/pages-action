@@ -28,20 +28,20 @@ GEM
       net-http
     faraday-retry (2.2.1)
       faraday (~> 2.0)
-    fbe (0.0.13)
-      backtrace (~> 0.3)
-      decoor (~> 0.0)
-      factbase (~> 0.0)
-      faraday (~> 2.9)
-      faraday-http-cache (~> 2.5)
-      faraday-multipart (~> 1.0)
-      faraday-retry (~> 2.2)
-      judges (~> 0.0)
-      loog (~> 0.2)
-      obk (~> 0.0)
-      octokit (~> 9.1)
-      others (~> 0.0)
-      verbose (~> 0.0)
+    fbe (0.0.14)
+      backtrace
+      decoor
+      factbase
+      faraday
+      faraday-http-cache
+      faraday-multipart
+      faraday-retry
+      judges
+      loog
+      obk
+      octokit
+      others
+      verbose
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-aarch64-linux-musl)
     ffi (1.17.0-arm-linux-gnu)
