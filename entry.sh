@@ -75,7 +75,6 @@ done <<< "${INPUT_OPTIONS}"
 
 "${JUDGES}" "${gopts[@]}" update \
     --no-log \
-    --quiet \
     --no-summary \
     --max-cycles 1 \
     "${options[@]}" \
