@@ -25,7 +25,8 @@
   area: hr
   days_of_running_balance: 28
   some_policy: '(award (let x 25) (give x "when you deserve it"))'
-  second_policy: '(award (let x1 20) (let x2 33) (set z (plus x1 x2)) (give z "hm..."))'
+  second_policy: >
+    (award (let x1 20) (let x2 33) (set z (plus x1 x2)) (give z "hm..."))
 -
   time: 2024-05-18T22:22:22.8492Z
   award: 15
