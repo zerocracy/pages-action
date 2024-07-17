@@ -22,10 +22,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-source 'https://rubygems.org'
+require 'fbe/fb'
+require 'fbe/award'
+require 'redcarpet'
 
-gem 'fbe', '>0'
-gem 'judges', '>0'
-gem 'rake', '13.2.1'
-gem 'redcarpet', '~>3.5'
-gem 'rubocop', '1.65.0'
+f = Fbe.fb.query('(and (eq what "pmp") (eq area "hr"))').each.to_a.first
+htmls = []
+f&.all_properties&.each do |prop|
+  q = f[prop].first
+  next unless q.start_with?('(award ')
+  md = Fbe::Award.new(q).policy.markdown
+  htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(md)
+end
+s = Fbe.fb.insert
+s.what = 'hr-policy'
+s.html = htmls.join
