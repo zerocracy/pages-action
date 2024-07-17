@@ -24,6 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="z">
   <xsl:import href="awards.xsl"/>
+  <xsl:import href="policy.xsl"/>
   <xsl:output method="xml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:param name="css"/>
   <xsl:param name="name"/>
@@ -106,6 +107,7 @@ SOFTWARE.
           </header>
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
+            <xsl:apply-templates select="/fb/f[what='hr-policy']"/>
           </article>
           <footer>
             <p>

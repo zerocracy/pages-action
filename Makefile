@@ -63,7 +63,13 @@ clean:
 	rm -rf target
 
 $(SAXON): | target
-	wget --no-verbose -O $(SAXON) https://repo.maven.apache.org/maven2/net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
+	p=net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
+	m2=$${HOME}/.m2/repository/$${p}
+	if [ -e "$${m2}" ]; then
+		cp "$${m2}" $(SAXON)
+	else
+		wget --no-verbose -O "$(SAXON)" "https://repo.maven.apache.org/maven2/$${p}"
+	fi
 
 install: $(SAXON) | target
 	bundle update
