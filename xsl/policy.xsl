@@ -24,11 +24,13 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:template match="/fb/f[what='hr-policy']">
-    <h2>
-      <xsl:text>The Rules:</xsl:text>
-    </h2>
     <div class="policy">
-      <xsl:value-of select="html" disable-output-escaping="yes"/>
+      <h2>
+        <xsl:text>The Rules:</xsl:text>
+      </h2>
+      <div class="columns">
+        <xsl:value-of select="html" disable-output-escaping="yes"/>
+      </div>
     </div>
   </xsl:template>
 </xsl:stylesheet>

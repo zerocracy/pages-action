@@ -27,6 +27,23 @@
   some_policy: '(award (let x 25) (give x "when you deserve it"))'
   second_policy: >
     (award (let x1 20) (let x2 33) (set z (plus x1 x2)) (give z "hm..."))
+  third_policy: >
+    (award
+      (explain "When a bug is resolved, the person gets a bonus")
+      (in hours "how many hours it took to resolve the bug")
+      (set days (div hours 24))
+      (let basis 30)
+      (give basis "as a basis")
+      (let hours_threshold 24)
+      (let b1 10)
+      (set b1 (if (lt hours hours_threshold) b1 0))
+      (give b1 "for resolving it in less than ${hours_threshold} hours")
+      (let day_fee -1)
+      (let days_fee_max -20)
+      (set b2 (times days day_fee))
+      (set b2 (max b2 days_fee_max))
+      (give b2 "for #{days} days of delay")
+      )
 -
   time: 2024-05-18T22:22:22.8492Z
   award: 15

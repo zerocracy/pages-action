@@ -26,17 +26,30 @@ $strong: #b8336a;
 $em: #1c448e;
 
 .policy {
-    column-count: 3;
-    font-size: 0.85em;
-    line-height: 1.2;
+    counter-reset: par;
 
-    strong {
-        color: $strong;
-    }
+    .columns {
+        column-count: 3;
+        font-size: 0.85em;
+        line-height: 1.2;
 
-    em {
-        color: $em;
-        font-family: serif;
-        font-weight: bolder;
+        p {
+            display: inline-block;
+
+            &::before {
+                content: "P" counter(par) ": ";
+                counter-increment: par;
+            }
+        }
+
+        strong {
+            color: $strong;
+        }
+
+        em {
+            color: $em;
+            font-family: serif;
+            font-weight: bolder;
+        }
     }
 }

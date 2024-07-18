@@ -32,9 +32,8 @@ par = 1
 f&.all_properties&.each do |prop|
   q = f[prop].first
   next unless q.is_a?(String)
-  next unless q.start_with?('(award ')
+  next unless q.start_with?('(award')
   md = Fbe::Award.new(q).policy.markdown
-  md = "§#{par} #{md}"
   htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(md)
   par += 1
 end
