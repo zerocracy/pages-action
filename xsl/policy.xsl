@@ -27,7 +27,7 @@ SOFTWARE.
     <h2>
       <xsl:text>The Rules:</xsl:text>
     </h2>
-    <div style="column-count: 3;">
+    <div class="policy">
       <xsl:value-of select="html" disable-output-escaping="yes"/>
     </div>
   </xsl:template>
