@@ -135,7 +135,11 @@ SOFTWARE.
               <xsl:value-of select="fb/@size"/>
               <xsl:text> bytes, version </xsl:text>
               <xsl:value-of select="fb/@version"/>
-              <xsl:text>; Fbe: </xsl:text>
+              <xsl:text>; </xsl:text>
+              <a href="https://github.com/zerocracy/fbe">
+                <xsl:text>Fbe</xsl:text>
+              </a>
+              <xsl:text>: </xsl:text>
               <xsl:value-of select="$fbe"/>
               <xsl:text>.</xsl:text>
               <br/>
