@@ -89,6 +89,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "-xsl:${SELF}/target/xsl/index.xsl" \
     "-o:${html}" \
     "version=${VERSION}" \
+    "fbe=$(bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
     "logo=${INPUT_LOGO}" \
     "css=${css}"
