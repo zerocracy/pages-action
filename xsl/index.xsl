@@ -30,6 +30,7 @@ SOFTWARE.
   <xsl:param name="name"/>
   <xsl:param name="logo"/>
   <xsl:param name="version"/>
+  <xsl:param name="fbe"/>
   <xsl:function name="z:pmp">
     <xsl:param name="fb"/>
     <xsl:param name="area"/>
@@ -134,6 +135,8 @@ SOFTWARE.
               <xsl:value-of select="fb/@size"/>
               <xsl:text> bytes, version </xsl:text>
               <xsl:value-of select="fb/@version"/>
+              <xsl:text>; Fbe: </xsl:text>
+              <xsl:value-of select="$fbe"/>
               <xsl:text>.</xsl:text>
               <br/>
               <xsl:text>The XML with all the data </xsl:text>
