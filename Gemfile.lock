@@ -29,7 +29,7 @@ GEM
       net-http
     faraday-retry (2.2.1)
       faraday (~> 2.0)
-    fbe (0.0.19)
+    fbe (0.0.20)
       backtrace (> 0)
       decoor (> 0)
       factbase (> 0)
@@ -53,7 +53,7 @@ GEM
     ffi (1.17.0-x86_64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
     ffi (1.17.0-x86_64-linux-musl)
-    gli (2.21.3)
+    gli (2.21.4)
     iri (0.8.0)
     json (2.7.2)
     judges (0.18.1)
