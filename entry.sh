@@ -84,10 +84,10 @@ done <<< "${INPUT_OPTIONS}"
 "${JUDGES}" "${gopts[@]}" print --format xml "${INPUT_FACTBASE}" "${INPUT_OUTPUT}/${name}.rich.xml"
 
 # Build a summary HTML.
-css=$(cat "${SELF}/target/css/main.css")
+css=$(cat "${SELF}/css/main.css")
 js=$(uglifyjs "${SELF}/js/*.js")
 html=${INPUT_OUTPUT}/${name}.html
-java -jar "${SELF}/target/saxon.jar" \
+java -jar "${SELF}/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/index.xsl" \
     "-o:${html}" \
