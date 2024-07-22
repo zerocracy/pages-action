@@ -25,8 +25,10 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="z">
   <xsl:import href="awards.xsl"/>
   <xsl:import href="policy.xsl"/>
+  <xsl:import href="qos.xsl"/>
   <xsl:output method="xml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
   <xsl:param name="css"/>
+  <xsl:param name="js"/>
   <xsl:param name="name"/>
   <xsl:param name="logo"/>
   <xsl:param name="version"/>
@@ -79,8 +81,14 @@ SOFTWARE.
         <xsl:call-template name="javascript">
           <xsl:with-param name="url">https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js</xsl:with-param>
         </xsl:call-template>
+        <xsl:call-template name="javascript">
+          <xsl:with-param name="url">https://cdn.jsdelivr.net/npm/chart.js</xsl:with-param>
+        </xsl:call-template>
+        <script type="text/javascript">
+          <xsl:value-of select="$js" disable-output-escaping="yes"/>
+        </script>
         <style>
-          <xsl:value-of select="$css"/>
+          <xsl:value-of select="$css" disable-output-escaping="yes"/>
         </style>
       </head>
       <body>
@@ -109,6 +117,7 @@ SOFTWARE.
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
             <xsl:apply-templates select="/fb/f[what='hr-policy']"/>
+            <xsl:apply-templates select="/fb" mode="qos"/>
           </article>
           <footer>
             <p>

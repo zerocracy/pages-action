@@ -26,7 +26,7 @@ SOFTWARE.
   <xsl:template match="/fb/f[what='hr-policy']">
     <div class="policy">
       <h2>
-        <xsl:text>The Rules:</xsl:text>
+        <xsl:text>Rules of the Game</xsl:text>
       </h2>
       <div class="columns">
         <xsl:value-of select="html" disable-output-escaping="yes"/>

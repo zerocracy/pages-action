@@ -1,0 +1,43 @@
+# MIT License
+#
+# Copyright (c) 2024 Zerocracy
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+---
+options:
+  testing: true
+input:
+  -
+    when: 2024-05-18T22:22:22.8492Z
+    what: quality-of-service
+    average_issue_lifetime: 433.54
+    average_pull_lifetime: 3222.98
+    average_release_interval: 43432.42
+    average_workflow_success_rate: 0.56
+  -
+    when: 2024-04-18T22:22:22.8492Z
+    what: quality-of-service
+    average_issue_lifetime: 323.54
+    average_pull_lifetime: 2092.98
+    average_release_interval: 40432.42
+    average_workflow_success_rate: 0.67
+expected:
+  - /fb[count(f)=2]
+  - /fb/f[n_average_issue_lifetime]
+  - /fb/f[n_average_release_interval]

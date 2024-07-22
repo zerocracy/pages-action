@@ -83,6 +83,7 @@ done <<< "${INPUT_OPTIONS}"
 
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")
+js=$(uglifyjs "${SELF}/js/*.js")
 html=${INPUT_OUTPUT}/${name}.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
@@ -92,5 +93,6 @@ java -jar "${SELF}/target/saxon.jar" \
     "fbe=$(bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
     "logo=${INPUT_LOGO}" \
-    "css=${css}"
+    "css=${css}" \
+    "js=${js}"
 echo "HTML generated at ${html}"
