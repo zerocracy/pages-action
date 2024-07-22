@@ -37,7 +37,7 @@ $em: #1c448e;
             display: inline-block;
 
             &::before {
-                content: "P" counter(par) ": ";
+                content: "R" counter(par) ": ";
                 counter-increment: par;
             }
         }
