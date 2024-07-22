@@ -29,7 +29,7 @@ $em: #1c448e;
     counter-reset: par;
 
     .columns {
-        column-count: 3;
+        column-count: 5;
         font-size: 0.85em;
         line-height: 1.2;
 
@@ -52,6 +52,18 @@ $em: #1c448e;
             color: $em;
             font-family: serif;
             font-weight: bolder;
+        }
+    }
+
+    @media (max-width: 1280px) {
+        .columns {
+            column-count: 4;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .columns {
+            column-count: 3;
         }
     }
 }
