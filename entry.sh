@@ -43,6 +43,8 @@ if [ -z "${GITHUB_WORKSPACE}" ]; then
     exit 1
 fi
 cd "${GITHUB_WORKSPACE}"
+pwd
+ls -al
 
 declare -a gopts=()
 if [ -n "${INPUT_VERBOSE}" ]; then

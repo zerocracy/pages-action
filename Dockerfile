@@ -50,6 +50,7 @@ COPY entry.sh /home
 COPY judges /home/judges
 COPY sass /home/sass
 COPY xsl /home/xsl
-RUN make --directory=/home --no-silent install all
+COPY js /home/js
+RUN make --directory=/home --no-silent install
 
 ENTRYPOINT ["/home/entry.sh", "/home"]
