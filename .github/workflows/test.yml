@@ -20,6 +20,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
+# This action doesn't test the current version of the code, which is in
+# the 'master' branch or in the branch that you work with. Instead, it always
+# tests agains the latest version released to the Docker Hub. It's not possible,
+# as far as I understand, to change this behavior.
 name: test
 'on':
   push:
