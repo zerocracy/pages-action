@@ -31,13 +31,14 @@ FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
 XSLS = $(subst xsl/,target/xsl/,$(wildcard xsl/*.xsl))
 JUDGES = judges
-DIRS = target target/html target/fb target/xsl target/css
+DIRS = target target/html target/fb target/xsl target/css target/js
 CSS = target/css/main.css
+JS = target/js/main.js
 SAXON = target/saxon.jar
 
 export
 
-all: $(CSS) $(XSLS) $(HTMLS) entry rmi verify
+all: $(JS) $(CSS) $(XSLS) $(HTMLS) entry rmi verify
 
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp $< $@
@@ -58,6 +59,9 @@ target/fb/%.fb: tests/%.yml Makefile | target/fb
 
 $(CSS): sass/*.scss | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error $< $@
+
+$(JS): js/*.js | target/js
+	uglifyjs $< > $@
 
 clean:
 	rm -rf target
