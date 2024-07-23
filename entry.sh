@@ -84,7 +84,10 @@ done <<< "${INPUT_OPTIONS}"
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
-"${JUDGES}" "${gopts[@]}" print --format xml "${INPUT_FACTBASE}" "${INPUT_OUTPUT}/${name}.rich.xml"
+"${JUDGES}" "${gopts[@]}" print \
+    --format xml \
+    "${INPUT_FACTBASE}" \
+    "${INPUT_OUTPUT}/${name}.rich.xml"
 
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")
@@ -101,3 +104,4 @@ java -jar "${SELF}/target/saxon.jar" \
     "css=${css}" \
     "js=${js}"
 echo "HTML generated at ${html}"
+rm "${INPUT_OUTPUT}/${name}.rich.xml"
