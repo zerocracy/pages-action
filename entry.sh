@@ -83,7 +83,7 @@ done <<< "${INPUT_OPTIONS}"
 
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")
-js=$(uglifyjs "${SELF}/js/*.js")
+js=$(cat "${SELF}/target/js/main.js")
 html=${INPUT_OUTPUT}/${name}.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \

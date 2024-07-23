@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ---
-name: make
+name: copyrights
 'on':
   push:
     branches:
@@ -29,15 +29,8 @@ name: make
     branches:
       - master
 jobs:
-  make:
+  copyrights:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 16
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.2
-      - run: make install
-      - run: make
+      - uses: yegor256/copyrights-action@0.0.5

@@ -23,7 +23,7 @@
 .ONESHELL:
 .PHONY: clean all install
 .SILENT:
-.SHELLFLAGS := -e -o pipefail -c
+.SHELLFLAGS := -x -e -o pipefail -c
 SHELL := bash
 
 YAMLS = $(wildcard tests/*.yml)
@@ -31,13 +31,14 @@ FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
 XSLS = $(subst xsl/,target/xsl/,$(wildcard xsl/*.xsl))
 JUDGES = judges
-DIRS = target target/html target/fb target/xsl target/css
+DIRS = target target/html target/fb target/xsl target/css target/js
 CSS = target/css/main.css
+JS = target/js/main.js
 SAXON = target/saxon.jar
 
 export
 
-all: $(CSS) $(XSLS) $(HTMLS)
+all: $(JS) $(CSS) $(XSLS) $(HTMLS) entry rmi verify
 
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp $< $@
@@ -59,6 +60,9 @@ target/fb/%.fb: tests/%.yml Makefile | target/fb
 $(CSS): sass/*.scss | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error $< $@
 
+$(JS): js/*.js | target/js
+	uglifyjs $< > $@
+
 clean:
 	rm -rf target
 
@@ -75,6 +79,30 @@ install: $(SAXON) | target
 	bundle update
 	npm --no-color install -g uglify-js
 	npm --no-color install -g sass@1.77.2
+
+entry: target/docker-image.txt target/fb/simple.fb
+	img=$$(cat target/docker-image.txt)
+	docker run --rm -v "$$(realpath $$(pwd))/target/fb:/work" \
+		-e GITHUB_WORKSPACE=/work \
+		-e INPUT_FACTBASE=simple.fb \
+		-e INPUT_VERBOSE=true \
+		-e INPUT_OUTPUT=pages \
+		"$${img}"
+	echo "$$?" > target/entry.exit
+
+rmi: target/docker-image.txt
+	img=$$(cat $<)
+	docker rmi "$${img}"
+	rm "$<"
+
+verify:
+	e2=$$(cat target/entry.exit)
+	test "$${e2}" = "0"
+
+target/docker-image.txt: Makefile Dockerfile entry.sh
+	mkdir -p "$$(dirname $@)"
+	sudo docker build -t pages-action "$$(pwd)"
+	sudo docker build -t pages-action -q "$$(pwd)" > "$@"
 
 $(DIRS):
 	mkdir -p "$@"

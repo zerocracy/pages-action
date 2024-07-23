@@ -22,7 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 
 gem 'fbe', '>0'
 gem 'judges', '>0'
