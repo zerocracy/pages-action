@@ -36,11 +36,20 @@ first.all_properties.each do |prop|
   start[prop] = first[prop][0]
 end
 
+facts.drop(1).each do |f|
+  f.all_properties.each do |prop|
+    next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
+    v = f[prop][0]
+    start[prop] = v if start[prop].nil?
+  end
+end
+
 facts.each do |f|
   f.all_properties.each do |prop|
     next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
     v = f[prop][0]
-    diff = v - start[prop]
+    s = start[prop]
+    diff = v - s
     diff /= start[prop] unless start[prop].zero?
     f.send("n_#{prop}=", diff)
   end

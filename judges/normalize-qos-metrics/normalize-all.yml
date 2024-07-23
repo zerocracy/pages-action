@@ -24,6 +24,9 @@ options:
   testing: true
 input:
   -
+    when: 2024-05-16T22:22:22.8492Z
+    what: quality-of-service
+  -
     when: 2024-05-17T22:22:22.8492Z
     what: quality-of-service
     average_issue_lifetime: 433.54
@@ -42,6 +45,6 @@ input:
     average_release_interval: 40432.42
     average_workflow_success_rate: 0.67
 expected:
-  - /fb[count(f)=3]
+  - /fb[count(f)=4]
   - /fb/f[n_average_issue_lifetime]
   - /fb/f[n_average_release_interval]

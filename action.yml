@@ -42,3 +42,9 @@ inputs:
   logo:
     description: 'URL of the logo to put on the HTML page'
     default: 'https://www.zerocracy.com/svg/logo.svg'
+  columns:
+    description: 'Comma-separated list of columns to print in the HTML'
+    default: 'when,what,who,repository,issue,details'
+  hidden:
+    description: 'Comma-separated list of properties to hide'
+    default: '_id,_time,_version'

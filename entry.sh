@@ -62,8 +62,13 @@ mkdir -p "${INPUT_OUTPUT}"
 name=$(basename "${INPUT_FACTBASE}")
 name="${name%.*}"
 
-for f in yaml xml json; do
-    "${JUDGES}" "${gopts[@]}" print --format "${f}" "${INPUT_FACTBASE}" "${INPUT_OUTPUT}/${name}.${f}"
+for f in yaml xml json html; do
+    "${JUDGES}" "${gopts[@]}" print \
+        --format "${f}" \
+        --columns "${INPUT_COLUMNS}" \
+        --hidden "${INPUT_HIDDEN}" \
+        "${INPUT_FACTBASE}" \
+        "${INPUT_OUTPUT}/${name}.${f}"
 done
 
 declare -a options=()
@@ -84,7 +89,7 @@ done <<< "${INPUT_OPTIONS}"
 # Build a summary HTML.
 css=$(cat "${SELF}/target/css/main.css")
 js=$(cat "${SELF}/target/js/main.js")
-html=${INPUT_OUTPUT}/${name}.html
+html=${INPUT_OUTPUT}/${name}-index.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/index.xsl" \

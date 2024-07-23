@@ -48,6 +48,8 @@ target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.c
 	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
+	export INPUT_COLUMNS=what,when,who
+	export INPUT_HIDDEN=_id,_time,_version
 	fb=$$(basename $<)
 	fb=$${fb%.*}
 	export INPUT_OUTPUT=target/output/$${fb}
@@ -87,6 +89,8 @@ entry: target/docker-image.txt target/fb/simple.fb
 		-e INPUT_FACTBASE=simple.fb \
 		-e INPUT_VERBOSE=true \
 		-e INPUT_OUTPUT=pages \
+		-e INPUT_COLUMNS=what,when,who \
+		-e INPUT_HIDDEN=_id \
 		"$${img}"
 	echo "$$?" > target/entry.exit
 
@@ -98,6 +102,11 @@ rmi: target/docker-image.txt
 verify:
 	e2=$$(cat target/entry.exit)
 	test "$${e2}" = "0"
+	test -e target/fb/pages/simple-index.html
+	test -e target/fb/pages/simple.html
+	test -e target/fb/pages/simple.xml
+	test -e target/fb/pages/simple.json
+	test -e target/fb/pages/simple.yaml
 
 target/docker-image.txt: Makefile Dockerfile entry.sh
 	mkdir -p "$$(dirname $@)"
