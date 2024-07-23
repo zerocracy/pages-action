@@ -43,8 +43,6 @@ if [ -z "${GITHUB_WORKSPACE}" ]; then
     exit 1
 fi
 cd "${GITHUB_WORKSPACE}"
-pwd
-ls -al
 
 declare -a gopts=()
 if [ -n "${INPUT_VERBOSE}" ]; then
@@ -84,10 +82,10 @@ done <<< "${INPUT_OPTIONS}"
 "${JUDGES}" "${gopts[@]}" print --format xml "${INPUT_FACTBASE}" "${INPUT_OUTPUT}/${name}.rich.xml"
 
 # Build a summary HTML.
-css=$(cat "${SELF}/css/main.css")
+css=$(cat "${SELF}/target/css/main.css")
 js=$(uglifyjs "${SELF}/js/*.js")
 html=${INPUT_OUTPUT}/${name}.html
-java -jar "${SELF}/saxon.jar" \
+java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/index.xsl" \
     "-o:${html}" \

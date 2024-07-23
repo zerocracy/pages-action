@@ -52,8 +52,7 @@ COPY sass /home/sass
 COPY xsl /home/xsl
 COPY js /home/js
 RUN make --directory=/home --no-silent install
-COPY target/saxon.jar /home
 RUN make --directory=/home --no-silent target/css/main.css
-COPY target/css /home/css
+COPY target /home/target
 
 ENTRYPOINT ["/home/entry.sh", "/home"]
