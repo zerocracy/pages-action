@@ -90,8 +90,6 @@ done <<< "${INPUT_OPTIONS}"
     "${INPUT_OUTPUT}/${name}.rich.xml"
 
 # Build a summary HTML.
-css=$(cat "${SELF}/target/css/main.css")
-js=$(cat "${SELF}/target/js/main.js")
 html=${INPUT_OUTPUT}/${name}-index.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
@@ -101,7 +99,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
     "logo=${INPUT_LOGO}" \
-    "css=${css}" \
-    "js=${js}"
+    "css=$(cat "${SELF}/target/css/main.css")" \
+    "js=$(cat "${SELF}/target/js/main.js")"
 echo "HTML generated at ${html}"
 rm "${INPUT_OUTPUT}/${name}.rich.xml"
