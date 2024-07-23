@@ -41,7 +41,7 @@ release:
     git add Dockerfile
     git add action.yml
     git commit -m "version set to ${tag}"
-    sudo make -C "$(pwd)"
+    sudo make -C "$(pwd)" target/html/simple.html
     repo=yegor256/pages-action
     sudo docker build "$(pwd)" --tag "${repo}:${tag}"
     sudo docker build "$(pwd)" --tag "${repo}:latest"
