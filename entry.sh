@@ -90,7 +90,7 @@ done <<< "${INPUT_OPTIONS}"
     "${INPUT_OUTPUT}/${name}.rich.xml"
 
 # Build a summary HTML.
-html=${INPUT_OUTPUT}/${name}-index.html
+html=${INPUT_OUTPUT}/${name}-vitals.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/index.xsl" \
