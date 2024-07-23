@@ -43,7 +43,7 @@ all: $(JS) $(CSS) $(XSLS) $(HTMLS) entry rmi verify
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp $< $@
 
-target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile target/css/main.css $(SAXON) | target/html
+target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) | target/html
 	export INPUT_VERBOSE=yes
 	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
