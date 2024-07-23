@@ -23,7 +23,11 @@
 name: test
 'on':
   push:
+    branches:
+      - master
   pull_request:
+    branches:
+      - master
 jobs:
   test:
     runs-on: ubuntu-22.04
