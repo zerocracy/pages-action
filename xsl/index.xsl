@@ -156,8 +156,12 @@ SOFTWARE.
               <a href="{$name}.xml">
                 <xsl:text>is here</xsl:text>
               </a>
-              <xsl:if test="fb/@size > 100000">
-                <xsl:text> (it's big)</xsl:text>
+              <xsl:text>, HTML </xsl:text>
+              <a href="{$name}.html">
+                <xsl:text>is here</xsl:text>
+              </a>
+              <xsl:if test="fb/@size > 1000000">
+                <xsl:text> (they're big)</xsl:text>
               </xsl:if>
               <xsl:text>.</xsl:text>
             </p>
