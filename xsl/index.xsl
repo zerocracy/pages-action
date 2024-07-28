@@ -43,7 +43,9 @@ SOFTWARE.
       <xsl:message terminate="yes">
         <xsl:text>There is no PMP fact for the area '</xsl:text>
         <xsl:value-of select="$area"/>
-        <xsl:text>'</xsl:text>
+        <xsl:text>', can't read '</xsl:text>
+        <xsl:value-of select="$param"/>
+        <xsl:text>' from it :(</xsl:text>
       </xsl:message>
     </xsl:if>
     <xsl:variable name="v" select="$a/*[name()=$param]/text()"/>

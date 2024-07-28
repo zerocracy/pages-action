@@ -41,7 +41,9 @@ jobs:
         with:
           ruby-version: 3.2
       - run: make install
-      - run: judges --verbose eval test.fb "\$fb.insert.foo = 42"
+      - run: |
+          judges --verbose eval test.fb \
+            "f = \$fb.insert; f.what = 'pmp'; f.area = 'hr';"
       - uses: ./
         with:
           verbose: true
