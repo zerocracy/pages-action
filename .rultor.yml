@@ -29,7 +29,7 @@ install: |
 merge:
   script: |-
     sudo docker build "$(pwd)"
-    make
+    sudo make -C "$(pwd)" target/html/simple.html
 release:
   pre: false
   script: |-
