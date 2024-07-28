@@ -74,6 +74,11 @@ SOFTWARE.
     </p>
   </xsl:template>
   <xsl:template match="/fb[f[award and xs:dateTime(when) &gt; $since]]" mode="awards">
+    <script type="text/javascript">
+      $(function() {
+        $("#awards").tablesorter();
+      });
+    </script>
     <table id="awards" border="1">
       <colgroup span="4">
         <!-- ID -->
@@ -129,7 +134,7 @@ SOFTWARE.
               <xsl:value-of select="$w"/>
             </th>
           </xsl:for-each>
-          <th class="right">
+          <th class="right sorter">
             <xsl:text>Total</xsl:text>
           </th>
         </tr>
@@ -196,7 +201,7 @@ SOFTWARE.
         </span>
         <xsl:text> (</xsl:text>
         <xsl:variable name="c" select="count(/fb/f[who_name=$name and award]/award)"/>
-        <a href="" onclick="$('.p_{$name}').show(); return false;">
+        <a href="" onclick="$('.p_{$name}').show(); $('th.sorter').removeClass('sorter'); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
           <xsl:if test="$c &gt; 1">
