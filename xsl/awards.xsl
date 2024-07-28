@@ -48,6 +48,7 @@ SOFTWARE.
         <xsl:text> awards in total</xsl:text>
       </xsl:if>
       <xsl:text>.</xsl:text>
+      <xsl:text> Either, you are having no activity in the project or the reporting is not configured correctly.</xsl:text>
     </p>
   </xsl:template>
   <xsl:template match="/fb[f[award and xs:dateTime(when) &gt; $since]]" mode="awards">
