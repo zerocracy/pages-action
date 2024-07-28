@@ -117,18 +117,18 @@ SOFTWARE.
       </colgroup>
       <thead>
         <tr>
-          <th class="right">
+          <th class="right sorter">
             <xsl:text>#</xsl:text>
           </th>
           <th>
             <!-- Avatar -->
             <xsl:text> </xsl:text>
           </th>
-          <th>
+          <th class="sorter">
             <xsl:text>Programmer / Award Reason</xsl:text>
           </th>
           <xsl:for-each select="1 to $weeks">
-            <th class="right">
+            <th class="right sorter">
               <xsl:variable name="week" select="xs:integer(.)"/>
               <xsl:variable name="d" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', ($weeks - $week) * 7, 'D'))"/>
               <xsl:variable name="w" select="xs:integer(format-date(xs:date($d), '[W]'))"/>
