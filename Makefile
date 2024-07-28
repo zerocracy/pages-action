@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 .ONESHELL:
-.PHONY: clean all install
+.PHONY: clean all assets install
 .SILENT:
 .SHELLFLAGS := -x -e -o pipefail -c
 SHELL := bash
@@ -38,7 +38,9 @@ SAXON = target/saxon.jar
 
 export
 
-all: $(JS) $(CSS) $(XSLS) $(HTMLS) entry rmi verify
+all: assets $(HTMLS) entry rmi verify
+
+assets: $(XSLS) $(JS) $(CSS)
 
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp "$<" "$@"
