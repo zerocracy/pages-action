@@ -111,8 +111,7 @@ SOFTWARE.
                 <xsl:text>, starting on Monday </xsl:text>
                 <xsl:value-of select="z:monday($week)"/>
               </xsl:attribute>
-              <xsl:value-of select="substring(xs:string(xs:date($d)), 3, 2)"/>
-              <xsl:text>.</xsl:text>
+              <xsl:text>w</xsl:text>
               <xsl:value-of select="$w"/>
             </th>
           </xsl:for-each>
