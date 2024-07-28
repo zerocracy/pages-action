@@ -91,14 +91,21 @@ SOFTWARE.
   </xsl:template>
   <xsl:template match="/fb[f[award and xs:dateTime(when) &gt; $since]]" mode="awards">
     <script type="text/javascript">
-      $(function() {
-        $("#awards").tablesorter();
-      });
+      <xsl:text>const weeks = </xsl:text>
+      <xsl:value-of select="$weeks"/>
+      <xsl:text>;</xsl:text>
+    </script>
+    <script type="text/javascript">
+      <xsl:text>
+        $(function() {
+          $("#awards").tablesorter({
+            sortList: [[3 + weeks, 1]]
+          });
+        });
+      </xsl:text>
     </script>
     <table id="awards" border="1">
       <colgroup span="4">
-        <!-- ID -->
-        <col style="width: 2em;"/>
         <!-- Avatar -->
         <col style="width: 2.5em;"/>
         <!-- Award reason -->
@@ -106,7 +113,7 @@ SOFTWARE.
       </colgroup>
       <colgroup>
         <xsl:attribute name="span">
-            <xsl:value-of select="$weeks + 1"/>
+          <xsl:value-of select="$weeks + 1"/>
         </xsl:attribute>
         <xsl:for-each select="1 to $weeks">
           <!-- Weeks -->
@@ -117,9 +124,6 @@ SOFTWARE.
       </colgroup>
       <thead>
         <tr>
-          <th class="right sorter">
-            <xsl:text>#</xsl:text>
-          </th>
           <th>
             <!-- Avatar -->
             <xsl:text> </xsl:text>
@@ -160,10 +164,6 @@ SOFTWARE.
       <tfoot>
         <tr>
           <td>
-            <!-- ID -->
-            <xsl:text> </xsl:text>
-          </td>
-          <td>
             <!-- Avatar -->
             <xsl:text> </xsl:text>
           </td>
@@ -187,10 +187,6 @@ SOFTWARE.
   <xsl:template name="programmer">
     <xsl:param name="name"/>
     <tr>
-      <td class="ff right">
-        <xsl:text>#</xsl:text>
-        <xsl:value-of select="position()"/>
-      </td>
       <td class="avatar">
         <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
       </td>
@@ -229,10 +225,6 @@ SOFTWARE.
     <xsl:for-each select="/fb/f[who_name=$name and award]">
       <xsl:variable name="fact" select="."/>
       <tr class="sub tablesorter-childRow p_ p_{$name}" style="display: none;">
-        <td>
-          <!-- ID -->
-          <xsl:text> </xsl:text>
-        </td>
         <td>
           <!-- Avatar -->
           <xsl:text> </xsl:text>

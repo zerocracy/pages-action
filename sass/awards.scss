@@ -22,10 +22,18 @@
  * SOFTWARE.
 **/
 
-tr.sub td {
-  padding: 0;
-}
+$hightlight: #f5f5f5;
 
-.sorter {
-  cursor: pointer;
+#awards {
+  tr.sub td {
+    padding: 0;
+  }
+
+  .sorter {
+    cursor: pointer;
+  }
+
+  tbody tr:hover {
+    background-color: $hightlight;
+  }
 }
