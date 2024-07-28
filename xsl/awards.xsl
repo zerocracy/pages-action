@@ -185,7 +185,7 @@ SOFTWARE.
     </tr>
     <xsl:for-each select="/fb/f[who_name=$name and award]">
       <xsl:variable name="fact" select="."/>
-      <tr class="p_ p_{$name}" style="display: none;">
+      <tr class="sub p_ p_{$name}" style="display: none;">
         <td>
           <!-- ID -->
           <xsl:text> </xsl:text>

@@ -66,11 +66,11 @@ target/fb/%.fb: tests/%.yml Makefile | target/fb
 	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
 	$(JUDGES) import "$<" "$@"
 
-$(CSS): sass/*.scss | target/css
-	sass --no-source-map --style=compressed --no-quiet --stop-on-error "$<" "$@"
+$(CSS): sass/*.scss Makefile | target/css
+	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"
 
-$(JS): js/*.js | target/js
-	uglifyjs "$<" > "$@"
+$(JS): js/*.js Makefile | target/js
+	uglifyjs js/*.js > "$@"
 
 clean:
 	rm -rf target
