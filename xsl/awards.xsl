@@ -42,14 +42,30 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="z:award">
     <xsl:param name="a"/>
+    <span>
+      <xsl:attribute name="class">
+        <xsl:choose>
+          <xsl:when test="$a = 0">
+            <xsl:text>lightgray</xsl:text>
+          </xsl:when>
+          <xsl:when test="$a &gt; 0">
+            <xsl:text>darkgreen</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>darkred</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+    </span>
     <xsl:choose>
       <xsl:when test="$a = 0">
-        <xsl:text>0</xsl:text>
+        <xsl:text>—</xsl:text>
+      </xsl:when>
+      <xsl:when test="$a &gt; 0">
+        <xsl:text>+</xsl:text>
+        <xsl:value-of select="$a"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:if test="$a &gt; 0">
-          <xsl:text>+</xsl:text>
-        </xsl:if>
         <xsl:value-of select="$a"/>
       </xsl:otherwise>
     </xsl:choose>
@@ -158,11 +174,11 @@ SOFTWARE.
           <xsl:for-each select="1 to $weeks">
             <xsl:variable name="week" select="."/>
             <td class="right">
-              <xsl:value-of select="z:award(sum($fb/f[award and z:in-week(when, $week)]/award))"/>
+              <xsl:copy-of select="z:award(sum($fb/f[award and z:in-week(when, $week)]/award))"/>
             </td>
           </xsl:for-each>
           <td class="right">
-            <xsl:value-of select="z:award(sum($fb/f[award and xs:dateTime(when) &gt; $since]/award))"/>
+            <xsl:copy-of select="z:award(sum($fb/f[award and xs:dateTime(when) &gt; $since]/award))"/>
           </td>
         </tr>
       </tfoot>
@@ -191,7 +207,7 @@ SOFTWARE.
         </span>
         <xsl:text> (</xsl:text>
         <xsl:variable name="c" select="count(/fb/f[who_name=$name and award]/award)"/>
-        <a href="" onclick="$('.p_{$name}').show(); return false;">
+        <a href="" onclick="$('.p_{$name}').toggle(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
           <xsl:if test="$c &gt; 1">
@@ -203,11 +219,11 @@ SOFTWARE.
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
         <td class="right">
-          <xsl:value-of select="z:award(sum($fb/f[who_name=$name and award and z:in-week(when, $week)]/award))"/>
+          <xsl:copy-of select="z:award(sum($fb/f[who_name=$name and award and z:in-week(when, $week)]/award))"/>
         </td>
       </xsl:for-each>
       <td class="right">
-        <xsl:value-of select="z:award(sum(/fb/f[who_name=$name and award and xs:dateTime(when) &gt; $since]/award))"/>
+        <xsl:copy-of select="z:award(sum(/fb/f[who_name=$name and award and xs:dateTime(when) &gt; $since]/award))"/>
       </td>
     </tr>
     <xsl:for-each select="/fb/f[who_name=$name and award]">
@@ -235,11 +251,11 @@ SOFTWARE.
                       <xsl:attribute name="href">
                         <xsl:value-of select="$fact/href"/>
                       </xsl:attribute>
-                      <xsl:value-of select="z:award($fact/award)"/>
+                      <xsl:copy-of select="z:award($fact/award)"/>
                     </a>
                   </xsl:when>
                   <xsl:otherwise>
-                    <xsl:value-of select="z:award($fact/award)"/>
+                    <xsl:copy-of select="z:award($fact/award)"/>
                   </xsl:otherwise>
                 </xsl:choose>
               </xsl:when>
