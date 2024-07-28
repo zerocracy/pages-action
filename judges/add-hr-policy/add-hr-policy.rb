@@ -26,6 +26,8 @@ require 'fbe/fb'
 require 'fbe/award'
 require 'redcarpet'
 
+return unless Fbe.fb.query('(eq what "hr-policy")').each.to_a.empty?
+
 f = Fbe.fb.query('(and (eq what "pmp") (eq area "hr"))').each.to_a.first
 htmls = []
 par = 1

@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 .ONESHELL:
-.PHONY: clean all install
+.PHONY: clean all assets install
 .SILENT:
 .SHELLFLAGS := -x -e -o pipefail -c
 SHELL := bash
@@ -38,32 +38,41 @@ SAXON = target/saxon.jar
 
 export
 
-all: $(JS) $(CSS) $(XSLS) $(HTMLS) entry rmi verify
+all: assets $(HTMLS) entry rmi verify
+
+assets: $(XSLS) $(JS) $(CSS)
 
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
-	cp $< $@
+	cp "$<" "$@"
 
-target/html/%.html: target/fb/%.fb xsl/*.xsl entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) | target/html
+target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) | target/html
 	export INPUT_VERBOSE=yes
 	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
 	export INPUT_COLUMNS=what,when,who
 	export INPUT_HIDDEN=_id,_time,_version
+	export INPUT_TODAY='2024-07-05T00:00:00Z'
 	fb=$$(basename $<)
 	fb=$${fb%.*}
 	export INPUT_OUTPUT=target/output/$${fb}
 	./entry.sh
-	cp target/output/$${fb}/$${fb}.html target/html
+
+target/html/%.html: target/output/%
+	n=$$(basename "$@")
+	n=$${n%.*}
+	cp "$$(dirname "$<")/$${n}/$${n}.html" "$$(dirname "$@")/$${n}.html"
+	cp "$$(dirname "$<")/$${n}/$${n}-vitals.html" "$$(dirname "$@")/$${n}-vitals.html"
 
 target/fb/%.fb: tests/%.yml Makefile | target/fb
-	$(JUDGES) import $< $@
+	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
+	$(JUDGES) import "$<" "$@"
 
-$(CSS): sass/*.scss | target/css
-	sass --no-source-map --style=compressed --no-quiet --stop-on-error $< $@
+$(CSS): sass/*.scss Makefile | target/css
+	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"
 
-$(JS): js/*.js | target/js
-	uglifyjs $< > $@
+$(JS): js/*.js Makefile | target/js
+	uglifyjs js/*.js > "$@"
 
 clean:
 	rm -rf target
@@ -72,7 +81,7 @@ $(SAXON): | target
 	p=net/sf/saxon/Saxon-HE/9.8.0-5/Saxon-HE-9.8.0-5.jar
 	m2=$${HOME}/.m2/repository/$${p}
 	if [ -e "$${m2}" ]; then
-		cp "$${m2}" $(SAXON)
+		cp "$${m2}" "$(SAXON)"
 	else
 		wget --no-verbose -O "$(SAXON)" "https://repo.maven.apache.org/maven2/$${p}"
 	fi

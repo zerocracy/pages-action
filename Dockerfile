@@ -51,6 +51,6 @@ COPY judges /home/judges
 COPY sass /home/sass
 COPY xsl /home/xsl
 COPY js /home/js
-RUN make --directory=/home --no-silent install target/css/main.css target/js/main.js
+RUN make --directory=/home --no-silent install assets
 
 ENTRYPOINT ["/home/entry.sh", "/home"]
