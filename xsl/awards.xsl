@@ -85,8 +85,6 @@ SOFTWARE.
         <col style="width: 2em;"/>
         <!-- Avatar -->
         <col style="width: 2.5em;"/>
-        <!-- Indent -->
-        <col style="width: 2em;"/>
         <!-- Award reason -->
         <col/>
       </colgroup>
@@ -108,10 +106,6 @@ SOFTWARE.
           </th>
           <th>
             <!-- Avatar -->
-            <xsl:text> </xsl:text>
-          </th>
-          <th>
-            <!-- Indent -->
             <xsl:text> </xsl:text>
           </th>
           <th>
@@ -158,10 +152,6 @@ SOFTWARE.
             <xsl:text> </xsl:text>
           </td>
           <td>
-            <!-- Indent -->
-            <xsl:text> </xsl:text>
-          </td>
-          <td>
             <!-- Name -->
             <xsl:text> </xsl:text>
           </td>
@@ -188,7 +178,7 @@ SOFTWARE.
       <td class="avatar">
         <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
       </td>
-      <td colspan="2">
+      <td>
         <span class="ff">
           <a>
             <xsl:attribute name="href">
@@ -201,7 +191,7 @@ SOFTWARE.
         </span>
         <xsl:text> (</xsl:text>
         <xsl:variable name="c" select="count(/fb/f[who_name=$name and award]/award)"/>
-        <a href="" onclick="$('.p_{$name}').show(); $('th.sorter').removeClass('sorter'); return false;">
+        <a href="" onclick="$('.p_{$name}').show(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
           <xsl:if test="$c &gt; 1">
@@ -222,17 +212,13 @@ SOFTWARE.
     </tr>
     <xsl:for-each select="/fb/f[who_name=$name and award]">
       <xsl:variable name="fact" select="."/>
-      <tr class="sub p_ p_{$name}" style="display: none;">
+      <tr class="sub tablesorter-childRow p_ p_{$name}" style="display: none;">
         <td>
           <!-- ID -->
           <xsl:text> </xsl:text>
         </td>
         <td>
           <!-- Avatar -->
-          <xsl:text> </xsl:text>
-        </td>
-        <td>
-          <!-- Indent -->
           <xsl:text> </xsl:text>
         </td>
         <td>
