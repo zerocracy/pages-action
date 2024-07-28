@@ -23,6 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="z">
+  <xsl:variable name="days" select="z:pmp(/fb, 'hr', 'days_of_running_balance')"/>
+  <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
   <xsl:function name="z:award">
     <xsl:param name="a"/>
     <xsl:if test="$a &gt; 0">
@@ -30,16 +32,25 @@ SOFTWARE.
     </xsl:if>
     <xsl:value-of select="$a"/>
   </xsl:function>
-  <xsl:variable name="since" select="current-dateTime() - xs:dayTimeDuration(concat('P', z:pmp(/fb, 'hr', 'days_of_running_balance'), 'D'))"/>
   <xsl:template match="/" mode="awards">
     <xsl:apply-templates select="/fb" mode="awards"/>
   </xsl:template>
-  <xsl:template match="/fb[not(f[award and when &gt; $since])]" mode="awards">
+  <xsl:template match="/fb[not(f[award and xs:dateTime(when) &gt; $since])]" mode="awards">
     <p>
-      <xsl:text>No awards as of yet.</xsl:text>
+      <xsl:text>No awards since </xsl:text>
+      <xsl:value-of select="$since"/>
+      <xsl:text> (</xsl:text>
+      <xsl:value-of select="$days"/>
+      <xsl:text> days before today)</xsl:text>
+      <xsl:if test="/fb/f[award]">
+        <xsl:text>, while there are </xsl:text>
+        <xsl:value-of select="count(/fb/f[award])"/>
+        <xsl:text> awards in total</xsl:text>
+      </xsl:if>
+      <xsl:text>.</xsl:text>
     </p>
   </xsl:template>
-  <xsl:template match="/fb[f[award and when &gt; $since]]" mode="awards">
+  <xsl:template match="/fb[f[award and xs:dateTime(when) &gt; $since]]" mode="awards">
     <table id="awards" border="1">
       <colgroup>
         <col style="width: 2em;"/>
@@ -147,7 +158,7 @@ SOFTWARE.
           </xsl:choose>
         </td>
         <td>
-          <xsl:variable name="age" select="number((current-dateTime() - xs:dateTime(time)) div xs:dayTimeDuration('P1D'))"/>
+          <xsl:variable name="age" select="number((xs:dateTime($today) - xs:dateTime(time)) div xs:dayTimeDuration('P1D'))"/>
           <xsl:choose>
             <xsl:when test="$age &lt; 1">
               <xsl:text>today</xsl:text>

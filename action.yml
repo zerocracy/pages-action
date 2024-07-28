@@ -48,3 +48,6 @@ inputs:
   hidden:
     description: 'Comma-separated list of properties to hide'
     default: '_id,_time,_version'
+  today:
+    description: 'ISO-8601 date-time of report generation (current time by default)'
+    required: false

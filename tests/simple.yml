@@ -45,32 +45,37 @@
       (give b2 "for #{days} days of delay")
       )
 -
-  time: 2024-05-18T22:22:22.8492Z
+  when: 2024-07-04T22:22:22.8492Z
   award: 15
   who: 526301
   why: for being a good boy
   href: https://github.com/yegor256/judges/issues/111
 -
-  time: 2024-05-15T22:22:22.8492Z
+  when: 2024-07-03T22:22:22.8492Z
   award: -24
   who: 6305016
   why: for being a bad boy
   href: https://github.com/yegor256/judges/issues/111
 -
-  time: 2024-05-15T22:22:22.8492Z
+  when: 2024-07-02T22:22:22.8492Z
   award: 55
   who: 6305016
   why: for new release
   href: https://github.com/yegor256/judges/issues/111
 -
-  when: 2024-05-18T22:22:22.8492Z
+  when: 2024-07-03T22:22:22.8492Z
   what: quality-of-service
   average_issue_lifetime: 433.54
   average_pull_lifetime: 3222.98
   average_release_interval: 43432.42
   average_workflow_success_rate: 0.56
 -
-  when: 2024-04-18T22:22:22.8492Z
+  when: 2024-06-23T22:22:22.8492Z
+  what: quality-of-service
+  average_pull_lifetime: 3989.98
+  average_release_interval: 41432.42
+-
+  when: 2024-06-03T22:22:22.8492Z
   what: quality-of-service
   average_issue_lifetime: 323.54
   average_pull_lifetime: 2092.98

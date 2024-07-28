@@ -89,12 +89,18 @@ done <<< "${INPUT_OPTIONS}"
     "${INPUT_FACTBASE}" \
     "${INPUT_OUTPUT}/${name}.rich.xml"
 
+# This is the day of "today", when we want to see the situation in the project
+if [ -z "${INPUT_TODAY}" ]; then
+    INPUT_TODAY=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+fi
+
 # Build a summary HTML.
 html=${INPUT_OUTPUT}/${name}-vitals.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/index.xsl" \
     "-o:${html}" \
+    "today=${INPUT_TODAY}" \
     "version=${VERSION}" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \

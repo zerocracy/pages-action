@@ -33,12 +33,14 @@ start = {}
 first = facts.first
 first.all_properties.each do |prop|
   next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
+  next if prop.start_with?('n_')
   start[prop] = first[prop][0]
 end
 
 facts.drop(1).each do |f|
   f.all_properties.each do |prop|
     next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
+    next if prop.start_with?('n_')
     v = f[prop][0]
     start[prop] = v if start[prop].nil?
   end
@@ -47,6 +49,7 @@ end
 facts.each do |f|
   f.all_properties.each do |prop|
     next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
+    next if prop.start_with?('n_')
     v = f[prop][0]
     s = start[prop]
     diff = v - s

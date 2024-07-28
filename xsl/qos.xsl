@@ -22,7 +22,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration('P180D')"/>
   <xsl:template match="/fb" mode="qos">
     <xsl:variable name="fb" select="."/>
     <div class="qos">
@@ -37,7 +38,7 @@ SOFTWARE.
     </div>
     <script type="text/javascript">
       <xsl:text>const qos_data = { labels: [</xsl:text>
-      <xsl:for-each select="f[what='quality-of-service']/when">
+      <xsl:for-each select="f[what='quality-of-service' and xs:dateTime(when) &gt; $since]/when">
         <xsl:sort select="when" data-type="text" order="ascending"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
