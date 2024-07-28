@@ -33,12 +33,26 @@ SOFTWARE.
     <xsl:variable name="dow" select="xs:integer(format-date(xs:date($d), '[F1]'))"/>
     <xsl:value-of select="xs:date($d) - xs:dayTimeDuration(concat('P', $dow - 1, 'D'))"/>
   </xsl:function>
+  <xsl:function name="z:in-week" as="xs:boolean">
+    <xsl:param name="when" as="xs:string"/>
+    <xsl:param name="week" as="xs:integer"/>
+    <xsl:variable name="monday" select="xs:dateTime(z:monday($week))"/>
+    <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
+    <xsl:value-of select="xs:dateTime($when) &gt; $monday and xs:dateTime($when) &lt; $sunday"/>
+  </xsl:function>
   <xsl:function name="z:award">
     <xsl:param name="a"/>
-    <xsl:if test="$a &gt; 0">
-      <xsl:text>+</xsl:text>
-    </xsl:if>
-    <xsl:value-of select="$a"/>
+    <xsl:choose>
+      <xsl:when test="$a = 0">
+        <xsl:text>0</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:if test="$a &gt; 0">
+          <xsl:text>+</xsl:text>
+        </xsl:if>
+        <xsl:value-of select="$a"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <xsl:template match="/" mode="awards">
     <xsl:apply-templates select="/fb" mode="awards"/>
@@ -128,6 +142,35 @@ SOFTWARE.
           </xsl:call-template>
         </xsl:for-each-group>
       </tbody>
+      <tfoot>
+        <tr>
+          <td>
+            <!-- ID -->
+            <xsl:text> </xsl:text>
+          </td>
+          <td>
+            <!-- Avatar -->
+            <xsl:text> </xsl:text>
+          </td>
+          <td>
+            <!-- Indent -->
+            <xsl:text> </xsl:text>
+          </td>
+          <td>
+            <!-- Name -->
+            <xsl:text> </xsl:text>
+          </td>
+          <xsl:for-each select="1 to $weeks">
+            <xsl:variable name="week" select="."/>
+            <td class="right">
+              <xsl:value-of select="z:award(sum($fb/f[award and z:in-week(when, $week)]/award))"/>
+            </td>
+          </xsl:for-each>
+          <td class="right">
+            <xsl:value-of select="z:award(sum($fb/f[award and xs:dateTime(when) &gt; $since]/award))"/>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   </xsl:template>
   <xsl:template name="programmer">
@@ -164,22 +207,12 @@ SOFTWARE.
       </td>
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
-        <xsl:variable name="monday" select="xs:dateTime(z:monday($week))"/>
-        <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
         <td class="right">
-          <xsl:variable name="sum" select="sum($fb/f[who_name=$name and award and xs:dateTime(when) &gt; $monday and xs:dateTime(when) &lt; $sunday]/award)"/>
-          <xsl:choose>
-            <xsl:when test="$sum = 0">
-              <xsl:text>-</xsl:text>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="z:award($sum)"/>
-            </xsl:otherwise>
-          </xsl:choose>
+          <xsl:value-of select="z:award(sum($fb/f[who_name=$name and award and z:in-week(when, $week)]/award))"/>
         </td>
       </xsl:for-each>
       <td class="right">
-        <xsl:value-of select="z:award(sum(/fb/f[who_name=$name and award]/award))"/>
+        <xsl:value-of select="z:award(sum(/fb/f[who_name=$name and award and xs:dateTime(when) &gt; $since]/award))"/>
       </td>
     </tr>
     <xsl:for-each select="/fb/f[who_name=$name and award]">
@@ -202,11 +235,9 @@ SOFTWARE.
         </td>
         <xsl:for-each select="1 to $weeks">
           <xsl:variable name="week" select="."/>
-          <xsl:variable name="monday" select="xs:dateTime(z:monday($week))"/>
-          <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
           <td class="ff right">
             <xsl:choose>
-              <xsl:when test="xs:dateTime($fact/when) &gt; $monday and xs:dateTime($fact/when) &lt; $sunday">
+              <xsl:when test="z:in-week($fact/when, $week)">
                 <xsl:choose>
                   <xsl:when test="$fact/href">
                     <a>
