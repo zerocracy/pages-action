@@ -63,7 +63,7 @@ target/html/%.html: target/output/%
 	cp "$$(dirname "$<")/$${n}/$${n}-vitals.html" "$$(dirname "$@")/$${n}-vitals.html"
 
 target/fb/%.fb: tests/%.yml Makefile | target/fb
-	$(JUDGES) trim --query='(always)' "$@"
+	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
 	$(JUDGES) import "$<" "$@"
 
 $(CSS): sass/*.scss | target/css
