@@ -44,6 +44,11 @@ jobs:
       - run: |
           judges --verbose eval test.fb \
             "f = \$fb.insert; f.what = 'pmp'; f.area = 'hr';"
+      # Pay attention: if this test fails, you can'f fix it in the "master"
+      # branch, because it uses the "latest" version of the Docker image
+      # already released to Docker Hub. In order to fix this test,
+      # you should release a new version to Docker Hub and then try to fix
+      # the test here. It's a two-steps process.
       - uses: ./
         with:
           verbose: true
