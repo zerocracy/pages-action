@@ -42,9 +42,11 @@ jobs:
           ruby-version: 3.2
       - run: make install
       - run: |
-          judges --verbose eval test.fb \
-            "f = \$fb.insert; f.what = 'pmp'; \
-            f.area = 'hr'; f.days_of_running_balance = 28;"
+          judges --verbose eval test.fb " \
+            f = \$fb.insert \
+            f.what = 'pmp' \
+            f.area = 'hr' \
+            f.days_of_running_balance = 28"
       # Pay attention: if this test fails, you can'f fix it in the "master"
       # branch, because it uses the "latest" version of the Docker image
       # already released to Docker Hub. In order to fix this test,
