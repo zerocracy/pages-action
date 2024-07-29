@@ -193,11 +193,15 @@ SOFTWARE.
                 <xsl:copy-of select="count($facts)"/>
                 <xsl:text> of them count</xsl:text>
               </xsl:attribute>
-              <xsl:text>Total (</xsl:text>
-              <xsl:copy-of select="count($facts)"/>
-              <xsl:text>/</xsl:text>
-              <xsl:copy-of select="count(/fb/f[award])"/>
-              <xsl:text>):</xsl:text>
+              <xsl:text>Total</xsl:text>
+              <xsl:if test="count($facts) != count(/fb/f[award])">
+                <xsl:text> (</xsl:text>
+                <xsl:copy-of select="count($facts)"/>
+                <xsl:text>/</xsl:text>
+                <xsl:copy-of select="count(/fb/f[award])"/>
+                <xsl:text>)</xsl:text>
+              </xsl:if>
+              <xsl:text>:</xsl:text>
             </span>
           </td>
           <xsl:for-each select="1 to $weeks">
