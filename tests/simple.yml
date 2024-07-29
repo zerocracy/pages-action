@@ -48,35 +48,41 @@
   when: 2024-07-05T22:22:22.8492Z
   award: -8
   who: 526301
+  is_human: 1
   why: for being a good boy
   href: https://github.com/yegor256/judges/issues/111
 -
   when: 2024-07-04T22:22:22.8492Z
   award: 15
   who: 526301
+  is_human: 1
   why: for being a great programmer
   href: https://github.com/yegor256/judges/issues/111
 -
   when: 2024-07-03T22:22:22.8492Z
   award: -24
   who: 6305016
+  is_human: 1
   why: for being a bad boy
   href: https://github.com/yegor256/judges/issues/111
 -
   when: 2024-07-02T22:22:22.8492Z
   award: 55
   who: 6305016
+  is_human: 1
   why: for new release
   href: https://github.com/yegor256/judges/issues/111
 -
   when: 2024-06-26T22:22:22.8492Z
   award: 14
   who: 6305016
+  is_human: 1
   why: for important issue reported
 -
   when: 2024-06-16T22:22:22.8492Z
   award: -8
   who: 6305016
+  is_human: 1
   why: for fun
 -
   when: 2024-07-03T22:22:22.8492Z

@@ -23,11 +23,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="z">
-  <xsl:variable name="fb" select="/fb"/>
   <xsl:variable name="days" select="z:pmp(/fb, 'hr', 'days_of_running_balance')"/>
   <xsl:variable name="weeks" select="xs:integer($days div 7)"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
-  <xsl:variable name="facts" select="$fb/f[award and xs:dateTime(when) &gt; $since]"/>
+  <xsl:variable name="facts" select="/fb/f[award and xs:dateTime(when) &gt; $since and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="d" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', ($weeks - $week) * 7, 'D'))"/>
@@ -165,7 +164,7 @@ SOFTWARE.
         <xsl:for-each-group select="f[who_name and award]" group-by="who_name">
           <xsl:sort select="sum(award)" data-type="number" order="descending"/>
           <xsl:variable name="name" select="who_name/text()"/>
-          <xsl:if test="count($facts[who_name=$name]/award) &gt; 0">
+          <xsl:if test="count($facts[who_name = $name]) &gt; 0">
             <xsl:call-template name="programmer">
               <xsl:with-param name="name" select="$name"/>
             </xsl:call-template>
