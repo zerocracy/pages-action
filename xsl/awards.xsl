@@ -27,6 +27,7 @@ SOFTWARE.
   <xsl:variable name="days" select="z:pmp(/fb, 'hr', 'days_of_running_balance')"/>
   <xsl:variable name="weeks" select="xs:integer($days div 7)"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
+  <xsl:variable name="facts" select="$fb/f[award and xs:dateTime(when) &gt; $since]"/>
   <xsl:function name="z:monday" as="xs:date">
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="d" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', ($weeks - $week) * 7, 'D'))"/>
@@ -73,23 +74,30 @@ SOFTWARE.
   <xsl:template match="/" mode="awards">
     <xsl:apply-templates select="/fb" mode="awards"/>
   </xsl:template>
-  <xsl:template match="/fb[not(f[award and xs:dateTime(when) &gt; $since])]" mode="awards">
-    <p>
-      <xsl:text>No awards since </xsl:text>
-      <xsl:value-of select="$since"/>
-      <xsl:text> (</xsl:text>
-      <xsl:value-of select="$days"/>
-      <xsl:text> days before today)</xsl:text>
-      <xsl:if test="/fb/f[award]">
-        <xsl:text>, while there are </xsl:text>
-        <xsl:value-of select="count(/fb/f[award])"/>
-        <xsl:text> awards in total</xsl:text>
-      </xsl:if>
-      <xsl:text>.</xsl:text>
-      <xsl:text> Either, you are having no activity in the project or the reporting is not configured correctly.</xsl:text>
-    </p>
+  <xsl:template match="/fb" mode="awards">
+    <xsl:choose>
+      <xsl:when test="empty($facts)">
+        <p>
+          <xsl:text>No awards since </xsl:text>
+          <xsl:value-of select="$since"/>
+          <xsl:text> (</xsl:text>
+          <xsl:value-of select="$days"/>
+          <xsl:text> days before today)</xsl:text>
+          <xsl:if test="/fb/f[award]">
+            <xsl:text>, while there are </xsl:text>
+            <xsl:value-of select="count(/fb/f[award])"/>
+            <xsl:text> awards in total</xsl:text>
+          </xsl:if>
+          <xsl:text>.</xsl:text>
+          <xsl:text> Either, you are having no activity in the project or the reporting is not configured correctly.</xsl:text>
+        </p>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="/fb" mode="awards-non-empty"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
-  <xsl:template match="/fb[f[award and xs:dateTime(when) &gt; $since]]" mode="awards">
+  <xsl:template match="/fb" mode="awards-non-empty">
     <script type="text/javascript">
       <xsl:text>const weeks = </xsl:text>
       <xsl:value-of select="$weeks"/>
@@ -156,9 +164,12 @@ SOFTWARE.
       <tbody>
         <xsl:for-each-group select="f[who_name and award]" group-by="who_name">
           <xsl:sort select="sum(award)" data-type="number" order="descending"/>
-          <xsl:call-template name="programmer">
-            <xsl:with-param name="name" select="who_name/text()"/>
-          </xsl:call-template>
+          <xsl:variable name="name" select="who_name/text()"/>
+          <xsl:if test="count($facts[who_name=$name]/award) &gt; 0">
+            <xsl:call-template name="programmer">
+              <xsl:with-param name="name" select="$name"/>
+            </xsl:call-template>
+          </xsl:if>
         </xsl:for-each-group>
       </tbody>
       <tfoot>
@@ -169,16 +180,29 @@ SOFTWARE.
           </td>
           <td class="right">
             <!-- Name -->
-            <xsl:text>Total:</xsl:text>
+            <span>
+              <xsl:attribute name="title">
+                <xsl:text>There are </xsl:text>
+                <xsl:copy-of select="count(/fb/f[award])"/>
+                <xsl:text> awarding facts in the XML, while </xsl:text>
+                <xsl:copy-of select="count($facts)"/>
+                <xsl:text> of them count</xsl:text>
+              </xsl:attribute>
+              <xsl:text>Total (</xsl:text>
+              <xsl:copy-of select="count($facts)"/>
+              <xsl:text>/</xsl:text>
+              <xsl:copy-of select="count(/fb/f[award])"/>
+              <xsl:text>):</xsl:text>
+            </span>
           </td>
           <xsl:for-each select="1 to $weeks">
             <xsl:variable name="week" select="."/>
             <td class="right">
-              <xsl:copy-of select="z:award(sum($fb/f[award and z:in-week(when, $week)]/award))"/>
+              <xsl:copy-of select="z:award(sum($facts[z:in-week(when, $week)]/award))"/>
             </td>
           </xsl:for-each>
           <td class="right">
-            <xsl:copy-of select="z:award(sum($fb/f[award and xs:dateTime(when) &gt; $since]/award))"/>
+            <xsl:copy-of select="z:award(sum($facts/award))"/>
           </td>
         </tr>
       </tfoot>
@@ -202,7 +226,7 @@ SOFTWARE.
           </a>
         </span>
         <xsl:text> (</xsl:text>
-        <xsl:variable name="c" select="count(/fb/f[who_name=$name and award]/award)"/>
+        <xsl:variable name="c" select="count($facts[who_name=$name]/award)"/>
         <a href="" onclick="$('.p_{$name}').toggle(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
@@ -215,14 +239,14 @@ SOFTWARE.
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
         <td class="ff right">
-          <xsl:copy-of select="z:award(sum($fb/f[who_name=$name and award and z:in-week(when, $week)]/award))"/>
+          <xsl:copy-of select="z:award(sum($facts[who_name=$name and z:in-week(when, $week)]/award))"/>
         </td>
       </xsl:for-each>
       <td class="ff right">
-        <xsl:copy-of select="z:award(sum(/fb/f[who_name=$name and award and xs:dateTime(when) &gt; $since]/award))"/>
+        <xsl:copy-of select="z:award(sum($facts[who_name=$name]/award))"/>
       </td>
     </tr>
-    <xsl:for-each select="/fb/f[who_name=$name and award and xs:dateTime(when) &gt; $since]">
+    <xsl:for-each select="$facts[who_name=$name]">
       <xsl:variable name="fact" select="."/>
       <tr class="sub tablesorter-childRow p_ p_{$name}" style="display: none;">
         <td>
