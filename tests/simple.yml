@@ -23,7 +23,7 @@
 -
   what: pmp
   area: hr
-  days_of_running_balance: 28
+  days_of_running_balance: 30
   some_policy: '(award (let x 25) (give x "when you deserve it"))'
   second_policy: >
     (award (let x1 20) (let x2 33) (set z (plus x1 x2)) (give z "hm..."))
