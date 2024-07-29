@@ -246,6 +246,7 @@ SOFTWARE.
       </td>
     </tr>
     <xsl:for-each select="$facts[who_name=$name]">
+      <xsl:sort select="when" data-type="text"/>
       <xsl:variable name="fact" select="."/>
       <tr class="sub tablesorter-childRow p_ p_{$name}" style="display: none;">
         <td>

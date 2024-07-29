@@ -45,6 +45,18 @@
       (give b2 "for #{days} days of delay")
       )
 -
+  when: 2024-06-26T22:22:22.8492Z
+  award: 14
+  who: 6305016
+  is_human: 1
+  why: for important issue reported
+-
+  when: 2024-06-16T22:22:22.8492Z
+  award: -8
+  who: 6305016
+  is_human: 1
+  why: for fun
+-
   when: 2024-07-05T22:22:22.8492Z
   award: -8
   who: 526301
@@ -72,18 +84,6 @@
   is_human: 1
   why: for new release
   href: https://github.com/yegor256/judges/issues/111
--
-  when: 2024-06-26T22:22:22.8492Z
-  award: 14
-  who: 6305016
-  is_human: 1
-  why: for important issue reported
--
-  when: 2024-06-16T22:22:22.8492Z
-  award: -8
-  who: 6305016
-  is_human: 1
-  why: for fun
 -
   when: 2024-07-03T22:22:22.8492Z
   what: quality-of-service
