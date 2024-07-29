@@ -23,22 +23,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xsl:variable name="qos_facts" select="/fb/f[what='quality-of-service' and xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
-  <xsl:template match="/fb" mode="qos">
+  <xsl:variable name="qod_facts" select="/fb/f[what='quantity-of-deliverables' and xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
+  <xsl:template match="/fb" mode="qod">
     <xsl:variable name="fb" select="."/>
-    <div class="qos">
+    <div class="qod">
       <h2>
-        <xsl:text>Quality of Service</xsl:text>
+        <xsl:text>Quantity of Deliverables</xsl:text>
       </h2>
       <div style="width: 800px;">
-        <canvas id="qos" style="width: 100%">
+        <canvas id="qod" style="width: 100%">
           <xsl:text> </xsl:text>
         </canvas>
       </div>
     </div>
     <script type="text/javascript">
-      <xsl:text>const qos_data = { labels: [</xsl:text>
-      <xsl:for-each select="$qos_facts/when">
+      <xsl:text>const qod_data = { labels: [</xsl:text>
+      <xsl:for-each select="$qod_facts/when">
         <xsl:sort select="when" data-type="text" order="ascending"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
@@ -49,7 +49,7 @@ SOFTWARE.
       </xsl:for-each>
       <xsl:text>],</xsl:text>
       <xsl:text>datasets: [</xsl:text>
-      <xsl:for-each select="distinct-values($qos_facts/*[starts-with(name(), 'n_')]/name())">
+      <xsl:for-each select="distinct-values($qod_facts/*[starts-with(name(), 'n_')]/name())">
         <xsl:variable name="metric" select="."/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
@@ -57,7 +57,7 @@ SOFTWARE.
         <xsl:text>{ label: '</xsl:text>
         <xsl:value-of select="."/>
         <xsl:text>', data: [</xsl:text>
-        <xsl:for-each select="$qos_facts">
+        <xsl:for-each select="$qod_facts">
           <xsl:sort select="when" data-type="text" order="ascending"/>
           <xsl:if test="position() &gt; 1">
             <xsl:text>, </xsl:text>

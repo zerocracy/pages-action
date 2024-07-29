@@ -33,6 +33,7 @@ SOFTWARE.
   <xsl:param name="fbe"/>
   <xsl:import href="awards.xsl"/>
   <xsl:import href="policy.xsl"/>
+  <xsl:import href="qod.xsl"/>
   <xsl:import href="qos.xsl"/>
   <xsl:function name="z:pmp">
     <xsl:param name="fb"/>
@@ -121,6 +122,7 @@ SOFTWARE.
             <xsl:apply-templates select="/" mode="awards"/>
             <xsl:apply-templates select="/fb/f[what='hr-policy']"/>
             <xsl:apply-templates select="/fb" mode="qos"/>
+            <xsl:apply-templates select="/fb" mode="qod"/>
           </article>
           <footer>
             <p>
