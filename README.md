@@ -1,5 +1,7 @@
 # Pages Zerocracy Action
 
+[![DevOps By Rultor.com](http://www.rultor.com/b/zerocracy/pages-action)](http://www.rultor.com/p/zerocracy/pages-action)
+
 [![make](https://github.com/zerocracy/pages-action/actions/workflows/make.yml/badge.svg)](https://github.com/zerocracy/pages-action/actions/workflows/make.yml)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/zerocracy/pages-action/blob/master/LICENSE.txt)
 
