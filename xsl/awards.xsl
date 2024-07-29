@@ -70,6 +70,12 @@ SOFTWARE.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <xsl:function name="z:td-award">
+    <xsl:param name="a"/>
+    <td class="ff right" data-value="{$a}">
+      <xsl:copy-of select="z:award($a)"/>
+    </td>
+  </xsl:function>
   <xsl:template match="/" mode="awards">
     <xsl:apply-templates select="/fb" mode="awards"/>
   </xsl:template>
@@ -196,13 +202,9 @@ SOFTWARE.
           </td>
           <xsl:for-each select="1 to $weeks">
             <xsl:variable name="week" select="."/>
-            <td class="right">
-              <xsl:copy-of select="z:award(sum($facts[z:in-week(when, $week)]/award))"/>
-            </td>
+            <xsl:copy-of select="z:td-award(sum($facts[z:in-week(when, $week)]/award))"/>
           </xsl:for-each>
-          <td class="right">
-            <xsl:copy-of select="z:award(sum($facts/award))"/>
-          </td>
+          <xsl:copy-of select="z:td-award(sum($facts/award))"/>
         </tr>
       </tfoot>
     </table>
@@ -237,13 +239,9 @@ SOFTWARE.
       </td>
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
-        <td class="ff right">
-          <xsl:copy-of select="z:award(sum($facts[who_name=$name and z:in-week(when, $week)]/award))"/>
-        </td>
+        <xsl:copy-of select="z:td-award(sum($facts[who_name=$name and z:in-week(when, $week)]/award))"/>
       </xsl:for-each>
-      <td class="ff right">
-        <xsl:copy-of select="z:award(sum($facts[who_name=$name]/award))"/>
-      </td>
+      <xsl:copy-of select="z:td-award(sum($facts[who_name=$name]/award))"/>
     </tr>
     <xsl:for-each select="$facts[who_name=$name]">
       <xsl:sort select="when" data-type="text"/>
