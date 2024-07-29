@@ -24,7 +24,7 @@ SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="z">
   <xsl:variable name="days" select="z:pmp(/fb, 'hr', 'days_of_running_balance')"/>
-  <xsl:variable name="weeks" select="xs:integer($days div 7)"/>
+  <xsl:variable name="weeks" select="xs:integer($days div 7) + 1"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
   <xsl:variable name="facts" select="/fb/f[award and xs:dateTime(when) &gt; $since and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
