@@ -38,13 +38,13 @@ SOFTWARE.
     </div>
     <script type="text/javascript">
       <xsl:text>const qos_data = { labels: [</xsl:text>
-      <xsl:for-each select="$qos_facts/when">
+      <xsl:for-each select="$qos_facts">
         <xsl:sort select="when" data-type="text" order="ascending"/>
         <xsl:if test="position() &gt; 1">
           <xsl:text>, </xsl:text>
         </xsl:if>
         <xsl:text>'</xsl:text>
-        <xsl:value-of select="when"/>
+        <xsl:value-of select="format-date(xs:date(xs:dateTime(when)), '[M1]/[D1]')"/>
         <xsl:text>'</xsl:text>
       </xsl:for-each>
       <xsl:text>],</xsl:text>
@@ -55,7 +55,7 @@ SOFTWARE.
           <xsl:text>, </xsl:text>
         </xsl:if>
         <xsl:text>{ label: '</xsl:text>
-        <xsl:value-of select="."/>
+        <xsl:value-of select="$metric"/>
         <xsl:text>', data: [</xsl:text>
         <xsl:for-each select="$qos_facts">
           <xsl:sort select="when" data-type="text" order="ascending"/>
