@@ -25,7 +25,18 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xsl:variable name="qod_facts" select="/fb/f[what='quantity-of-deliverables' and xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
   <xsl:template match="/fb" mode="qod">
-    <xsl:variable name="fb" select="."/>
+    <xsl:choose>
+      <xsl:when test="empty($qod_facts)">
+        <p class="darkred">
+          <xsl:text>There is no information about the Quantity of Deliverables.</xsl:text>
+        </p>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="qod-non-empty"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template match="/fb" mode="qod-non-empty">
     <div class="qod">
       <h2>
         <xsl:text>Quantity of Deliverables</xsl:text>

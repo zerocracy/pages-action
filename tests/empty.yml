@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # MIT License
 #
 # Copyright (c) 2024 Zerocracy
@@ -21,24 +19,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-require 'fbe/fb'
-require 'fbe/award'
-require 'redcarpet'
-
-return unless Fbe.fb.query('(eq what "hr-policy")').each.to_a.empty?
-
-f = Fbe.fb.query('(and (eq what "pmp") (eq area "hr"))').each.to_a.first
-htmls = []
-par = 1
-f&.all_properties&.each do |prop|
-  q = f[prop].first
-  next unless q.is_a?(String)
-  next unless q.start_with?('(award')
-  md = Fbe::Award.new(q).policy.markdown
-  htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(md)
-  par += 1
-end
-s = Fbe.fb.insert
-s.what = 'hr-policy'
-s.html = "<div>#{htmls.join}</div>" unless htmls.empty?
+---
+-
+  what: pmp
+  area: hr
+  days_of_running_balance: 28

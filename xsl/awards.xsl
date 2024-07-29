@@ -76,9 +76,9 @@ SOFTWARE.
   <xsl:template match="/fb" mode="awards">
     <xsl:choose>
       <xsl:when test="empty($facts)">
-        <p>
+        <p class="darkred">
           <xsl:text>No awards since </xsl:text>
-          <xsl:value-of select="$since"/>
+          <xsl:value-of select="xs:date($since)"/>
           <xsl:text> (</xsl:text>
           <xsl:value-of select="$days"/>
           <xsl:text> days before today)</xsl:text>

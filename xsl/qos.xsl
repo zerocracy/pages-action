@@ -25,7 +25,18 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xsl:variable name="qos_facts" select="/fb/f[what='quality-of-service' and xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
   <xsl:template match="/fb" mode="qos">
-    <xsl:variable name="fb" select="."/>
+    <xsl:choose>
+      <xsl:when test="empty($qos_facts)">
+        <p class="darkred">
+          <xsl:text>There is no information about the Quality of Service.</xsl:text>
+        </p>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="qos-non-empty"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <xsl:template match="/fb" mode="qos-non-empty">
     <div class="qos">
       <h2>
         <xsl:text>Quality of Service</xsl:text>
