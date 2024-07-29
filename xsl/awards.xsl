@@ -106,7 +106,7 @@ SOFTWARE.
       <xsl:text>
         $(function() {
           $("#awards").tablesorter({
-            sortList: [[3 + weeks, 1]]
+            sortList: [[2 + weeks, 1]]
           });
         });
       </xsl:text>
