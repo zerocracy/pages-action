@@ -222,7 +222,7 @@ SOFTWARE.
         <xsl:copy-of select="z:award(sum(/fb/f[who_name=$name and award and xs:dateTime(when) &gt; $since]/award))"/>
       </td>
     </tr>
-    <xsl:for-each select="/fb/f[who_name=$name and award]">
+    <xsl:for-each select="/fb/f[who_name=$name and award and xs:dateTime(when) &gt; $since]">
       <xsl:variable name="fact" select="."/>
       <tr class="sub tablesorter-childRow p_ p_{$name}" style="display: none;">
         <td>
