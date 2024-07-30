@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs">
-  <xsl:variable name="days" select="z:pmp(/fb, 'hr', 'days_of_running_balance')"/>
+  <xsl:variable name="days" select="z:pmp(/fb, 'hr', 'days_of_running_balance', 28)"/>
   <xsl:variable name="weeks" select="xs:integer(ceiling(xs:float($days) div 7))"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
   <xsl:variable name="facts" select="/fb/f[award and xs:dateTime(when) &gt; $since and is_human = 1]"/>

@@ -33,33 +33,29 @@ SOFTWARE.
   <xsl:param name="fbe"/>
   <xsl:import href="awards.xsl"/>
   <xsl:import href="policy.xsl"/>
-  <xsl:import href="qod.xsl"/>
-  <xsl:import href="qos.xsl"/>
+  <xsl:import href="qo-section.xsl"/>
   <xsl:function name="z:pmp">
     <xsl:param name="fb"/>
     <xsl:param name="area"/>
     <xsl:param name="param"/>
+    <xsl:param name="default"/>
     <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area]"/>
-    <xsl:if test="not($a)">
-      <xsl:message terminate="yes">
-        <xsl:text>There is no PMP fact for the area '</xsl:text>
-        <xsl:value-of select="$area"/>
-        <xsl:text>', can't read '</xsl:text>
-        <xsl:value-of select="$param"/>
-        <xsl:text>' from it :(</xsl:text>
-      </xsl:message>
-    </xsl:if>
-    <xsl:variable name="v" select="$a/*[name()=$param]/text()"/>
-    <xsl:if test="not($v)">
-      <xsl:message terminate="yes">
-        <xsl:text>There is no parameter '</xsl:text>
-        <xsl:value-of select="$param"/>
-        <xsl:text>' in the PMP artifact for the '</xsl:text>
-        <xsl:value-of select="$area"/>
-        <xsl:text>' area</xsl:text>
-      </xsl:message>
-    </xsl:if>
-    <xsl:value-of select="$v"/>
+    <xsl:choose>
+      <xsl:when test="$a">
+        <xsl:variable name="v" select="$a/*[name()=$param]/text()"/>
+        <xsl:choose>
+          <xsl:when test="$v">
+            <xsl:value-of select="$v"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="$default"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$default"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <xsl:template name="javascript">
     <xsl:param name="url"/>
@@ -121,8 +117,14 @@ SOFTWARE.
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
             <xsl:apply-templates select="/fb/f[what='hr-policy']"/>
-            <xsl:apply-templates select="/fb" mode="qos"/>
-            <xsl:apply-templates select="/fb" mode="qod"/>
+            <xsl:call-template name="qo-section">
+              <xsl:with-param name="what" select="'quality-of-service'"/>
+              <xsl:with-param name="title" select="'Quality of Service'"/>
+            </xsl:call-template>
+            <xsl:call-template name="qo-section">
+              <xsl:with-param name="what" select="'quantity-of-deliverables'"/>
+              <xsl:with-param name="title" select="'Quantity of Deliverables'"/>
+            </xsl:call-template>
           </article>
           <footer>
             <p>

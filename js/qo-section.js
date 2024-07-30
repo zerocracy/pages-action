@@ -22,13 +22,18 @@
  * SOFTWARE.
  */
 
-$(function() {
-  const ctx = document.getElementById('qos');
+/**
+ * Render QO canvas.
+ * @param canvas The ID of "canvas" element in HTML
+ * @param data Hash with data for the Chart
+ */
+function qo_render(canvas, data) {
+  const ctx = document.getElementById(canvas);
   new Chart(ctx, {
     type: 'line',
-    data: qos_data,
+    data: data,
     options: {
       responsive: false,
     }
   });
-});
+}
