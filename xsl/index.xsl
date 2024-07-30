@@ -119,11 +119,11 @@ SOFTWARE.
             <xsl:apply-templates select="/fb/f[what='hr-policy']"/>
             <xsl:call-template name="qo-section">
               <xsl:with-param name="what" select="'quality-of-service'"/>
-              <xsl:with-param name="title" select="'Quality of Service'"/>
+              <xsl:with-param name="title" select="'Quality of Service (QoS)'"/>
             </xsl:call-template>
             <xsl:call-template name="qo-section">
               <xsl:with-param name="what" select="'quantity-of-deliverables'"/>
-              <xsl:with-param name="title" select="'Quantity of Deliverables'"/>
+              <xsl:with-param name="title" select="'Quantity of Deliverables (QoD)'"/>
             </xsl:call-template>
           </article>
           <footer>
