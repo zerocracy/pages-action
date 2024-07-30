@@ -130,7 +130,11 @@ SOFTWARE.
           </article>
           <footer>
             <p>
-              <xsl:text>The value of "today" is </xsl:text>
+              <xsl:text>The value of </xsl:text>
+              <span class="ff">
+                <xsl:text>today</xsl:text>
+              </span>
+              <xsl:text> is </xsl:text>
               <xsl:value-of select="$today"/>
               <xsl:text>.</xsl:text>
               <br/>
