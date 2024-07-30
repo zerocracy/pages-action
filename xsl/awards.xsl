@@ -117,7 +117,7 @@ SOFTWARE.
         });
       </xsl:text>
     </script>
-    <table id="awards" border="1">
+    <table id="awards">
       <colgroup span="4">
         <!-- Avatar -->
         <col style="width: 2.5em;"/>
@@ -167,7 +167,7 @@ SOFTWARE.
         </tr>
       </thead>
       <tbody>
-        <xsl:for-each-group select="f[who_name and award]" group-by="who_name">
+        <xsl:for-each-group select="$facts" group-by="who_name">
           <xsl:sort select="sum(award)" data-type="number" order="descending"/>
           <xsl:variable name="name" select="who_name/text()"/>
           <xsl:if test="count($facts[who_name = $name]) &gt; 0">

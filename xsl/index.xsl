@@ -34,6 +34,7 @@ SOFTWARE.
   <xsl:import href="awards.xsl"/>
   <xsl:import href="policy.xsl"/>
   <xsl:import href="qo-section.xsl"/>
+  <xsl:import href="dot.xsl"/>
   <xsl:function name="z:pmp">
     <xsl:param name="fb"/>
     <xsl:param name="area"/>
@@ -116,7 +117,7 @@ SOFTWARE.
           </header>
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
-            <xsl:apply-templates select="/fb/f[what='hr-policy']"/>
+            <xsl:apply-templates select="/" mode="policy"/>
             <xsl:call-template name="qo-section">
               <xsl:with-param name="what" select="'quality-of-service'"/>
               <xsl:with-param name="title" select="'Quality of Service (QoS)'"/>
@@ -125,6 +126,7 @@ SOFTWARE.
               <xsl:with-param name="what" select="'quantity-of-deliverables'"/>
               <xsl:with-param name="title" select="'Quantity of Deliverables (QoD)'"/>
             </xsl:call-template>
+            <xsl:apply-templates select="/" mode="dot"/>
           </article>
           <footer>
             <p>

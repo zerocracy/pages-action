@@ -116,3 +116,14 @@
   total_issues_created: 5
   total_pulls_submitted: 4
   total_hoc_written: 4
+-
+  when: 2024-07-01T22:22:22.8492Z
+  what: dimensions-of-terrain
+  total_repositories: 4
+  total_forks: 23
+  total_stars: 443
+-
+  when: 2024-06-23T22:22:22.8492Z
+  what: dimensions-of-terrain
+  total_repositories: 3
+  total_forks: 20
