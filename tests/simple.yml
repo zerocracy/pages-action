@@ -21,6 +21,7 @@
 # SOFTWARE.
 ---
 -
+  _id: 1
   what: pmp
   area: hr
   days_of_running_balance: 30
@@ -45,18 +46,21 @@
       (give b2 "for #{days} days of delay")
       )
 -
+  _id: 2
   when: 2024-06-26T22:22:22.8492Z
   award: 14
   who: 6305016
   is_human: 1
   why: for important issue reported
 -
+  _id: 3
   when: 2024-06-16T22:22:22.8492Z
   award: -56
   who: 6305016
   is_human: 1
   why: for fun
 -
+  _id: 4
   when: 2024-07-05T22:22:22.8492Z
   award: -8
   who: 526301
@@ -64,6 +68,7 @@
   why: for being a good boy
   href: https://github.com/yegor256/judges/issues/111
 -
+  _id: 5
   when: 2024-07-04T22:22:22.8492Z
   award: 15
   who: 526301
@@ -71,6 +76,7 @@
   why: for being a great programmer
   href: https://github.com/yegor256/judges/issues/111
 -
+  _id: 6
   when: 2024-07-03T22:22:22.8492Z
   award: -24
   who: 6305016
@@ -78,6 +84,7 @@
   why: for being a bad boy
   href: https://github.com/yegor256/judges/issues/111
 -
+  _id: 7
   when: 2024-07-02T22:22:22.8492Z
   award: 55
   who: 6305016
@@ -85,6 +92,7 @@
   why: for new release
   href: https://github.com/yegor256/judges/issues/111
 -
+  _id: 8
   when: 2024-07-03T22:22:22.8492Z
   what: quality-of-service
   average_issue_lifetime: 433.54
@@ -92,11 +100,13 @@
   average_release_interval: 43432.42
   average_workflow_success_rate: 0.56
 -
+  _id: 9
   when: 2024-06-23T22:22:22.8492Z
   what: quality-of-service
   average_pull_lifetime: 3989.98
   average_release_interval: 41432.42
 -
+  _id: 10
   when: 2024-06-03T22:22:22.8492Z
   what: quality-of-service
   average_issue_lifetime: 323.54
@@ -104,12 +114,14 @@
   average_release_interval: 40432.42
   average_workflow_success_rate: 0.67
 -
+  _id: 11
   when: 2024-06-23T22:22:22.8492Z
   what: quantity-of-deliverables
   total_commits_pushed: 43
   total_issues_created: 2
   total_pulls_submitted: 2
 -
+  _id: 12
   when: 2024-07-01T22:22:22.8492Z
   what: quantity-of-deliverables
   total_commits_pushed: 41
@@ -117,12 +129,14 @@
   total_pulls_submitted: 4
   total_hoc_written: 4
 -
+  _id: 13
   when: 2024-07-01T22:22:22.8492Z
   what: dimensions-of-terrain
   total_repositories: 4
   total_forks: 23
   total_stars: 443
 -
+  _id: 14
   when: 2024-06-23T22:22:22.8492Z
   what: dimensions-of-terrain
   total_repositories: 3

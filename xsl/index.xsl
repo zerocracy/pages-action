@@ -139,7 +139,14 @@ SOFTWARE.
                 <xsl:text>pages-action</xsl:text>
               </a>
               <xsl:text> plugin (</xsl:text>
-              <xsl:value-of select="$version"/>
+              <span>
+                <xsl:attribute name="style">
+                  <xsl:if test="$version = '0.0.0'">
+                    <xsl:text>background: firebrick; color: white;</xsl:text>
+                  </xsl:if>
+                </xsl:attribute>
+                <xsl:value-of select="$version"/>
+              </span>
               <xsl:text>) on </xsl:text>
               <xsl:value-of select="current-dateTime()"/>
               <xsl:text>.</xsl:text>

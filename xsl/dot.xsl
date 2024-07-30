@@ -79,7 +79,8 @@ SOFTWARE.
         </tr>
       </thead>
       <tbody>
-        <xsl:for-each select="distinct-values($dot_facts/*[contains(name(), '_')]/name())">
+        <xsl:for-each select="distinct-values($dot_facts/*[contains(name(), '_') and not(starts-with(name(), '_'))]/name())">
+          <xsl:sort select="." data-type="text"/>
           <xsl:variable name="n" select="."/>
           <tr>
             <td class="ff">
