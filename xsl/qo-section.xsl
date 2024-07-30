@@ -36,15 +36,13 @@ SOFTWARE.
         </p>
       </xsl:when>
       <xsl:otherwise>
-        <div>
-          <h2>
-            <xsl:value-of select="$title"/>
-          </h2>
-          <div style="width: 800px;">
-            <canvas id="{$what}" style="width: 100%">
-              <xsl:text> </xsl:text>
-            </canvas>
-          </div>
+        <h2>
+          <xsl:value-of select="$title"/>
+        </h2>
+        <div style="width: 800px;">
+          <canvas id="{$what}" style="width: 100%">
+            <xsl:text> </xsl:text>
+          </canvas>
         </div>
         <script type="text/javascript">
           <xsl:text>$(function() { qo_render('</xsl:text>
