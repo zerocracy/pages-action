@@ -24,7 +24,7 @@
 set -e
 set -o pipefail
 
-VERSION=0.0.0
+VERSION=0.0.30
 
 if [ -z "${JUDGES}" ]; then
     JUDGES=judges
