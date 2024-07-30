@@ -45,7 +45,7 @@ SOFTWARE.
           </canvas>
         </div>
         <script type="text/javascript">
-          <xsl:text>$(function() { qo_render('</xsl:text>
+          <xsl:text>$(function(){qo_render('</xsl:text>
           <xsl:value-of select="$what"/>
           <xsl:text>',{labels:[</xsl:text>
           <xsl:for-each select="$facts">
@@ -60,12 +60,12 @@ SOFTWARE.
           <xsl:text>],</xsl:text>
           <xsl:text>datasets:[</xsl:text>
           <xsl:for-each select="distinct-values($facts/*[starts-with(name(), 'n_')]/name())">
-            <xsl:variable name="metric" select="."/>
+            <xsl:variable name="n" select="."/>
             <xsl:if test="position() &gt; 1">
               <xsl:text>,</xsl:text>
             </xsl:if>
             <xsl:text>{label:'</xsl:text>
-            <xsl:value-of select="substring-after($metric, 'n_')"/>
+            <xsl:value-of select="substring-after($n, 'n_')"/>
             <xsl:text>',data:[</xsl:text>
             <xsl:for-each select="$facts">
               <xsl:sort select="when" data-type="text" order="ascending"/>
@@ -73,8 +73,8 @@ SOFTWARE.
                 <xsl:text>,</xsl:text>
               </xsl:if>
               <xsl:choose>
-                <xsl:when test="*[name()=$metric]">
-                  <xsl:value-of select="*[name()=$metric]/text()"/>
+                <xsl:when test="*[name()=$n]">
+                  <xsl:value-of select="*[name()=$n]/text()"/>
                 </xsl:when>
                 <xsl:otherwise>
                   <xsl:text>null</xsl:text>
