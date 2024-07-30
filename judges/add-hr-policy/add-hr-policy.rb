@@ -41,4 +41,4 @@ f&.all_properties&.each do |prop|
 end
 s = Fbe.fb.insert
 s.what = 'hr-policy'
-s.html = "<div>#{htmls.join}</div>" unless htmls.empty?
+s.html = htmls.join unless htmls.empty?
