@@ -47,30 +47,30 @@ SOFTWARE.
         <script type="text/javascript">
           <xsl:text>$(function() { qo_render('</xsl:text>
           <xsl:value-of select="$what"/>
-          <xsl:text>', { labels: [</xsl:text>
+          <xsl:text>',{labels:[</xsl:text>
           <xsl:for-each select="$facts">
             <xsl:sort select="when" data-type="text" order="ascending"/>
             <xsl:if test="position() &gt; 1">
-              <xsl:text>, </xsl:text>
+              <xsl:text>,</xsl:text>
             </xsl:if>
             <xsl:text>'</xsl:text>
             <xsl:value-of select="format-date(xs:date(xs:dateTime(when)), '[M1]/[D1]')"/>
             <xsl:text>'</xsl:text>
           </xsl:for-each>
           <xsl:text>],</xsl:text>
-          <xsl:text>datasets: [</xsl:text>
+          <xsl:text>datasets:[</xsl:text>
           <xsl:for-each select="distinct-values($facts/*[starts-with(name(), 'n_')]/name())">
             <xsl:variable name="metric" select="."/>
             <xsl:if test="position() &gt; 1">
               <xsl:text>, </xsl:text>
             </xsl:if>
-            <xsl:text>{ label: '</xsl:text>
+            <xsl:text>{label:'</xsl:text>
             <xsl:value-of select="$metric"/>
-            <xsl:text>', data: [</xsl:text>
+            <xsl:text>',data:[</xsl:text>
             <xsl:for-each select="$facts">
               <xsl:sort select="when" data-type="text" order="ascending"/>
               <xsl:if test="position() &gt; 1">
-                <xsl:text>, </xsl:text>
+                <xsl:text>,</xsl:text>
               </xsl:if>
               <xsl:choose>
                 <xsl:when test="*[name()=$metric]">
@@ -81,9 +81,9 @@ SOFTWARE.
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:for-each>
-            <xsl:text>] }</xsl:text>
+            <xsl:text>]}</xsl:text>
           </xsl:for-each>
-          <xsl:text>] });})</xsl:text>
+          <xsl:text>]});});</xsl:text>
         </script>
       </xsl:otherwise>
     </xsl:choose>
