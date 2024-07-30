@@ -22,52 +22,10 @@
  * SOFTWARE.
 **/
 
-@import 'awards.scss';
-@import 'policy.scss';
-@import 'qo-section.scss';
+.qo-section {
+  width: 800px;
 
-$black: #131515;
-$gray: #282828;
-
-section {
-    width: auto;
-}
-
-footer {
-    color: $gray;
-    font-size: 0.8em;
-    line-height: 1.2em;
-    text-align: center;
-}
-
-article {
-    border: 0;
-}
-
-header {
-    text-align: center;
-
-    a:hover {
-        text-decoration: none;
-    }
-
-    img {
-        height: 64px;
-        vertical-align: middle;
-    }
-
-    span {
-        background-color: $black;
-        border-radius: .2em;
-        color: white;
-        font-size: 2em;
-        font-weight: bolder;
-        margin-left: 1em;
-        padding: .0em .2em;
-        vertical-align: middle;
-    }
-}
-
-.ff {
-    font-family: monospace;
+  canvas {
+    width: 100%;
+  }
 }

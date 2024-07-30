@@ -39,8 +39,8 @@ SOFTWARE.
         <h2>
           <xsl:value-of select="$title"/>
         </h2>
-        <div style="width: 800px;">
-          <canvas id="{$what}" style="width: 100%">
+        <div class="qo-section">
+          <canvas id="{$what}">
             <xsl:text> </xsl:text>
           </canvas>
         </div>
