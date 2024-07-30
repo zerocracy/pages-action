@@ -62,7 +62,7 @@ SOFTWARE.
           <xsl:for-each select="distinct-values($facts/*[starts-with(name(), 'n_')]/name())">
             <xsl:variable name="metric" select="."/>
             <xsl:if test="position() &gt; 1">
-              <xsl:text>, </xsl:text>
+              <xsl:text>,</xsl:text>
             </xsl:if>
             <xsl:text>{label:'</xsl:text>
             <xsl:value-of select="$metric"/>
