@@ -65,7 +65,7 @@ SOFTWARE.
               <xsl:text>,</xsl:text>
             </xsl:if>
             <xsl:text>{label:'</xsl:text>
-            <xsl:value-of select="$metric"/>
+            <xsl:value-of select="substring-after($metric, 'n_')"/>
             <xsl:text>',data:[</xsl:text>
             <xsl:for-each select="$facts">
               <xsl:sort select="when" data-type="text" order="ascending"/>
