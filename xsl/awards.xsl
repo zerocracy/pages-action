@@ -206,9 +206,11 @@ SOFTWARE.
       <tbody>
         <xsl:for-each-group select="$facts" group-by="who_name">
           <xsl:sort select="sum(award)" data-type="number" order="descending"/>
+          <xsl:variable name="id" select="who/text()"/>
           <xsl:variable name="name" select="who_name/text()"/>
           <xsl:if test="count($facts[who_name = $name]) &gt; 0">
             <xsl:call-template name="programmer">
+              <xsl:with-param name="id" select="$id"/>
               <xsl:with-param name="name" select="$name"/>
             </xsl:call-template>
           </xsl:if>
@@ -255,13 +257,14 @@ SOFTWARE.
     </table>
   </xsl:template>
   <xsl:template name="programmer">
+    <xsl:param name="id"/>
     <xsl:param name="name"/>
     <tr>
-      <td class="avatar">
+      <td class="avatar" title="{$id}">
         <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
       </td>
       <td>
-        <span class="ff">
+        <span class="ff" title="{$id}">
           <a>
             <xsl:attribute name="href">
               <xsl:text>https://github.com/</xsl:text>
