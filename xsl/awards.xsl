@@ -43,7 +43,7 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="z:payables">
     <xsl:param name="name"/>
-    <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name and last()]"/>
+    <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name][last()]"/>
     <xsl:choose>
       <xsl:when test="$rec">
         <td class="right ff">
