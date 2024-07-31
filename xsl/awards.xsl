@@ -23,10 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs">
+  <xsl:variable name="fb" select="/fb"/>
   <xsl:variable name="days" select="z:pmp(/fb, 'hr', 'days_of_running_balance', 28)"/>
   <xsl:variable name="weeks" select="xs:integer(ceiling(xs:float($days) div 7))"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
-  <xsl:variable name="facts" select="/fb/f[award and xs:dateTime(when) &gt; $since and is_human = 1]"/>
+  <xsl:variable name="facts" select="$fb/f[award and xs:dateTime(when) &gt; $since and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="d" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', ($weeks - $week) * 7, 'D'))"/>
@@ -39,6 +40,37 @@ SOFTWARE.
     <xsl:variable name="monday" select="xs:dateTime(z:monday($week))"/>
     <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
     <xsl:value-of select="xs:dateTime($when) &gt; $monday and xs:dateTime($when) &lt; $sunday"/>
+  </xsl:function>
+  <xsl:function name="z:payables">
+    <xsl:param name="name"/>
+    <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name and last()]"/>
+    <xsl:choose>
+      <xsl:when test="$rec">
+        <td class="right ff">
+          <xsl:variable name="accumulated" select="sum($facts[who_name=$name and xs:dateTime(when) &gt; xs:dateTime($rec/since)]/award)"/>
+          <xsl:variable name="delta" select="$accumulated - xs:integer($rec/awarded)"/>
+          <xsl:variable name="payable" select="$accumulated - xs:integer($rec/awarded) + xs:integer($rec/balance)"/>
+          <xsl:attribute name="title">
+            <xsl:text>The last payout of </xsl:text>
+            <xsl:value-of select="xs:integer($rec/payout)"/>
+            <xsl:text> points has been made on </xsl:text>
+            <xsl:value-of select="xs:date(xs:dateTime($rec/when))"/>
+            <xsl:text>, making the amount payable equal to </xsl:text>
+            <xsl:value-of select="$rec/balance"/>
+            <xsl:text>; since then you've accumulated </xsl:text>
+            <xsl:value-of select="$delta"/>
+            <xsl:text> points, that's why the amount payable now is </xsl:text>
+            <xsl:value-of select="$payable"/>
+          </xsl:attribute>
+          <xsl:value-of select="$payable"/>
+        </td>
+      </xsl:when>
+      <xsl:otherwise>
+        <td>
+          <xsl:text> </xsl:text>
+        </td>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <xsl:function name="z:award">
     <xsl:param name="a"/>
@@ -130,10 +162,12 @@ SOFTWARE.
         </xsl:attribute>
         <xsl:for-each select="1 to $weeks">
           <!-- Weeks -->
-          <col style="width: 3em;"/>
+          <col style="width: 4em;"/>
         </xsl:for-each>
-        <!-- Total -->
-        <col style="width: 3em;"/>
+        <!-- Run -->
+        <col style="width: 4em;"/>
+        <!-- Pay -->
+        <col style="width: 4em;"/>
       </colgroup>
       <thead>
         <tr>
@@ -162,7 +196,10 @@ SOFTWARE.
             </th>
           </xsl:for-each>
           <th class="right sorter">
-            <xsl:text>Total</xsl:text>
+            <xsl:text>Run</xsl:text>
+          </th>
+          <th class="right sorter">
+            <xsl:text>Pay</xsl:text>
           </th>
         </tr>
       </thead>
@@ -209,6 +246,10 @@ SOFTWARE.
             <xsl:copy-of select="z:td-award(sum($facts[z:in-week(when, $week)]/award))"/>
           </xsl:for-each>
           <xsl:copy-of select="z:td-award(sum($facts/award))"/>
+          <td class="right ff">
+            <!-- Balance -->
+            <xsl:text> </xsl:text>
+          </td>
         </tr>
       </tfoot>
     </table>
@@ -246,6 +287,7 @@ SOFTWARE.
         <xsl:copy-of select="z:td-award(sum($facts[who_name=$name and z:in-week(when, $week)]/award))"/>
       </xsl:for-each>
       <xsl:copy-of select="z:td-award(sum($facts[who_name=$name]/award))"/>
+      <xsl:copy-of select="z:payables($name)"/>
     </tr>
     <xsl:for-each select="$facts[who_name=$name]">
       <xsl:sort select="when" data-type="text"/>
@@ -284,7 +326,11 @@ SOFTWARE.
           </td>
         </xsl:for-each>
         <td>
-          <!-- Total -->
+          <!-- Run -->
+          <xsl:text> </xsl:text>
+        </td>
+        <td>
+          <!-- Pay -->
           <xsl:text> </xsl:text>
         </td>
       </tr>
