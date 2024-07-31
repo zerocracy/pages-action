@@ -88,7 +88,7 @@ SOFTWARE.
             </td>
             <xsl:for-each select="1 to $weeks">
               <xsl:variable name="week" select="xs:integer(.)"/>
-              <xsl:variable name="f" select="$dot_facts[z:in-week(when, $week) and last()]"/>
+              <xsl:variable name="f" select="$dot_facts[z:in-week(when, $week)][last()]"/>
               <td class="ff right">
                 <xsl:choose>
                   <xsl:when test="$f">
