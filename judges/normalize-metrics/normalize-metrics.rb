@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # MIT License
 #
 # Copyright (c) 2024 Zerocracy
@@ -19,32 +21,41 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
----
-options:
-  testing: true
-input:
-  -
-    when: 2024-05-16T22:22:22.8492Z
-    what: quality-of-service
-  -
-    when: 2024-05-17T22:22:22.8492Z
-    what: quality-of-service
-    average_issue_lifetime: 433.54
-    average_release_interval: 43432.42
-    average_workflow_success_rate: 0.56
-  -
-    when: 2024-04-18T22:22:22.8492Z
-    what: quality-of-service
-    average_issue_lifetime: 323.54
-    average_pull_lifetime: 2092.98
-    average_release_interval: 40432.42
-    average_workflow_success_rate: 0.67
-  -
-    when: 2024-04-19T22:22:22.8492Z
-    what: quality-of-service
-    average_release_interval: 40432.42
-    average_workflow_success_rate: 0.67
-expected:
-  - /fb[count(f)=4]
-  - /fb/f[n_average_issue_lifetime]
-  - /fb/f[n_average_release_interval]
+
+require 'fbe/fb'
+
+%w[quantity-of-deliverables quality-of-service].each do |kind|
+  facts = Fbe.fb.query("(eq what '#{kind}')").each.to_a
+
+  facts.sort! { |a, b| a.when <=> b.when }
+  next if facts.empty?
+
+  start = {}
+  first = facts.first
+  first.all_properties.each do |prop|
+    next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
+    next if prop.start_with?('n_')
+    start[prop] = first[prop][0]
+  end
+
+  facts.drop(1).each do |f|
+    f.all_properties.each do |prop|
+      next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
+      next if prop.start_with?('n_')
+      v = f[prop][0]
+      start[prop] = v if start[prop].nil?
+    end
+  end
+
+  facts.each do |f|
+    f.all_properties.each do |prop|
+      next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
+      next if prop.start_with?('n_')
+      v = f[prop][0]
+      s = start[prop]
+      diff = v - s
+      diff /= start[prop] unless start[prop].zero?
+      f.send("n_#{prop}=", diff)
+    end
+  end
+end

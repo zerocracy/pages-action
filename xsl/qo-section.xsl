@@ -66,9 +66,16 @@ SOFTWARE.
             </xsl:if>
             <xsl:text>{label:'</xsl:text>
             <xsl:value-of select="substring-after($n, 'n_')"/>
-            <xsl:text>',borderColor:color.darken(</xsl:text>
-            <xsl:value-of select="(position() - 1) * 0.5"/>
-            <xsl:text>).hex()</xsl:text>
+            <xsl:text>',borderColor:</xsl:text>
+            <xsl:choose>
+              <xsl:when test="$n = 'n_composite'">
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>color.darken(</xsl:text>
+                <xsl:value-of select="position() * 0.4"/>
+                <xsl:text>).hex()</xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
             <xsl:text>,data:[</xsl:text>
             <xsl:for-each select="$facts">
               <xsl:sort select="when" data-type="text" order="ascending"/>

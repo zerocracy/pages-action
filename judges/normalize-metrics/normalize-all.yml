@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # MIT License
 #
 # Copyright (c) 2024 Zerocracy
@@ -21,39 +19,37 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-require 'fbe/fb'
-
-facts = Fbe.fb.query('(eq what "quality-of-service")').each.to_a
-
-facts.sort! { |a, b| a.when <=> b.when }
-return if facts.empty?
-
-start = {}
-first = facts.first
-first.all_properties.each do |prop|
-  next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
-  next if prop.start_with?('n_')
-  start[prop] = first[prop][0]
-end
-
-facts.drop(1).each do |f|
-  f.all_properties.each do |prop|
-    next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
-    next if prop.start_with?('n_')
-    v = f[prop][0]
-    start[prop] = v if start[prop].nil?
-  end
-end
-
-facts.each do |f|
-  f.all_properties.each do |prop|
-    next unless prop.match?(/^[a-z]+_[a-z]+.*$/)
-    next if prop.start_with?('n_')
-    v = f[prop][0]
-    s = start[prop]
-    diff = v - s
-    diff /= start[prop] unless start[prop].zero?
-    f.send("n_#{prop}=", diff)
-  end
-end
+---
+options:
+  testing: true
+input:
+  -
+    when: 2024-05-16T22:22:22.8492Z
+    what: quality-of-service
+  -
+    when: 2024-05-17T22:22:22.8492Z
+    what: quality-of-service
+    average_issue_lifetime: 433.54
+    average_release_interval: 43432.42
+    average_workflow_success_rate: 0.56
+  -
+    when: 2024-04-18T22:22:22.8492Z
+    what: quality-of-service
+    average_issue_lifetime: 323.54
+    average_pull_lifetime: 2092.98
+    average_release_interval: 40432.42
+    average_workflow_success_rate: 0.67
+  -
+    when: 2024-04-19T22:22:22.8492Z
+    what: quality-of-service
+    average_release_interval: 40432.42
+    average_workflow_success_rate: 0.67
+  -
+    when: 2024-04-19T22:22:22.8492Z
+    what: quantity-of-deliverables
+    total_forks: 20
+expected:
+  - /fb[count(f)=5]
+  - /fb/f[n_average_issue_lifetime]
+  - /fb/f[n_average_release_interval]
+  - /fb/f[n_total_forks]
