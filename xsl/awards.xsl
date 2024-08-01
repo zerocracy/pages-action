@@ -167,7 +167,9 @@ SOFTWARE.
         <!-- Run -->
         <col style="width: 4em;"/>
         <!-- Pay -->
-        <col style="width: 4em;"/>
+        <xsl:if test="$fb/f[what='reconciliation']">
+          <col style="width: 4em;"/>
+        </xsl:if>
       </colgroup>
       <thead>
         <tr>
@@ -198,9 +200,11 @@ SOFTWARE.
           <th class="right sorter">
             <xsl:text>Run</xsl:text>
           </th>
-          <th class="right sorter">
-            <xsl:text>Pay</xsl:text>
-          </th>
+          <xsl:if test="$fb/f[what='reconciliation']">
+            <th class="right sorter">
+              <xsl:text>Pay</xsl:text>
+            </th>
+          </xsl:if>
         </tr>
       </thead>
       <tbody>
@@ -248,10 +252,12 @@ SOFTWARE.
             <xsl:copy-of select="z:td-award(sum($facts[z:in-week(when, $week)]/award))"/>
           </xsl:for-each>
           <xsl:copy-of select="z:td-award(sum($facts/award))"/>
-          <td class="right ff">
-            <!-- Balance -->
-            <xsl:text> </xsl:text>
-          </td>
+          <xsl:if test="$fb/f[what='reconciliation']">
+            <td class="right ff">
+              <!-- Pay -->
+              <xsl:text> </xsl:text>
+            </td>
+          </xsl:if>
         </tr>
       </tfoot>
     </table>
@@ -290,7 +296,9 @@ SOFTWARE.
         <xsl:copy-of select="z:td-award(sum($facts[who_name=$name and z:in-week(when, $week)]/award))"/>
       </xsl:for-each>
       <xsl:copy-of select="z:td-award(sum($facts[who_name=$name]/award))"/>
-      <xsl:copy-of select="z:payables($name)"/>
+      <xsl:if test="$fb/f[what='reconciliation']">
+        <xsl:copy-of select="z:payables($name)"/>
+      </xsl:if>
     </tr>
     <xsl:for-each select="$facts[who_name=$name]">
       <xsl:sort select="when" data-type="text"/>
@@ -332,10 +340,12 @@ SOFTWARE.
           <!-- Run -->
           <xsl:text> </xsl:text>
         </td>
-        <td>
-          <!-- Pay -->
-          <xsl:text> </xsl:text>
-        </td>
+        <xsl:if test="$fb/f[what='reconciliation']">
+          <td>
+            <!-- Pay -->
+            <xsl:text> </xsl:text>
+          </td>
+        </xsl:if>
       </tr>
     </xsl:for-each>
   </xsl:template>
