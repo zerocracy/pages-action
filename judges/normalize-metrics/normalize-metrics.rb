@@ -31,8 +31,8 @@ def fits(name)
   true
 end
 
-%w[quantity-of-deliverables quality-of-service].each do |kind|
-  facts = Fbe.fb.query("(eq what '#{kind}')").each.to_a
+%w[quantity-of-deliverables quality-of-service].each do |qo|
+  facts = Fbe.fb.query("(eq what '#{qo}')").each.to_a
 
   facts.sort! { |a, b| a.when <=> b.when }
   next if facts.empty?
