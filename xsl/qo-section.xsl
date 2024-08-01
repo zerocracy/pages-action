@@ -69,11 +69,13 @@ SOFTWARE.
             <xsl:text>',borderColor:</xsl:text>
             <xsl:choose>
               <xsl:when test="$n = 'n_composite'">
+                <xsl:text>'orange'</xsl:text>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:text>color.darken(</xsl:text>
                 <xsl:value-of select="position() * 0.4"/>
                 <xsl:text>).hex()</xsl:text>
+                <xsl:text>,borderWidth:1</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
             <xsl:text>,data:[</xsl:text>

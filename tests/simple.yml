@@ -95,6 +95,7 @@
   _id: 8
   when: 2024-07-03T22:22:22.8492Z
   what: quality-of-service
+  composite: 1224.8
   average_issue_lifetime: 433.54
   average_pull_lifetime: 3222.98
   average_release_interval: 43432.42
@@ -103,12 +104,14 @@
   _id: 9
   when: 2024-06-23T22:22:22.8492Z
   what: quality-of-service
+  composite: 1324.8
   average_pull_lifetime: 3989.98
   average_release_interval: 41432.42
 -
   _id: 10
   when: 2024-06-03T22:22:22.8492Z
   what: quality-of-service
+  composite: 1024.8
   average_issue_lifetime: 323.54
   average_pull_lifetime: 2092.98
   average_release_interval: 40432.42
@@ -117,6 +120,7 @@
   _id: 11
   when: 2024-06-23T22:22:22.8492Z
   what: quantity-of-deliverables
+  composite: 18
   total_commits_pushed: 43
   total_issues_created: 2
   total_pulls_submitted: 2
@@ -124,6 +128,7 @@
   _id: 12
   when: 2024-07-01T22:22:22.8492Z
   what: quantity-of-deliverables
+  composite: 20
   total_commits_pushed: 41
   total_issues_created: 5
   total_pulls_submitted: 4
