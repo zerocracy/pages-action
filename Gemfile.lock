@@ -104,9 +104,9 @@ GEM
     redcarpet (3.6.0)
     regexp_parser (2.9.2)
     retries (0.0.5)
-    rexml (3.3.2)
+    rexml (3.3.4)
       strscan
-    rubocop (1.65.0)
+    rubocop (1.65.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -155,7 +155,7 @@ DEPENDENCIES
   judges (> 0)
   rake (= 13.2.1)
   redcarpet (~> 3.5)
-  rubocop (= 1.65.0)
+  rubocop (= 1.65.1)
 
 BUNDLED WITH
    2.5.6
