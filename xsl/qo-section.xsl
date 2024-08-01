@@ -45,7 +45,7 @@ SOFTWARE.
           </canvas>
         </div>
         <script type="text/javascript">
-          <xsl:text>$(function(){qo_render('</xsl:text>
+          <xsl:text>$(function(){const color = chroma('#D3D3D3'); qo_render('</xsl:text>
           <xsl:value-of select="$what"/>
           <xsl:text>',{labels:[</xsl:text>
           <xsl:for-each select="$facts">
@@ -66,7 +66,10 @@ SOFTWARE.
             </xsl:if>
             <xsl:text>{label:'</xsl:text>
             <xsl:value-of select="substring-after($n, 'n_')"/>
-            <xsl:text>',data:[</xsl:text>
+            <xsl:text>',borderColor:color.darken(</xsl:text>
+            <xsl:value-of select="(position() - 1) * 0.5"/>
+            <xsl:text>).hex()</xsl:text>
+            <xsl:text>,data:[</xsl:text>
             <xsl:for-each select="$facts">
               <xsl:sort select="when" data-type="text" order="ascending"/>
               <xsl:if test="position() &gt; 1">

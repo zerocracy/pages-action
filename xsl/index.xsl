@@ -76,15 +76,18 @@ SOFTWARE.
         <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
         <link href="https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css" rel="stylesheet"/>
         <link href="https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css" rel="stylesheet"/>
-        <xsl:call-template name="javascript">
-          <xsl:with-param name="url">https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js</xsl:with-param>
-        </xsl:call-template>
-        <xsl:call-template name="javascript">
-          <xsl:with-param name="url">https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js</xsl:with-param>
-        </xsl:call-template>
-        <xsl:call-template name="javascript">
-          <xsl:with-param name="url">https://cdn.jsdelivr.net/npm/chart.js</xsl:with-param>
-        </xsl:call-template>
+        <xsl:for-each select="(
+          'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+          'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js',
+          'https://cdn.jsdelivr.net/npm/chart.js',
+          'https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js'
+          )">
+          <xsl:call-template name="javascript">
+            <xsl:with-param name="url">
+              <xsl:value-of select="."/>
+            </xsl:with-param>
+          </xsl:call-template>
+        </xsl:for-each>
         <script type="text/javascript">
           <xsl:value-of select="$js" disable-output-escaping="yes"/>
         </script>
