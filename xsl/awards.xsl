@@ -326,7 +326,9 @@ SOFTWARE.
                     </a>
                   </xsl:when>
                   <xsl:otherwise>
-                    <xsl:copy-of select="z:award($fact/award)"/>
+                    <span title="The award hasn't been published yet">
+                      <xsl:copy-of select="z:award($fact/award)"/>
+                    </span>
                   </xsl:otherwise>
                 </xsl:choose>
               </xsl:when>
