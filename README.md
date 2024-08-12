@@ -8,14 +8,24 @@
 
 This GitHub Actions plugin is supposed to be used
 together with [judges-action](https://github.com/zerocracy/judges-action)
-(the documentation is over there). The following configuration options
-are supported here:
+(the documentation is over there). This plugin takes a Factbase file generated
+by the [judges-action](https://github.com/zerocracy/judges-action) and prints
+its content in YAML, XML, and HTML formats. Also, it prints a user-friendly
+HTML document with a summary of project status (we call it "vitals" page).
+This is how this vitals page looks for
+[our team](https://zerocracy.github.io/judges-action/zerocracy-vitals.html).
+
+The following configuration options are supported here:
 
 ```yaml
 # Your YAML config
   - uses: zerocracy/pages-action@0.0.33
     with:
       factbase: foo.fb
+      verbose: true
+      output: my-directory
+      columns: who,when,repository
+      hidden: _id,_time
       options: |
         github_token=${{ secrets.GITHUB_TOKEN }}
 ```
