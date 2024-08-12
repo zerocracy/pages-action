@@ -3,6 +3,7 @@
 [![DevOps By Rultor.com](http://www.rultor.com/b/zerocracy/pages-action)](http://www.rultor.com/p/zerocracy/pages-action)
 
 [![make](https://github.com/zerocracy/pages-action/actions/workflows/make.yml/badge.svg)](https://github.com/zerocracy/pages-action/actions/workflows/make.yml)
+[![Hits-of-Code](https://hitsofcode.com/github/zerocracy/pages-action)](https://hitsofcode.com/view/github/zerocracy/pages-action)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/zerocracy/pages-action/blob/master/LICENSE.txt)
 
 This GitHub Actions plugin is supposed to be used
