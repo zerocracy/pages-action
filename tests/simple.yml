@@ -161,3 +161,19 @@
   awarded: 220
   payout: 120
   balance: 20
+-
+  _id: 17
+  start: 2024-04-17T22:22:22.8492Z
+  when: 2024-05-17T22:22:22.8492Z
+  what: earned-value-prev
+  ac: 433
+  ev: 4373.5
+  pv: 7484.2
+-
+  _id: 17
+  start: 2024-03-17T22:22:22.8492Z
+  when: 2024-05-17T22:22:22.8492Z
+  what: earned-value-prev
+  ac: 654
+  ev: 5373.5
+  pv: 8484.2

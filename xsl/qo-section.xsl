@@ -26,6 +26,7 @@ SOFTWARE.
   <xsl:template name="qo-section">
     <xsl:param name="what" as="xs:string"/>
     <xsl:param name="title" as="xs:string"/>
+    <xsl:param name="colors" as="xs:string" select="'n_composite:orange'"/>
     <xsl:variable name="facts" select="/fb/f[what=$what and xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
     <xsl:choose>
       <xsl:when test="empty($facts)">
@@ -67,9 +68,12 @@ SOFTWARE.
             <xsl:text>{label:'</xsl:text>
             <xsl:value-of select="substring-after($n, 'n_')"/>
             <xsl:text>',borderColor:</xsl:text>
+            <xsl:variable name='c' select="substring-before(substring-after(concat(',', $colors, ','), concat(',', $n, ':')), ',')"/>
             <xsl:choose>
-              <xsl:when test="$n = 'n_composite'">
-                <xsl:text>'orange'</xsl:text>
+              <xsl:when test="$c">
+                <xsl:text>'</xsl:text>
+                <xsl:value-of select="$c"/>
+                <xsl:text>'</xsl:text>
               </xsl:when>
               <xsl:otherwise>
                 <xsl:text>color.darken(</xsl:text>
