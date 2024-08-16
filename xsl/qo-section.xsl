@@ -27,6 +27,7 @@ SOFTWARE.
     <xsl:param name="what" as="xs:string"/>
     <xsl:param name="title" as="xs:string"/>
     <xsl:param name="colors" as="xs:string" select="'n_composite:orange'"/>
+    <xsl:param name="before"/>
     <xsl:variable name="facts" select="/fb/f[what=$what and xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
     <xsl:choose>
       <xsl:when test="empty($facts)">
@@ -40,6 +41,11 @@ SOFTWARE.
         <h2>
           <xsl:value-of select="$title"/>
         </h2>
+        <xsl:if test="not(empty($before))">
+          <p>
+            <xsl:copy-of select="$before"/>
+          </p>
+        </xsl:if>
         <div class="qo-section">
           <canvas id="{$what}">
             <xsl:text> </xsl:text>

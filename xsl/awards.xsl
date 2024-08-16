@@ -88,19 +88,19 @@ SOFTWARE.
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
+      <xsl:choose>
+        <xsl:when test="$a = 0">
+          <xsl:text>—</xsl:text>
+        </xsl:when>
+        <xsl:when test="$a &gt; 0">
+          <xsl:text>+</xsl:text>
+          <xsl:value-of select="$a"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$a"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </span>
-    <xsl:choose>
-      <xsl:when test="$a = 0">
-        <xsl:text>—</xsl:text>
-      </xsl:when>
-      <xsl:when test="$a &gt; 0">
-        <xsl:text>+</xsl:text>
-        <xsl:value-of select="$a"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$a"/>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:function>
   <xsl:function name="z:td-award">
     <xsl:param name="a"/>

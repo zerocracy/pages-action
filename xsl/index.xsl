@@ -35,6 +35,31 @@ SOFTWARE.
   <xsl:import href="policy.xsl"/>
   <xsl:import href="qo-section.xsl"/>
   <xsl:import href="dot.xsl"/>
+  <xsl:function name="z:index">
+    <xsl:param name="i"/>
+    <span>
+      <xsl:attribute name="class">
+        <xsl:choose>
+          <xsl:when test="$i &gt;= 0">
+            <xsl:text>darkgreen</xsl:text>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:text>darkred</xsl:text>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
+      <xsl:variable name="v" select="format-number($i, '0.00')"/>
+      <xsl:choose>
+        <xsl:when test="$i &gt;= 0">
+          <xsl:text>+</xsl:text>
+          <xsl:value-of select="$v"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$v"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </span>
+  </xsl:function>
   <xsl:function name="z:pmp">
     <xsl:param name="fb"/>
     <xsl:param name="area"/>
@@ -133,6 +158,9 @@ SOFTWARE.
               <xsl:with-param name="what" select="'earned-value-prev'"/>
               <xsl:with-param name="title" select="'Earned Value Analysis (EVA)'"/>
               <xsl:with-param name="colors" select="'n_spi:#1c448e,n_cpi:#b8336a'"/>
+              <xsl:with-param name="before">
+                <xsl:apply-templates select="/fb/f[what='earned-value'][last()]"/>
+              </xsl:with-param>
             </xsl:call-template>
             <xsl:apply-templates select="/" mode="dot"/>
           </article>
@@ -223,5 +251,18 @@ SOFTWARE.
         </section>
       </body>
     </html>
+  </xsl:template>
+  <xsl:template match="f[what='earned-value']">
+    <xsl:text>AC: </xsl:text>
+    <xsl:value-of select="format-number(ac, '0')"/>
+    <xsl:text>, EV: </xsl:text>
+    <xsl:value-of select="format-number(ev, '0')"/>
+    <xsl:text>, PV: </xsl:text>
+    <xsl:value-of select="format-number(pv, '0')"/>
+    <xsl:text>, CPI: </xsl:text>
+    <xsl:copy-of select="z:index(ev div ac)"/>
+    <xsl:text>, SPI: </xsl:text>
+    <xsl:copy-of select="z:index(ev div pv)"/>
+    <xsl:text>.</xsl:text>
   </xsl:template>
 </xsl:stylesheet>
