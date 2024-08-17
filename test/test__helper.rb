@@ -22,14 +22,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-source 'http://rubygems.org'
+ENV['RACK_ENV'] = 'test'
 
-gem 'fbe', '>0'
-gem 'judges', '>0'
-gem 'minitest', '5.25.1', require: false
-gem 'minitest-reporters', '1.7.1', require: false
-gem 'rake', '13.2.1', require: false
-gem 'redcarpet', '~>3.5'
-gem 'rubocop', '1.65.1', require: false
-gem 'w3c_validators', '1.3.7', require: false
-gem 'webmock', '3.23.1', require: false
+require 'simplecov'
+SimpleCov.start
+
+require 'simplecov-cobertura'
+SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+
+require 'minitest/reporters'
+Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
+
+require 'minitest/autorun'
+
+class Minitest::Test
+  def load_it(judge, fb)
+    $fb = fb
+    $global = {}
+    $local = {}
+    $judge = judge
+    $options = Judges::Options.new({ 'repositories' => 'foo/foo' })
+    $loog = Loog::NULL
+    load(File.join(__dir__, "../judges/#{judge}/#{judge}.rb"))
+  end
+
+  def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
+    stub_request(method, url).to_return(status:, body: body.to_json, headers:)
+  end
+end

@@ -22,14 +22,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-source 'http://rubygems.org'
+require 'minitest/autorun'
+require 'webmock/minitest'
+require 'nokogiri'
+require 'w3c_validators'
 
-gem 'fbe', '>0'
-gem 'judges', '>0'
-gem 'minitest', '5.25.1', require: false
-gem 'minitest-reporters', '1.7.1', require: false
-gem 'rake', '13.2.1', require: false
-gem 'redcarpet', '~>3.5'
-gem 'rubocop', '1.65.1', require: false
-gem 'w3c_validators', '1.3.7', require: false
-gem 'webmock', '3.23.1', require: false
+# Test.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2024 Yegor Bugayenko
+# License:: MIT
+class TestVitals < Minitest::Test
+  def test_validate_html
+    WebMock.enable_net_connect!
+    puts 1
+  end
+end
