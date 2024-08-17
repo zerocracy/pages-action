@@ -19,7 +19,7 @@ The following configuration options are supported here:
 
 ```yaml
 # Your YAML config
-  - uses: zerocracy/pages-action@0.0.33
+  - uses: zerocracy/pages-action@0.0.34
     with:
       factbase: foo.fb
       verbose: true
