@@ -21,7 +21,7 @@
 # SOFTWARE.
 
 .ONESHELL:
-.PHONY: clean all assets install
+.PHONY: clean all assets install rake
 .SILENT:
 .SHELLFLAGS := -x -e -o pipefail -c
 SHELL := bash
@@ -38,7 +38,7 @@ SAXON = target/saxon.jar
 
 export
 
-all: assets $(HTMLS) entry rmi verify
+all: assets $(HTMLS) rake entry rmi verify
 
 assets: $(XSLS) $(JS) $(CSS)
 
@@ -67,6 +67,9 @@ target/html/%.html: target/output/%
 target/fb/%.fb: tests/%.yml Makefile | target/fb
 	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
 	$(JUDGES) import "$<" "$@"
+
+rake:
+	bundle exec rake
 
 $(CSS): sass/*.scss Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"

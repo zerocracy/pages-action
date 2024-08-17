@@ -22,8 +22,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com">
-  <xsl:output method="xml" doctype-system="about:legacy-compat" encoding="UTF-8" indent="yes"/>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="xs z">
+  <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
   <xsl:param name="today"/>
   <xsl:param name="css"/>
   <xsl:param name="js"/>
@@ -90,14 +90,14 @@ SOFTWARE.
     </script>
   </xsl:template>
   <xsl:template match="/">
+    <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta charset="UTF-8"/>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <title>
           <xsl:value-of select="$name"/>
         </title>
-        <meta charset="UTF-8"/>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
         <link href="https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css" rel="stylesheet"/>
         <link href="https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css" rel="stylesheet"/>

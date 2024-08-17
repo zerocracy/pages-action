@@ -98,7 +98,7 @@ fi
 html=${INPUT_OUTPUT}/${name}-vitals.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
-    "-xsl:${SELF}/target/xsl/index.xsl" \
+    "-xsl:${SELF}/target/xsl/vitals.xsl" \
     "-o:${html}" \
     "today=${INPUT_TODAY}" \
     "version=${VERSION}" \

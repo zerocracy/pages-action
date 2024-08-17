@@ -34,6 +34,22 @@ require 'w3c_validators'
 class TestVitals < Minitest::Test
   def test_validate_html
     WebMock.enable_net_connect!
-    puts 1
+    html = File.join(__dir__, '../../target/html/simple-vitals.html')
+    skip unless File.exist?(html)
+    doc = File.read(html)
+    xml =
+      begin
+        Nokogiri::XML.parse(doc) do |c|
+          c.norecover
+          c.strict
+        end
+      rescue StandardError => e
+        raise "#{doc}\n\n#{e}"
+      end
+    assert(xml.errors.empty?, xml)
+    assert(!xml.xpath('/html').empty?, xml)
+    # WebMock.enable_net_connect!
+    # v = W3CValidators::NuValidator.new.validate_file(html)
+    # assert(v.errors.empty?, "#{doc}\n\n#{v.errors.join('; ')}")
   end
 end
