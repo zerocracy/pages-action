@@ -23,18 +23,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
-  <xsl:template match="/" mode="policy">
-    <xsl:apply-templates select="/fb/f[what='hr-policy']"/>
+  <xsl:template match="/" mode="bylaws">
+    <xsl:apply-templates select="/fb/f[what='bylaws']"/>
   </xsl:template>
-  <xsl:template match="/fb/f[what='hr-policy' and not(html)]">
+  <xsl:template match="/fb/f[what='bylaws' and not(html)]">
     <p class="darkred">
-      <xsl:text>There is no information about the rules.</xsl:text>
+      <xsl:text>There is no information about bylaws.</xsl:text>
     </p>
   </xsl:template>
-  <xsl:template match="/fb/f[what='hr-policy' and html]">
-    <div class="policy">
+  <xsl:template match="/fb/f[what='bylaws' and html]">
+    <div class="bylaws">
       <h2>
-        <xsl:text>Rules of the Game</xsl:text>
+        <xsl:text>Bylaws</xsl:text>
       </h2>
       <div class="columns">
         <xsl:value-of select="html" disable-output-escaping="yes"/>

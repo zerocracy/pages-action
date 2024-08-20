@@ -27,4 +27,4 @@ input:
     abc: '(award (let x 25) (give x "when you deserve it"))'
 expected:
   - /fb[count(f)=2]
-  - /fb/f[what='hr-policy' and html]
+  - /fb/f[what='bylaws' and html]

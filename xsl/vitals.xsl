@@ -32,7 +32,7 @@ SOFTWARE.
   <xsl:param name="version"/>
   <xsl:param name="fbe"/>
   <xsl:import href="awards.xsl"/>
-  <xsl:import href="policy.xsl"/>
+  <xsl:import href="bylaws.xsl"/>
   <xsl:import href="qo-section.xsl"/>
   <xsl:import href="dot.xsl"/>
   <xsl:function name="z:index">
@@ -145,7 +145,7 @@ SOFTWARE.
           </header>
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
-            <xsl:apply-templates select="/" mode="policy"/>
+            <xsl:apply-templates select="/" mode="bylaws"/>
             <xsl:call-template name="qo-section">
               <xsl:with-param name="what" select="'quality-of-service'"/>
               <xsl:with-param name="title" select="'Quality of Service (QoS)'"/>
