@@ -18,16 +18,15 @@ This is how this vitals page looks for
 The following configuration options are supported here:
 
 ```yaml
-# Your YAML config
-  - uses: zerocracy/pages-action@0.0.34
-    with:
-      factbase: foo.fb
-      verbose: true
-      output: my-directory
-      columns: who,when,repository
-      hidden: _id,_time
-      options: |
-        github_token=${{ secrets.GITHUB_TOKEN }}
+- uses: zerocracy/pages-action@0.0.34
+  with:
+    factbase: foo.fb
+    verbose: true
+    output: my-directory
+    columns: who,when,repository
+    hidden: _id,_time
+    options: |
+      github_token=${{ secrets.GITHUB_TOKEN }}
 ```
 
 The following options are supported:
