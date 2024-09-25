@@ -46,6 +46,16 @@ SOFTWARE.
     <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name][last()]"/>
     <xsl:choose>
       <xsl:when test="$rec">
+        <xsl:for-each select="'awarded', 'since', 'balance', 'payout', 'when'">
+          <xsl:variable name="n" select="."/>
+          <xsl:if test="not($rec/*[name()=$n])">
+            <xsl:message terminate="yes">
+              <xsl:text>There is no '</xsl:text>
+              <xsl:value-of select="."/>
+              <xsl:text>' property in the fact</xsl:text>
+            </xsl:message>
+          </xsl:if>
+        </xsl:for-each>
         <td class="right ff">
           <xsl:variable name="accumulated" select="sum($facts[who_name=$name and xs:dateTime(when) &gt; xs:dateTime($rec/since)]/award)"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer($rec/awarded)"/>
@@ -57,9 +67,15 @@ SOFTWARE.
             <xsl:value-of select="xs:date(xs:dateTime($rec/when))"/>
             <xsl:text>, making the amount payable equal to </xsl:text>
             <xsl:value-of select="$rec/balance"/>
-            <xsl:text>; since then you've accumulated </xsl:text>
+            <xsl:text>; since </xsl:text>
+            <xsl:value-of select="xs:date(xs:dateTime($rec/since))"/>
+            <xsl:text> you've accumulated </xsl:text>
             <xsl:value-of select="$delta"/>
-            <xsl:text> points, that's why the amount payable now is </xsl:text>
+            <xsl:text> points (</xsl:text>
+            <xsl:value-of select="$accumulated"/>
+            <xsl:text> - </xsl:text>
+            <xsl:value-of select="xs:integer($rec/awarded)"/>
+            <xsl:text>), that's why the amount payable now is </xsl:text>
             <xsl:value-of select="$payable"/>
           </xsl:attribute>
           <xsl:value-of select="$payable"/>
@@ -67,7 +83,10 @@ SOFTWARE.
       </xsl:when>
       <xsl:otherwise>
         <td>
-          <xsl:text> </xsl:text>
+          <xsl:comment>
+            <xsl:text>There was no reconciliation (payouts) as of yet. </xsl:text>
+            <xsl:text>The entire rolling balance may be paid.</xsl:text>
+          </xsl:comment>
         </td>
       </xsl:otherwise>
     </xsl:choose>
