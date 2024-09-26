@@ -73,7 +73,7 @@ SOFTWARE.
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($facts[who_name=$name and xs:dateTime(when) &gt; xs:dateTime($rec/since)]/award))"/>
+          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and xs:dateTime(when) &gt; xs:dateTime($rec/since)]/award))"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer($rec/awarded)"/>
           <xsl:variable name="payable" select="$accumulated - xs:integer($rec/awarded) + xs:integer($rec/balance)"/>
           <xsl:attribute name="title">

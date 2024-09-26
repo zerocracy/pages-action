@@ -71,6 +71,39 @@ class TestAwards < Minitest::Test
     assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
 
+  def test_payables_out_of_window
+    xml = xslt(
+      "<xsl:copy-of select=\"z:payables('dude')\"/>",
+      "
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>#{(Time.now - (60 * 60)).utc.iso8601}</when>
+          <since>#{(Time.now - (1000 * 60 * 60)).utc.iso8601}</since>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>20</payout>
+          <balance>10</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>#{(Time.now - (999 * 60 * 60)).utc.iso8601}</when>
+          <who_name>dude</who_name>
+          <award>40</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>#{Time.now.utc.iso8601}</when>
+          <who_name>dude</who_name>
+          <award>25</award>
+        </f>
+      </fb>
+      ",
+      'today' => Time.now.utc.iso8601
+    )
+    assert_equal('75', xml.xpath('/td/text()').to_s, xml)
+  end
+
   def test_payables_with_few_reconciliations
     xml = xslt(
       "<xsl:copy-of select=\"z:payables('dude')\"/>",
