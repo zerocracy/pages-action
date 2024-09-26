@@ -58,7 +58,7 @@ SOFTWARE.
     Calculates the amount to be paid to a user, according to the information
     in current awards and previously posted "reconciliation" facts.
     -->
-    <xsl:param name="name"/>
+    <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name][last()]"/>
     <xsl:choose>
       <xsl:when test="$rec">
@@ -108,7 +108,11 @@ SOFTWARE.
     </xsl:choose>
   </xsl:function>
   <xsl:function name="z:award">
-    <xsl:param name="a"/>
+    <!--
+    Converts a number to a "span" with a properly formatted monetary value.
+    The span will have a "class" with the HTML color, according to the value.
+    -->
+    <xsl:param name="a" as="xs:integer"/>
     <span>
       <xsl:attribute name="class">
         <xsl:choose>
@@ -138,7 +142,7 @@ SOFTWARE.
     </span>
   </xsl:function>
   <xsl:function name="z:td-award">
-    <xsl:param name="a"/>
+    <xsl:param name="a" as="xs:integer"/>
     <td class="ff right" data-value="{$a}">
       <xsl:copy-of select="z:award($a)"/>
     </td>

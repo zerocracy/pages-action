@@ -153,6 +153,21 @@ class TestAwards < Minitest::Test
     assert_equal('true', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_award
+    {
+      42 => [ 'darkgreen', '+42' ],
+      0 => [ 'lightgray', '&#x2014;' ],
+      -7 => [ 'darkred', '-7' ]
+    }.each do |k, v|
+      xml = xslt(
+        "<xsl:copy-of select='z:award(#{k})'/>",
+        '<fb/>'
+      )
+      assert_equal(v[0], xml.xpath('/span/@class').to_s, xml)
+      assert_equal(v[1], xml.xpath('/span/text()').to_s, xml)
+    end
+  end
+
   private
 
   def xslt(template, xml, vars = {})
