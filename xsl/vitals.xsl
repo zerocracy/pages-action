@@ -35,7 +35,12 @@ SOFTWARE.
   <xsl:import href="bylaws.xsl"/>
   <xsl:import href="qo-section.xsl"/>
   <xsl:import href="dot.xsl"/>
+  <xsl:variable name="fb" select="/fb"/>
   <xsl:function name="z:index">
+    <!--
+    Converts a number to a "span" with a properly formatted index value.
+    The span will have a "class" with the HTML color, according to the value.
+    -->
     <xsl:param name="i" as="xs:double"/>
     <span>
       <xsl:attribute name="class">
@@ -61,7 +66,12 @@ SOFTWARE.
     </span>
   </xsl:function>
   <xsl:function name="z:pmp">
-    <xsl:param name="fb"/>
+    <!--
+    Finds a "pmp" fact with the given "area" and then
+    tries to find a given property inside. If the fact is not
+    found or the property doesn't exists, the default value
+    is returned.
+    -->
     <xsl:param name="area" as="xs:string"/>
     <xsl:param name="param" as="xs:string"/>
     <xsl:param name="default" as="xs:string"/>

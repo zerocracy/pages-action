@@ -32,7 +32,7 @@ require 'loog'
 # Copyright:: Copyright (c) 2024 Yegor Bugayenko
 # License:: MIT
 class TestAwards < Minitest::Test
-  def test_payables
+  def test_fn_payables
     xml = xslt(
       "<xsl:copy-of select=\"z:payables('dude')\"/>",
       "
@@ -71,7 +71,7 @@ class TestAwards < Minitest::Test
     assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
 
-  def test_payables_out_of_window
+  def test_fn_payables_out_of_window
     xml = xslt(
       "<xsl:copy-of select=\"z:payables('dude')\"/>",
       "
@@ -104,7 +104,7 @@ class TestAwards < Minitest::Test
     assert_equal('75', xml.xpath('/td/text()').to_s, xml)
   end
 
-  def test_payables_with_few_reconciliations
+  def test_fn_payables_with_few_reconciliations
     xml = xslt(
       "<xsl:copy-of select=\"z:payables('dude')\"/>",
       "
@@ -152,7 +152,7 @@ class TestAwards < Minitest::Test
     assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
 
-  def test_monday
+  def test_fn_monday
     xml = xslt(
       '<r><xsl:value-of select="z:monday(1)"/></r>',
       '
@@ -169,7 +169,7 @@ class TestAwards < Minitest::Test
     assert_equal('2024-09-23Z', xml.xpath('/r/text()').to_s, xml)
   end
 
-  def test_in_week
+  def test_fn_in_week
     xml = xslt(
       '<r><xsl:value-of select="z:in-week(\'2024-09-20T04:04:04Z\', 1)"/></r>',
       '
@@ -186,7 +186,7 @@ class TestAwards < Minitest::Test
     assert_equal('true', xml.xpath('/r/text()').to_s, xml)
   end
 
-  def test_award
+  def test_fn_award
     {
       42 => ['darkgreen', '+42'],
       0 => ['lightgray', '&#x2014;'],
@@ -198,38 +198,6 @@ class TestAwards < Minitest::Test
       )
       assert_equal(v[0], xml.xpath('/span/@class').to_s, xml)
       assert_equal(v[1], xml.xpath('/span/text()').to_s, xml)
-    end
-  end
-
-  private
-
-  def xslt(template, xml, vars = {})
-    Dir.mktmpdir do |dir|
-      xsl = File.join(dir, 'foo.xsl')
-      File.write(
-        xsl,
-        "
-        <xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform'
-          xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:z='https://www.zerocracy.com'
-          version='2.0' exclude-result-prefixes='xs z'>
-          <xsl:import href='#{File.join(__dir__, '../../xsl/vitals.xsl')}'/>
-          <xsl:template match='/'>#{template}</xsl:template>
-        </xsl:stylesheet>
-        "
-      )
-      input = File.join(dir, 'input.xml')
-      File.write(input, xml)
-      output = File.join(dir, 'output.xml')
-      qbash(
-        [
-          "java -jar #{Shellwords.escape(File.join(__dir__, '../../target/saxon.jar'))}",
-          "-s:#{Shellwords.escape(input)}",
-          "-xsl:#{Shellwords.escape(xsl)}",
-          "-o:#{Shellwords.escape(output)}"
-        ] + vars.map { |k, v| Shellwords.escape("#{k}=#{v}") },
-        log: Loog::NULL
-      )
-      Nokogiri::XML.parse(File.read(output))
     end
   end
 end

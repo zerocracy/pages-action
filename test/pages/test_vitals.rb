@@ -26,6 +26,7 @@ require 'minitest/autorun'
 require 'webmock/minitest'
 require 'nokogiri'
 require 'w3c_validators'
+require_relative '../test__helper'
 
 # Test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -51,5 +52,36 @@ class TestVitals < Minitest::Test
     # WebMock.enable_net_connect!
     # v = W3CValidators::NuValidator.new.validate_file(html)
     # assert(v.errors.empty?, "#{doc}\n\n#{v.errors.join('; ')}")
+  end
+
+  def test_fn_index
+    {
+      3.3 => ['darkgreen', '+3.30'],
+      0 => ['darkgreen', '+0.00'],
+      -1 => ['darkred', '-1.00']
+    }.each do |k, v|
+      xml = xslt(
+        "<xsl:copy-of select='z:index(#{k})'/>",
+        '<fb/>'
+      )
+      assert_equal(v[0], xml.xpath('/span/@class').to_s, xml)
+      assert_equal(v[1], xml.xpath('/span/text()').to_s, xml)
+    end
+  end
+
+  def test_fn_pmp
+    xml = xslt(
+      '<r><xsl:value-of select="z:pmp(\'hr\', \'foo\', \'bar\')"/></r>',
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>foo</area>
+          <xyz>test</xyz>
+        </f>
+      </fb>
+      '
+    )
+    assert_equal('bar', xml.xpath('/r/text()').to_s, xml)
   end
 end
