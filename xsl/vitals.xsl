@@ -36,7 +36,7 @@ SOFTWARE.
   <xsl:import href="qo-section.xsl"/>
   <xsl:import href="dot.xsl"/>
   <xsl:function name="z:index">
-    <xsl:param name="i"/>
+    <xsl:param name="i" as="xs:double"/>
     <span>
       <xsl:attribute name="class">
         <xsl:choose>
@@ -62,9 +62,9 @@ SOFTWARE.
   </xsl:function>
   <xsl:function name="z:pmp">
     <xsl:param name="fb"/>
-    <xsl:param name="area"/>
-    <xsl:param name="param"/>
-    <xsl:param name="default"/>
+    <xsl:param name="area" as="xs:string"/>
+    <xsl:param name="param" as="xs:string"/>
+    <xsl:param name="default" as="xs:string"/>
     <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area]"/>
     <xsl:choose>
       <xsl:when test="$a">
