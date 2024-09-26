@@ -288,9 +288,9 @@ SOFTWARE.
           </td>
           <xsl:for-each select="1 to $weeks">
             <xsl:variable name="week" select="."/>
-            <xsl:copy-of select="z:td-award(sum($facts[z:in-week(when, $week)]/award))"/>
+            <xsl:copy-of select="z:td-award(xs:integer(sum($facts[z:in-week(when, $week)]/award)))"/>
           </xsl:for-each>
-          <xsl:copy-of select="z:td-award(sum($facts/award))"/>
+          <xsl:copy-of select="z:td-award(xs:integer(sum($facts/award)))"/>
           <xsl:if test="$fb/f[what='reconciliation']">
             <td class="right ff">
               <!-- Pay -->
