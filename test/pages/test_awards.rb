@@ -155,9 +155,9 @@ class TestAwards < Minitest::Test
 
   def test_award
     {
-      42 => [ 'darkgreen', '+42' ],
-      0 => [ 'lightgray', '&#x2014;' ],
-      -7 => [ 'darkred', '-7' ]
+      42 => ['darkgreen', '+42'],
+      0 => ['lightgray', '&#x2014;'],
+      -7 => ['darkred', '-7']
     }.each do |k, v|
       xml = xslt(
         "<xsl:copy-of select='z:award(#{k})'/>",
