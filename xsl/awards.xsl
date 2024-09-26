@@ -29,6 +29,10 @@ SOFTWARE.
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
   <xsl:variable name="facts" select="$fb/f[award and xs:dateTime(when) &gt; $since and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
+    <!--
+      Takes week number (e.g. 4) and returns ISO-8601 date of the
+      Monday of this week. Weeks counting starts from $today.
+    -->
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="d" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', ($weeks - $week) * 7, 'D'))"/>
     <xsl:variable name="dow" select="xs:integer(format-date(xs:date($d), '[F1]'))"/>
