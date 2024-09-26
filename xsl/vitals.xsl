@@ -35,6 +35,7 @@ SOFTWARE.
   <xsl:import href="bylaws.xsl"/>
   <xsl:import href="qo-section.xsl"/>
   <xsl:import href="dot.xsl"/>
+  <xsl:import href="eva-summary.xsl"/>
   <xsl:variable name="fb" select="/fb"/>
   <xsl:function name="z:index">
     <!--
