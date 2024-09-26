@@ -55,6 +55,10 @@ class Minitest::Test
     stub_request(method, url).to_return(status:, body: body.to_json, headers:)
   end
 
+  def fake_loog
+    ENV['RACK_RUN'] ? Loog::NULL : Loog::VERBOSE
+  end
+
   def xslt(template, xml, vars = {})
     Dir.mktmpdir do |dir|
       xsl = File.join(dir, 'foo.xsl')
@@ -79,7 +83,7 @@ class Minitest::Test
           "-xsl:#{Shellwords.escape(xsl)}",
           "-o:#{Shellwords.escape(output)}"
         ] + vars.map { |k, v| Shellwords.escape("#{k}=#{v}") },
-        log: Loog::NULL
+        log: fake_loog
       )
       Nokogiri::XML.parse(File.read(output))
     end

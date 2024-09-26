@@ -25,6 +25,8 @@
 require 'rubygems'
 require 'rake'
 
+ENV['RACK_RUN'] = 'true'
+
 task default: %i[test judges rubocop]
 
 require 'rake/clean'
