@@ -30,8 +30,12 @@ SOFTWARE.
   <xsl:variable name="facts" select="$fb/f[award and xs:dateTime(when) &gt; $since and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
     <!--
-      Takes week number (e.g. 4) and returns ISO-8601 date of the
-      Monday of this week. Weeks counting starts from $today.
+    Takes week number (e.g. 4) and returns ISO-8601 date of the
+    Monday of this week. Weeks counting starts from the n-th week
+    before $today (total number of weeks is specified in
+    the "days_of_running_balance" property of the "pmp/hr" fact. Thus,
+    if the week number is 2 and there are 56 days of running balance, it is
+    the 7th week back in the past from today.
     -->
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="d" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', ($weeks - $week) * 7, 'D'))"/>
@@ -39,6 +43,10 @@ SOFTWARE.
     <xsl:value-of select="xs:date($d) - xs:dayTimeDuration(concat('P', $dow - 1, 'D'))"/>
   </xsl:function>
   <xsl:function name="z:in-week" as="xs:boolean">
+    <!--
+    Takes date and week number (e.g. 4) and returns 'true' if the date is
+    inside the week. Weeks counting starts from the n-th week before today.
+    -->
     <xsl:param name="when" as="xs:string"/>
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="monday" select="xs:dateTime(z:monday($week))"/>
@@ -46,6 +54,10 @@ SOFTWARE.
     <xsl:value-of select="xs:dateTime($when) &gt; $monday and xs:dateTime($when) &lt; $sunday"/>
   </xsl:function>
   <xsl:function name="z:payables">
+    <!--
+    Calculates the amount to be paid to a user, according to the information
+    in current awards and previously posted "reconciliation" facts.
+    -->
     <xsl:param name="name"/>
     <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name][last()]"/>
     <xsl:choose>
