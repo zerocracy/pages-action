@@ -25,6 +25,7 @@ options:
 input:
   -
     _id: 11
+    where: github
     what: bug-was-resolved
     who: 4444
     issue: 42
