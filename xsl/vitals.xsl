@@ -199,7 +199,9 @@ SOFTWARE.
                 <xsl:value-of select="$version"/>
               </span>
               <xsl:text>) on </xsl:text>
-              <xsl:value-of select="current-dateTime()"/>
+              <time itemprop="datePublished" datetime="{current-dateTime()}">
+                <xsl:value-of select="current-dateTime()"/>
+              </time>
               <xsl:text>.</xsl:text>
               <br/>
               <a href="https://github.com/yegor256/factbase">

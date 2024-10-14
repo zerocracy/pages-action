@@ -7,7 +7,7 @@
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
+ * copies of the Software, and to permit persons to who_namem the Software is
  * furnished to do so, subject to the following conditions:
  *
  * The above copyright notice and this permission notice shall be included in all
@@ -22,63 +22,14 @@
  * SOFTWARE.
  */
 
-@import 'awards.scss';
-@import 'bylaws.scss';
-@import 'qo-section.scss';
-
-$black: #131515;
-$gray: #282828;
-
-section {
-    width: auto;
-}
-
-footer {
-    color: $gray;
-    font-size: 0.8em;
-    line-height: 1.2em;
-    text-align: center;
-}
-
-article {
-    border: 0;
-}
-
-header {
-    text-align: center;
-
-    a:hover {
-        text-decoration: none;
-    }
-
-    img {
-        height: 64px;
-        vertical-align: middle;
-    }
-
-    span {
-        background-color: $black;
-        border-radius: .2em;
-        color: white;
-        font-size: 2em;
-        font-weight: bolder;
-        margin-left: 1em;
-        padding: .0em .2em;
-        vertical-align: middle;
-    }
-}
-
-.warning {
-    text-align: center;
-
-    span {
-         background: darkred;
-         color: white;
-         padding: .5em 1em;
-         border-radius: .3em;
-    }
-}
-
-.ff {
-    font-family: monospace;
-}
+$(function() {
+  const dob = Date.parse($("time[itemprop='datePublished']").attr("datetime"));
+  const hours = parseInt((new Date() - dob) / (1000 * 60 * 60));
+  if (hours > 24) {
+    $("article").prepend(
+      "<p class='warning'><span>" +
+      "This page was generated " + hours + " hours ago. " +
+      "The information is most probably outdated.</span></p>"
+    );
+  }
+});
