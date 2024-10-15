@@ -127,8 +127,8 @@ verify:
 
 target/docker-image.txt: Makefile Dockerfile entry.sh
 	mkdir -p "$$(dirname $@)"
-	sudo docker build -t pages-action "$$(pwd)"
-	sudo docker build -t pages-action -q "$$(pwd)" > "$@"
+	docker build -t pages-action "$$(pwd)"
+	docker build -t pages-action -q "$$(pwd)" > "$@"
 
 $(DIRS):
 	mkdir -p "$@"
