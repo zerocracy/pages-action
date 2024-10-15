@@ -18,7 +18,7 @@ This is how this vitals page looks for
 The following configuration options are supported here:
 
 ```yaml
-- uses: zerocracy/pages-action@0.0.38
+- uses: zerocracy/pages-action@0.0.39
   with:
     factbase: foo.fb
     verbose: true
