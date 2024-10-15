@@ -21,7 +21,7 @@
 # SOFTWARE.
 ---
 docker:
-  image: yegor256/rultor-ruby
+  image: yegor256/rultor-java
 assets:
   docker-password: yegor256/home#assets/docker-password
 install: |
