@@ -25,7 +25,7 @@ docker:
 assets:
   docker-password: yegor256/home#assets/docker-password
 install: |
-  sudo apt-get update && sudo apt-get install -y libxml2-utils wget
+  sudo apt-get update && sudo apt-get install -y libxml2-utils wget nodejs npm
   sudo make install clean "--directory=$(pwd)"
 merge:
   script: |-
