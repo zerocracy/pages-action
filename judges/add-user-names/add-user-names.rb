@@ -26,7 +26,10 @@ require 'fbe/octo'
 require 'fbe/conclude'
 
 Fbe.conclude do
-  on '(and (eq where "github") (exists who) (not (exists who_name)) (not (exists who_noname)))'
+  on '(and
+    (or (eq where "github") (not (exists where)))
+    (exists who)
+    (not (exists who_name)) (not (exists who_noname)))'
   consider do |f|
     n = Fbe.octo.user_name_by_id(f.who)
     f.who_name = n
