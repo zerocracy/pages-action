@@ -39,5 +39,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.3
+      - run: apt-get update && apt-get install -y libxml2-utils
       - run: make install
       - run: make
