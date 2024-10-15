@@ -63,6 +63,10 @@ target/html/%.html: target/output/%
 	n=$${n%.*}
 	cp "$$(dirname "$<")/$${n}/$${n}.html" "$$(dirname "$@")/$${n}.html"
 	cp "$$(dirname "$<")/$${n}/$${n}-vitals.html" "$$(dirname "$@")/$${n}-vitals.html"
+	xpaths=$$( ruby -e 'require "yaml"; YAML.load_file(ARGV[0], permitted_classes: [Time])[0]["xpaths"].split("\n").each { |x| puts x }' "tests/$${n}.yml" )
+	while IFS= read -r xpath; do
+		xmllint --xpath "$${xpath}" "$$(dirname "$@")/$${n}-vitals.html" > /dev/null
+	done <<< "$${xpaths}"
 
 target/fb/%.fb: tests/%.yml Makefile | target/fb
 	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi

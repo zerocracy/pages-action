@@ -21,6 +21,14 @@
 # SOFTWARE.
 ---
 -
+  xpaths: |
+    /html
+    /html/head
+    /html/body
+    //a[.="@torvalds"]
+    //span[@class="darkgreen" and .="+14"]
+    //span[.="129"]
+-
   _id: 1
   what: pmp
   area: hr
@@ -50,6 +58,7 @@
   when: 2024-06-26T22:22:22.8492Z
   award: 14
   who: 6305016
+  where: github
   is_human: 1
   why: for important issue reported
 -
@@ -57,6 +66,7 @@
   when: 2024-06-16T22:22:22.8492Z
   award: -56
   who: 6305016
+  where: github
   is_human: 1
   why: for fun
 -
@@ -64,6 +74,7 @@
   when: 2024-07-05T22:22:22.8492Z
   award: -8
   who: 526301
+  where: github
   is_human: 1
   why: for being a good boy
   href: https://github.com/yegor256/judges/issues/111
@@ -72,6 +83,7 @@
   when: 2024-07-04T22:22:22.8492Z
   award: 15
   who: 526301
+  where: github
   is_human: 1
   why: for being a great programmer
   href: https://github.com/yegor256/judges/issues/111
@@ -80,6 +92,7 @@
   when: 2024-07-03T22:22:22.8492Z
   award: -24
   who: 6305016
+  where: github
   is_human: 1
   why: for being a bad boy
   href: https://github.com/yegor256/judges/issues/111
@@ -88,6 +101,7 @@
   when: 2024-07-02T22:22:22.8492Z
   award: 55
   who: 6305016
+  where: github
   is_human: 1
   why: for new release
   href: https://github.com/yegor256/judges/issues/111
@@ -157,9 +171,10 @@
   what: reconciliation
   when: 2024-07-01T22:22:22.8492Z
   who: 6305016
+  where: github
   since: 2024-06-01T22:22:22.8492Z
   awarded: 220
-  payout: 120
+  payout: 129
   balance: 20
 -
   _id: 17

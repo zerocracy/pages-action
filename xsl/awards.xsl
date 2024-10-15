@@ -338,6 +338,51 @@ SOFTWARE.
         <xsl:copy-of select="z:payables($name)"/>
       </xsl:if>
     </tr>
+    <xsl:if test="$fb/f[what='reconciliation' and who=$id]">
+      <tr class="sub tablesorter-childRow p_ p_{$name}" style="display: none;">
+        <td>
+          <!-- Avatar -->
+          <xsl:text> </xsl:text>
+        </td>
+        <td class="right">
+          <!-- Reason -->
+          <xsl:text>Payouts:</xsl:text>
+        </td>
+        <xsl:for-each select="1 to $weeks">
+          <xsl:variable name="week" select="."/>
+          <td class="right">
+            <xsl:for-each select="$fb/f[what='reconciliation' and who=$id and z:in-week(when, $week)]">
+              <xsl:if test="position() &gt; 1">
+                <br/>
+              </xsl:if>
+              <span>
+                <xsl:attribute name="title">
+                  <xsl:text>Since </xsl:text>
+                  <xsl:value-of select="xs:date(xs:dateTime(since))"/>
+                  <xsl:text> you've accumulated </xsl:text>
+                  <xsl:value-of select="xs:integer(awarded)"/>
+                  <xsl:text> points, a payout of </xsl:text>
+                  <xsl:value-of select="xs:integer(payout)"/>
+                  <xsl:text> points has been made on </xsl:text>
+                  <xsl:value-of select="xs:date(xs:dateTime(when))"/>
+                  <xsl:text>, making the amount payable equal to </xsl:text>
+                  <xsl:value-of select="balance"/>
+                </xsl:attribute>
+                <xsl:value-of select="xs:integer(payout)"/>
+              </span>
+            </xsl:for-each>
+          </td>
+        </xsl:for-each>
+        <td>
+          <!-- Run -->
+          <xsl:text> </xsl:text>
+        </td>
+        <td>
+          <!-- Pay -->
+          <xsl:text> </xsl:text>
+        </td>
+      </tr>
+    </xsl:if>
     <xsl:for-each select="$facts[who_name=$name]">
       <xsl:sort select="when" data-type="text"/>
       <xsl:variable name="fact" select="."/>
