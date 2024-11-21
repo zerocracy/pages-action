@@ -125,7 +125,7 @@ GEM
     liquid (5.5.1)
     logger (1.6.1)
     loog (0.6.0)
-    minitest (5.25.1)
+    minitest (5.25.2)
     minitest-reporters (1.7.1)
       ansi
       builder
@@ -234,7 +234,7 @@ PLATFORMS
 DEPENDENCIES
   fbe (> 0)
   judges (> 0)
-  minitest (= 5.25.1)
+  minitest (= 5.25.2)
   minitest-reporters (= 1.7.1)
   qbash (= 0.0.8)
   rake (= 13.2.1)
