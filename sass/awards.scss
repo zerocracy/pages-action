@@ -18,18 +18,18 @@ $hightlight: #f5f5f5;
     background-color: $hightlight;
   }
 
-  tr.p_ {
-      font-size: 90%;
+  tr.p-table {
+    font-size: 90%;
   }
 
   td.avatar {
-      text-align: center;
-      vertical-align: middle;
+    text-align: center;
+    vertical-align: middle;
 
-      img {
-          height: 1.5em;
-          vertical-align: middle;
-          width: 1.5em;
-      }
+    img {
+      height: 1.5em;
+      vertical-align: middle;
+      width: 1.5em;
+    }
   }
 }
