@@ -35,6 +35,7 @@ WORKDIR /home
 COPY Makefile /home
 COPY .stylelintrc.json /home
 COPY Gemfile /home
+COPY html-minifier-config.json /home
 COPY judges /home/judges
 COPY sass /home/sass
 COPY xsl /home/xsl
