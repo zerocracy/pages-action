@@ -32,7 +32,7 @@ $em: #1c448e;
         column-count: 5;
 
         p {
-            display: inline-block;
+            break-inside: avoid;
 
             &::before {
                 content: "R" counter(par) ": ";
