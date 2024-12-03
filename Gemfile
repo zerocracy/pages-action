@@ -31,7 +31,7 @@ gem 'minitest-reporters', '1.7.1', require: false
 gem 'qbash', '0.0.8', require: false
 gem 'rake', '13.2.1', require: false
 gem 'redcarpet', '~>3.5'
-gem 'rubocop', '1.69.0', require: false
+gem 'rubocop', '1.69.1', require: false
 gem 'simplecov', '0.22.0', require: false
 gem 'simplecov-cobertura', '2.1.0', require: false
 gem 'w3c_validators', '1.3.7', require: false
