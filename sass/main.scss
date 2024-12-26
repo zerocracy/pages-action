@@ -22,9 +22,9 @@
  * SOFTWARE.
  */
 
-@import 'awards.scss';
-@import 'bylaws.scss';
-@import 'qo-section.scss';
+@use 'awards.scss';
+@use 'bylaws.scss';
+@use 'qo-section.scss';
 
 $black: #131515;
 $gray: #282828;
