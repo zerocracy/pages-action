@@ -257,7 +257,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  fbe (> 0)
+  fbe (>= 0.0.86)
   judges (> 0)
   minitest (= 5.25.4)
   minitest-reporters (= 1.7.1)

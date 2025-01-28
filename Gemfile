@@ -24,7 +24,7 @@
 
 source 'http://rubygems.org'
 
-gem 'fbe', '>0'
+gem 'fbe', '>=0.0.86'
 gem 'judges', '>0'
 gem 'minitest', '5.25.4', require: false
 gem 'minitest-reporters', '1.7.1', require: false
