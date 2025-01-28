@@ -22,18 +22,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require 'rubygems'
 require 'rake'
+require 'rake/clean'
+require 'rake/testtask'
+require 'rubocop/rake_task'
+require 'rubygems'
 
 ENV['RACK_RUN'] = 'true'
 
 task default: %i[test judges rubocop]
 
-require 'rake/clean'
 CLEAN.include('target')
 
-require 'rake/testtask'
-desc 'Run all unit tests'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
@@ -41,14 +41,11 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = false
 end
 
-desc 'Test all judges'
 task :judges do
   live = ARGV.include?('--live') ? '' : '--disable live'
   sh "judges --verbose test #{live} --no-log judges"
 end
 
-require 'rubocop/rake_task'
-desc 'Run RuboCop on all directories'
 RuboCop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = true
 end
