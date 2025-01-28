@@ -44,7 +44,7 @@ class TestEvaSummary < Minitest::Test
       </fb>
       '
     )
-    assert(!xml.xpath('/p/text()').to_s.start_with?('Not enough data'), xml)
+    refute(xml.xpath('/p/text()').to_s.start_with?('Not enough data'))
   end
 
   def test_template_short
@@ -58,6 +58,6 @@ class TestEvaSummary < Minitest::Test
       </fb>
       '
     )
-    assert(xml.xpath('/p/text()').to_s.start_with?('Not enough data'), xml)
+    assert(xml.xpath('/p/text()').to_s.start_with?('Not enough data'))
   end
 end

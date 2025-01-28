@@ -34,7 +34,7 @@ end
 %w[quantity-of-deliverables quality-of-service].each do |qo|
   facts = Fbe.fb.query("(eq what '#{qo}')").each.to_a
 
-  facts.sort! { |a, b| a.when <=> b.when }
+  facts.sort_by!(&:when)
   next if facts.empty?
 
   start = {}
@@ -59,7 +59,7 @@ end
       s = start[prop]
       diff = v - s
       diff /= start[prop] unless start[prop].zero?
-      f.send("n_#{prop}=", diff)
+      f.send(:"n_#{prop}=", diff)
     end
   end
 end

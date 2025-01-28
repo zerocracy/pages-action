@@ -47,8 +47,8 @@ class TestVitals < Minitest::Test
       rescue StandardError => e
         raise "#{doc}\n\n#{e}"
       end
-    assert(xml.errors.empty?, xml)
-    assert(!xml.xpath('/html').empty?, xml)
+    assert_empty(xml.errors, xml)
+    refute_empty(xml.xpath('/html'), xml)
     # WebMock.enable_net_connect!
     # v = W3CValidators::NuValidator.new.validate_file(html)
     # assert(v.errors.empty?, "#{doc}\n\n#{v.errors.join('; ')}")
