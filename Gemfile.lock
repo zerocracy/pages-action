@@ -99,9 +99,10 @@ GEM
     fiber-storage (1.0.0)
     gli (2.22.2)
       ostruct
-    graphql (2.4.8)
+    graphql (2.4.9)
       base64
       fiber-storage
+      logger
     graphql-client (0.25.0)
       activesupport (>= 3.0)
       graphql (>= 1.13.0)
@@ -248,6 +249,7 @@ PLATFORMS
   arm-linux-gnu
   arm-linux-musl
   arm64-darwin
+  arm64-darwin-23
   x86-linux
   x86-linux-gnu
   x86-linux-musl
