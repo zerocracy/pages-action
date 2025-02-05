@@ -30,7 +30,6 @@ AllCops:
 require:
   - rubocop-minitest
   - rubocop-performance
-
 Minitest/EmptyLineBeforeAssertionMethods:
   Enabled: false
 Naming/FileName:
@@ -65,3 +64,5 @@ Naming/MethodParameterName:
   MinNameLength: 2
 Layout/MultilineAssignmentLayout:
   Enabled: true
+required:
+  - rubocop-rake
