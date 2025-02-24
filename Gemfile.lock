@@ -176,7 +176,7 @@ GEM
       ast (~> 2.4.1)
       racc
     public_suffix (6.0.1)
-    qbash (0.3.0)
+    qbash (0.4.0)
       backtrace (> 0)
       elapsed (> 0)
       loog (> 0)
@@ -275,7 +275,7 @@ DEPENDENCIES
   judges (>= 0.32.0)
   minitest (= 5.25.4)
   minitest-reporters (= 1.7.1)
-  qbash (= 0.3.0)
+  qbash (= 0.4.0)
   rake (= 13.2.1)
   redcarpet (~> 3.5)
   rubocop (= 1.72.2)
