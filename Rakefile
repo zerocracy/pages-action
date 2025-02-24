@@ -22,6 +22,7 @@ Rake::TestTask.new(:test) do |test|
   test.verbose = false
 end
 
+desc 'Run all judges'
 task :judges do
   live = ARGV.include?('--live') ? '' : '--disable live'
   sh "judges --verbose test #{live} --no-log judges"
