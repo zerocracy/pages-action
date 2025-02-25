@@ -75,7 +75,7 @@ $(SAXON): | target
 	fi
 
 install: $(SAXON) | target
-	bundle update
+	bundle install
 	npm --no-color install -g uglify-js
 	npm --no-color install -g sass@1.77.2
 
