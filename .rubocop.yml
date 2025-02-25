@@ -46,3 +46,4 @@ Naming/MethodParameterName:
   MinNameLength: 2
 Layout/MultilineAssignmentLayout:
   Enabled: true
+require: []
