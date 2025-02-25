@@ -103,6 +103,7 @@ rmi: target/docker-image.txt
 verify:
 	e2=$$(cat target/entry.exit)
 	test "$${e2}" = "0"
+	tree target/fb/
 	test -e target/fb/pages/simple-vitals.html
 	test -e target/fb/pages/simple.html
 	test -e target/fb/pages/simple.xml
