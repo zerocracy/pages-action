@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+options:
+  testing: true
+repeat: 10000
+input:
+  -
+    _id: 11
+    where: github
+    what: bug-was-resolved
+    who: 4444
+    issue: 42
+    repository: 100
+    when: 2024-01-01T03:15:45Z
+expected:
+  - /fb/f[who='4444']
+  - /fb/f[who_name='torvalds']
