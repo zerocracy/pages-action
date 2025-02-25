@@ -13,7 +13,8 @@ else
 fi
 
 if [ -z "${JUDGES}" ]; then
-    JUDGES="bundle exec --gemfile=${SELF}/Gemfile judges"
+    opts=( bundle exec "--gemfile=${SELF}/Gemfile" judges )
+    JUDGES="${opts[*]}"
 fi
 
 # Convert the factbase to a few human-readable formats
