@@ -26,4 +26,4 @@ jobs:
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes libxml2-utils
       - run: make install
-      - run: make
+      - run: sudo make
