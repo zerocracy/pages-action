@@ -8,7 +8,7 @@ set -o pipefail
 VERSION=0.0.0
 
 if [ -z "${JUDGES}" ]; then
-    JUDGES=judges
+    JUDGES=bundle exec judges
 fi
 
 if [ -z "$1" ]; then
@@ -44,7 +44,7 @@ name=$(basename "${INPUT_FACTBASE}")
 name="${name%.*}"
 
 for f in yaml xml json html; do
-    "${JUDGES}" "${gopts[@]}" print \
+    ${JUDGES} "${gopts[@]}" print \
         --format "${f}" \
         --columns "${INPUT_COLUMNS}" \
         --hidden "${INPUT_HIDDEN}" \
@@ -55,17 +55,19 @@ done
 declare -a options=()
 while IFS= read -r o; do
     v=$(echo "${o}" | xargs)
-    if [ "${v}" = "" ]; then continue; fi
+    if [ "${v}" = "" ]; then
+        continue
+    fi
     options+=("--option=${v}")
 done <<< "${INPUT_OPTIONS}"
 
-"${JUDGES}" "${gopts[@]}" update \
+${JUDGES} "${gopts[@]}" update \
     --no-log \
     --no-summary \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
-"${JUDGES}" "${gopts[@]}" print \
+${JUDGES} "${gopts[@]}" print \
     --format xml \
     "${INPUT_FACTBASE}" \
     "${INPUT_OUTPUT}/${name}.rich.xml"
