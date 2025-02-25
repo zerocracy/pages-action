@@ -272,7 +272,7 @@ PLATFORMS
 
 DEPENDENCIES
   fbe (>= 0.0.86)
-  judges (>= 0.32.0)
+  judges (>= 0.34.0)
   minitest (= 5.25.4)
   minitest-reporters (= 1.7.1)
   qbash (>= 0.4.0)
