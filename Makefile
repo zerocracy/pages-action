@@ -11,7 +11,7 @@ YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
 XSLS = $(subst xsl/,target/xsl/,$(wildcard xsl/*.xsl))
-JUDGES = judges
+JUDGES = bundle exec judges
 DIRS = target target/html target/fb target/xsl target/css target/js
 CSS = target/css/main.css
 JS = target/js/main.js
