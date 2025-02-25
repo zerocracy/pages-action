@@ -4,6 +4,7 @@
 .ONESHELL:
 .PHONY: clean all assets install rake
 .SILENT:
+.SECONDARY:
 .SHELLFLAGS := -x -e -o pipefail -c
 SHELL := bash
 
