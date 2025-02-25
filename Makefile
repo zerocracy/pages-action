@@ -84,6 +84,7 @@ entry: target/docker-image.txt target/fb/simple.fb
 	img=$$(cat target/docker-image.txt)
 	test -e target/fb/simple.fb
 	docker run --rm \
+	    "--user=$$(id -u):$$(id -g)" \
 		-v "$$(realpath $$(pwd))/target/fb/:/work" \
 		-e GITHUB_WORKSPACE=/work \
 		-e INPUT_FACTBASE=simple.fb \
