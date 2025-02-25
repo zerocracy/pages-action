@@ -54,7 +54,7 @@ target/fb/%.fb: tests/%.yml Makefile | target/fb
 	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
 	$(JUDGES) import "$<" "$@"
 
-rake:
+rake: $(SAXON)
 	bundle exec rake
 
 $(CSS): sass/*.scss Makefile | target/css

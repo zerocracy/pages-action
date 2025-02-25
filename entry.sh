@@ -2,19 +2,18 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
 # SPDX-License-Identifier: MIT
 
-set -e
-set -o pipefail
+set -ex -o pipefail
 
 VERSION=0.0.0
-
-if [ -z "${JUDGES}" ]; then
-    JUDGES=bundle exec judges
-fi
 
 if [ -z "$1" ]; then
     SELF=$(pwd)
 else
     SELF=$1
+fi
+
+if [ -z "${JUDGES}" ]; then
+    JUDGES="bundle exec --gemfile=${SELF}/Gemfile judges"
 fi
 
 # Convert the factbase to a few human-readable formats
