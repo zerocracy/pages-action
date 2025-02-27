@@ -12,7 +12,7 @@ gem 'minitest-reporters', '1.7.1', require: false
 gem 'qbash', '>=0.4.0', require: false
 gem 'rake', '>=13', require: false
 gem 'redcarpet', '~>3.5'
-gem 'rubocop', '1.73.0', require: false
+gem 'rubocop', '1.73.1', require: false
 gem 'rubocop-minitest', '>0', require: false
 gem 'rubocop-performance', '>0', require: false
 gem 'rubocop-rake', '>0', require: false
