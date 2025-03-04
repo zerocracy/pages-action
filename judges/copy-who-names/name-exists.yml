@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: something
+    who: 444
+    where: github
+  -
+    what: who-has-name
+    who: 444
+    name: travolta
+    where: github
+expected:
+  - /fb[count(f)=2]
+  - /fb/f[who_name='travolta']
