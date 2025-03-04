@@ -180,3 +180,17 @@
   ac: 654
   ev: 5373.5
   pv: 8484.2
+-
+  _id: 22
+  who: 6305016
+  what: who-has-name
+  name: torvalds
+  where: github
+  when: 2024-06-26T22:22:22.8492Z
+-
+  _id: 23
+  when: 2024-06-26T22:22:22.8492Z
+  what: who-has-name
+  who: 526301
+  name: yegor256
+  where: github
