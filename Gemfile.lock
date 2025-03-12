@@ -135,7 +135,7 @@ GEM
     logger (1.6.6)
     loog (0.6.0)
     mini_portile2 (2.8.8)
-    minitest (5.25.4)
+    minitest (5.25.5)
     minitest-reporters (1.7.1)
       ansi
       builder
@@ -275,7 +275,7 @@ PLATFORMS
 DEPENDENCIES
   fbe (>= 0.0.86)
   judges (>= 0.34.0)
-  minitest (= 5.25.4)
+  minitest (= 5.25.5)
   minitest-reporters (= 1.7.1)
   qbash (>= 0.4.0)
   rake (>= 13)
