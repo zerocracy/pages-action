@@ -79,6 +79,7 @@ fi
 
 # Build a summary HTML.
 html=${INPUT_OUTPUT}/${name}-vitals.html
+htmlmin=${INPUT_OUTPUT}/${name}-vitals.min.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/vitals.xsl" \
@@ -90,5 +91,6 @@ java -jar "${SELF}/target/saxon.jar" \
     "logo=${INPUT_LOGO}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
     "js=$(cat "${SELF}/target/js/main.js")"
-echo "HTML generated at ${html}"
+html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${htmlmin}"
+echo "HTML generated at ${html}, minified version at ${htmlmin}"
 rm "${INPUT_OUTPUT}/${name}.rich.xml"

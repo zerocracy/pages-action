@@ -45,10 +45,8 @@ target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) 
 target/html/%.html: target/output/%
 	n=$$(basename "$@")
 	n=$${n%.*}
-	html-minifier "$$(dirname "$<")/$${n}/$${n}.html" --config-file "html-minifier-config.json" -o "$$(dirname "$<")/$${n}/$${n}.min.html"
-	html-minifier "$$(dirname "$<")/$${n}/$${n}-vitals.html" --config-file "html-minifier-config.json" -o "$$(dirname "$<")/$${n}/$${n}-vitals.min.html"
-	cp "$$(dirname "$<")/$${n}/$${n}.min.html" "$$(dirname "$@")/$${n}.html"
-	cp "$$(dirname "$<")/$${n}/$${n}-vitals.min.html" "$$(dirname "$@")/$${n}-vitals.html"
+	cp "$$(dirname "$<")/$${n}/$${n}.html" "$$(dirname "$@")/$${n}.html"
+	cp "$$(dirname "$<")/$${n}/$${n}-vitals.html" "$$(dirname "$@")/$${n}-vitals.html"
 	xpaths=$$( ruby -e 'require "yaml"; YAML.load_file(ARGV[0], permitted_classes: [Time])[0]["xpaths"].split("\n").each { |x| puts x }' "tests/$${n}.yml" )
 	while IFS= read -r xpath; do
 		xmllint --xpath "$${xpath}" "$$(dirname "$<")/$${n}/$${n}-vitals.html" > /dev/null
