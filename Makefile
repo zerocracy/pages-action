@@ -61,6 +61,7 @@ $(CSS): sass/*.scss Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
+	eslint js/*.js
 	uglifyjs js/*.js > "$@"
 
 clean:
@@ -77,6 +78,7 @@ $(SAXON): | target
 
 install: $(SAXON) | target
 	bundle install
+	npm --no-color install -g eslint@9.22.0
 	npm --no-color install -g uglify-js
 	npm --no-color install -g sass@1.77.2
 

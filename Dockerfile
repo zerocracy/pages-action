@@ -31,6 +31,7 @@ COPY judges /home/judges
 COPY sass /home/sass
 COPY xsl /home/xsl
 COPY js /home/js
+COPY eslint.config.js /home
 RUN make --directory=/home --no-silent install assets
 
 COPY entry.sh /home
