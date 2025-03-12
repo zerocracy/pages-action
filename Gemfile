@@ -20,4 +20,4 @@ gem 'rubocop-rspec', '>0', require: false
 gem 'simplecov', '0.22.0', require: false
 gem 'simplecov-cobertura', '2.1.0', require: false
 gem 'w3c_validators', '1.3.7', require: false
-gem 'webmock', '3.25.0', require: false
+gem 'webmock', '3.25.1', require: false
