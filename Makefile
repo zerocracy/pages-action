@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
-.PHONY: clean all assets install rake fix-styles
+.PHONY: clean all assets install rake stylelint
 .SILENT:
 .SECONDARY:
 .SHELLFLAGS := -x -e -o pipefail -c
@@ -70,10 +70,10 @@ target/fb/%.fb: tests/%.yml Makefile | target/fb
 rake: $(SAXON)
 	bundle exec rake
 
-fix-styles: sass/*.scss
+stylelint: sass/*.scss
 	stylelint sass/*.scss --fix
 
-$(CSS): sass/*.scss fix-styles Makefile | target/css
+$(CSS): sass/*.scss stylelint Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
