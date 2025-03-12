@@ -78,7 +78,7 @@ $(SAXON): | target
 
 install: $(SAXON) | target
 	bundle install
-	npm --no-color install -g eslint
+	npm --no-color install -g eslint@9.22.0
 	npm --no-color install -g uglify-js
 	npm --no-color install -g sass@1.77.2
 
