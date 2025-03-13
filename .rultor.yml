@@ -7,7 +7,11 @@ docker:
 assets:
   docker-password: yegor256/home#assets/docker-password
 install: |
-  sudo apt-get update --yes --fix-missing && sudo apt-get install --yes libxml2-utils wget nodejs npm
+  sudo apt-get update --yes --fix-missing && sudo apt-get install --yes libxml2-utils wget curl
+  curl -fsSL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+  sudo -E bash nodesource_setup.sh
+  sudo apt-get install -y nodejs npm
+  rm nodesource_setup.sh
   sudo make install clean "--directory=$(pwd)"
 merge:
   script: |-

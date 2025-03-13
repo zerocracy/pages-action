@@ -49,7 +49,7 @@ target/html/%.html: target/output/%
 	cp "$$(dirname "$<")/$${n}/$${n}-vitals.html" "$$(dirname "$@")/$${n}-vitals.html"
 	xpaths=$$( ruby -e 'require "yaml"; YAML.load_file(ARGV[0], permitted_classes: [Time])[0]["xpaths"].split("\n").each { |x| puts x }' "tests/$${n}.yml" )
 	while IFS= read -r xpath; do
-		xmllint --xpath "$${xpath}" "$$(dirname "$@")/$${n}-vitals.html" > /dev/null
+		xmllint --xpath "$${xpath}" "$$(dirname "$<")/$${n}/$${n}-vitals.html" > /dev/null
 	done <<< "$${xpaths}"
 	result=0
 	tidy -e "$$(dirname "$@")/$${n}.html" || result=$?
@@ -105,6 +105,7 @@ install: $(SAXON) | target
 	npm --no-color install -g uglify-js@3.19.3
 	npm --no-color install -g sass@1.77.2
 	npm --no-color install -g stylelint@16.15.0 stylelint-config-standard@37.0.0 stylelint-scss@6.11.1
+	npm --no-color install -g html-minifier@4.0.0
 
 entry: target/docker-image.txt target/fb/simple.fb
 	img=$$(cat target/docker-image.txt)
