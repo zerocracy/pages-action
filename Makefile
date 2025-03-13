@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
-.PHONY: clean all assets install rake
+.PHONY: clean all assets install rake stylelint
 .SILENT:
 .SECONDARY:
 .SHELLFLAGS := -x -e -o pipefail -c
@@ -70,7 +70,10 @@ target/fb/%.fb: tests/%.yml Makefile | target/fb
 rake: $(SAXON)
 	bundle exec rake
 
-$(CSS): sass/*.scss Makefile | target/css
+stylelint: sass/*.scss
+	stylelint sass/*.scss --fix
+
+$(CSS): sass/*.scss stylelint Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
@@ -99,8 +102,9 @@ install: $(SAXON) | target
 		fi
 	fi
 	npm --no-color install -g eslint@9.22.0
-	npm --no-color install -g uglify-js
+	npm --no-color install -g uglify-js@3.19.3
 	npm --no-color install -g sass@1.77.2
+	npm --no-color install -g stylelint@16.15.0 stylelint-config-standard@37.0.0 stylelint-scss@6.11.1
 
 entry: target/docker-image.txt target/fb/simple.fb
 	img=$$(cat target/docker-image.txt)

@@ -33,6 +33,7 @@ RUN apt-get update -y --fix-missing \
 
 WORKDIR /home
 COPY Makefile /home
+COPY .stylelintrc.json /home
 COPY Gemfile /home
 COPY judges /home/judges
 COPY sass /home/sass
