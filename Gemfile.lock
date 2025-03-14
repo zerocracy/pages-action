@@ -48,7 +48,7 @@ GEM
       tago (> 0)
     ethon (0.16.0)
       ffi (>= 1.15.0)
-    factbase (0.9.1)
+    factbase (0.9.2)
       backtrace (>= 0.4.0)
       decoor (>= 0.0.1)
       json (~> 2.7)
@@ -100,7 +100,7 @@ GEM
     fiber-storage (1.0.0)
     gli (2.22.2)
       ostruct
-    graphql (2.4.13)
+    graphql (2.4.14)
       base64
       fiber-storage
       logger
@@ -273,8 +273,9 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  fbe (>= 0.0.86)
-  judges (>= 0.34.0)
+  factbase (>= 0.9.2)
+  fbe (>= 0.2.1)
+  judges (>= 0.36.3)
   minitest (= 5.25.5)
   minitest-reporters (= 1.7.1)
   qbash (>= 0.4.0)
