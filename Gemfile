@@ -5,9 +5,9 @@
 
 source 'http://rubygems.org'
 
-gem 'factbase', '>=0.9.2'
-gem 'fbe', '>=0.2.1'
-gem 'judges', '>=0.36.3'
+gem 'factbase', '>=0.9.5'
+gem 'fbe', '>=0.2.3'
+gem 'judges', '>=0.36.5'
 gem 'minitest', '5.25.5', require: false
 gem 'minitest-reporters', '1.7.1', require: false
 gem 'qbash', '>=0.4.0', require: false
