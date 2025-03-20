@@ -62,9 +62,9 @@ while IFS= read -r o; do
 done <<< "${INPUT_OPTIONS}"
 
 ${JUDGES} "${gopts[@]}" update \
+    --shuffle= \
     --no-log \
     --no-summary \
-    --shuffle \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"

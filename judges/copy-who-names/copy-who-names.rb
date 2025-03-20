@@ -5,15 +5,16 @@
 
 require 'fbe/fb'
 
-Fbe.fb.query(
-  '(and
-    (exists who)
-    (not (exists who_name))
-    (join "name_found<=name" (and
-      (eq who $who)
+names =
+  Fbe.fb.query(
+    '(and
       (eq what "who-has-name")
-      (eq where $where)))
-    (exists name_found))'
-).each.to_a.each do |f|
-  f.who_name = f.name_found
+      (exists who)
+      (exists name))'
+  ).each.to_a.to_h { |f| [f.who, f.name] }
+
+Fbe.fb.query('(and (exists who) (not (exists who_name)))').each do |f|
+  n = names[f.who]
+  next if n.nil?
+  f.who_name = n
 end
