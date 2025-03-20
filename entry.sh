@@ -64,6 +64,7 @@ done <<< "${INPUT_OPTIONS}"
 ${JUDGES} "${gopts[@]}" update \
     --no-log \
     --no-summary \
+    --shuffle \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
