@@ -9,11 +9,10 @@ Fbe.fb.query(
   '(and
     (exists who)
     (not (exists who_name))
-    (join "name_found<=name"
-      (and
-        (eq what "who-has-name")
-        (eq where $where)
-        (eq who $who)))
+    (join "name_found<=name" (and
+      (eq who $who)
+      (eq what "who-has-name")
+      (eq where $where)))
     (exists name_found))'
 ).each.to_a.each do |f|
   f.who_name = f.name_found
