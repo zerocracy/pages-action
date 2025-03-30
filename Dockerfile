@@ -5,7 +5,7 @@ FROM ruby:3.4
 
 LABEL "repository"="https://github.com/zerocracy/pages-action"
 LABEL "maintainer"="Yegor Bugayenko"
-LABEL "version"="0.0.0"
+LABEL "version"="0.0.48"
 
 # hadolint ignore=DL3008
 RUN apt-get update -y --fix-missing \
