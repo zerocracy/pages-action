@@ -1,6 +1,6 @@
 # Pages Zerocracy Action
 
-[![DevOps By Rultor.com](http://www.rultor.com/b/zerocracy/pages-action)](http://www.rultor.com/p/zerocracy/pages-action)
+[![DevOps By Rultor.com](https://www.rultor.com/b/zerocracy/pages-action)](https://www.rultor.com/p/zerocracy/pages-action)
 
 [![make](https://github.com/zerocracy/pages-action/actions/workflows/make.yml/badge.svg)](https://github.com/zerocracy/pages-action/actions/workflows/make.yml)
 [![Hits-of-Code](https://hitsofcode.com/github/zerocracy/pages-action)](https://hitsofcode.com/view/github/zerocracy/pages-action)
