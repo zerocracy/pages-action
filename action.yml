@@ -25,7 +25,7 @@ inputs:
     default: 'https://www.zerocracy.com/svg/logo.svg'
   columns:
     description: 'Comma-separated list of columns to print in the HTML'
-    default: 'when,what,who,repository,issue,details'
+    default: 'when,what,repository'
   hidden:
     description: 'Comma-separated list of properties to hide'
     default: '_id,_time,_version'
