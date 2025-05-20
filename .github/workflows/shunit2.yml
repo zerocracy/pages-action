@@ -30,5 +30,6 @@ jobs:
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes libxml2-utils
       - run: make install
+      - run: make assets
       - run: sudo apt-get update --yes && sudo apt-get install --yes shunit2
       - run: shunit2 entry-test.sh
