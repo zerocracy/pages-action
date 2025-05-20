@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-name: make
+name: shunit2
 'on':
   push:
     branches:
@@ -11,7 +11,7 @@ name: make
     branches:
       - master
 jobs:
-  make:
+  shunit2:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
@@ -30,4 +30,5 @@ jobs:
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes libxml2-utils
       - run: make install
-      - run: make
+      - run: sudo apt-get update --yes && sudo apt-get install --yes shunit2
+      - run: make shunit2

@@ -53,6 +53,9 @@ for f in yaml xml json html; do
 done
 
 declare -a options=()
+if [ -n "${INPUT_GITHUB_TOKEN}" ]; then
+    options+=("--option=github_token=${INPUT_GITHUB_TOKEN}")
+fi
 while IFS= read -r o; do
     v=$(echo "${o}" | xargs)
     if [ "${v}" = "" ]; then

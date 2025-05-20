@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-$hightlight: #f5f5f5;
+$highlight: #f5f5f5;
 
 #awards {
   tr.sub td {
@@ -15,7 +15,7 @@ $hightlight: #f5f5f5;
   }
 
   tbody tr:hover {
-    background-color: $hightlight;
+    background-color: $highlight;
   }
 
   tr.p-table {

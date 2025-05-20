@@ -33,6 +33,7 @@ RUN apt-get update -y --fix-missing \
 
 WORKDIR /home
 COPY Makefile /home
+COPY makes /home/makes
 COPY .stylelintrc.json /home
 COPY Gemfile /home
 COPY html-minifier-config.json /home
