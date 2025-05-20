@@ -1,6 +1,6 @@
 {
-    "collapseWhitespace": true,
-    "removeComments": true,
-    "removeEmptyAttributes": true,
-    "keepClosingSlash": true
+  "collapseWhitespace": true,
+  "keepClosingSlash": true,
+  "removeComments": true,
+  "removeEmptyAttributes": true
 }
