@@ -2,13 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
-.PHONY: clean all assets install rake stylelint
+.PHONY: clean all assets install rake stylelint test shunit2
 .SILENT:
 .SECONDARY:
 .SHELLFLAGS := -x -e -o pipefail -c
 SHELL := bash
-
-OS_NAME := $(shell uname -s | tr A-Z a-z)
 
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
@@ -80,6 +78,9 @@ $(JS): js/*.js Makefile | target/js
 	eslint js/*.js
 	uglifyjs js/*.js > "$@"
 
+shunit2: assets
+	shunit2 entry-test.sh
+
 clean:
 	rm -rf target
 
@@ -93,33 +94,10 @@ $(SAXON): | target
 	fi
 
 install: $(SAXON) | target
-	bundle install
-	if [ "$(OS_NAME)" = "darwin" ]; then
-		brew install tidy-html5
-	else
-		if ! ([ -f /proc/self/cgroup ] && grep -q ":" /proc/self/cgroup); then
-			apt-get install -y tidy
-		fi
-	fi
-	npm --no-color install -g eslint@9.22.0
-	npm --no-color install -g uglify-js@3.19.3
-	npm --no-color install -g sass@1.77.2
-	npm --no-color install -g stylelint@16.15.0 stylelint-config-standard@37.0.0 stylelint-scss@6.11.1
-	npm --no-color install -g html-minifier@4.0.0
+	./makes/install.sh
 
 entry: target/docker-image.txt target/fb/simple.fb
-	img=$$(cat target/docker-image.txt)
-	test -e target/fb/simple.fb
-	docker run --rm \
-	    "--user=$$(id -u):$$(id -g)" \
-		-v "$$(realpath $$(pwd))/target/fb/:/work" \
-		-e GITHUB_WORKSPACE=/work \
-		-e INPUT_FACTBASE=simple.fb \
-		-e INPUT_VERBOSE=true \
-		-e INPUT_OUTPUT=pages \
-		-e INPUT_COLUMNS=what,when,who \
-		-e INPUT_HIDDEN=_id \
-		"$${img}"
+	./makes/entry-in-docker.sh "$$(cat target/docker-image.txt)"
 	echo "$$?" > target/entry.exit
 
 rmi: target/docker-image.txt
@@ -128,14 +106,7 @@ rmi: target/docker-image.txt
 	rm "$<"
 
 verify:
-	e2=$$(cat target/entry.exit)
-	test "$${e2}" = "0"
-	tree target/fb/
-	test -e target/fb/pages/simple-vitals.html
-	test -e target/fb/pages/simple.html
-	test -e target/fb/pages/simple.xml
-	test -e target/fb/pages/simple.json
-	test -e target/fb/pages/simple.yaml
+	./makes/verify.sh
 
 target/docker-image.txt: Makefile Dockerfile entry.sh
 	mkdir -p "$$(dirname $@)"
