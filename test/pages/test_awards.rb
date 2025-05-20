@@ -3,10 +3,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
 # SPDX-License-Identifier: MIT
 
-require 'minitest/autorun'
 require 'nokogiri'
 require 'qbash'
 require 'loog'
+require_relative '../test__helper'
 
 # Test.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
