@@ -16,7 +16,7 @@ testPublishesEmptyFactbase() {
   INPUT_COLUMNS=details
   export INPUT_COLUMNS
   bundle exec judges eval "${tmp}/test.fb" "\$fb.insert" > /dev/null
-  ./entry.sh >"${tmp}/log.txt" 2>&1
+  ./entry.sh 2>&1 | tee "${tmp}/log.txt"
   assertTrue 'YAML file is absent' "[ -e '${tmp}/output/test.yaml' ]"
   assertTrue 'XML file is absent' "[ -e '${tmp}/output/test.xml' ]"
   assertTrue 'JSON file is absent' "[ -e '${tmp}/output/test.json' ]"
@@ -38,6 +38,6 @@ testPassesGithubToken() {
   INPUT_GITHUB_TOKEN=THETOKEN
   export INPUT_GITHUB_TOKEN
   bundle exec judges eval "${tmp}/test.fb" "\$fb.insert" > /dev/null
-  ./entry.sh >"${tmp}/log.txt" 2>&1
+  ./entry.sh 2>&1 | tee "${tmp}/log.txt"
   assertTrue "grep github_token=THETOKEN '${tmp}/log.txt'"
 }
