@@ -41,3 +41,22 @@ testPassesGithubToken() {
   ./entry.sh 2>&1 | tee "${tmp}/log.txt"
   assertTrue "grep github_token=THETOKEN '${tmp}/log.txt'"
 }
+
+testUsesDefaultGithubToken() {
+  tmp=target/shunit2/uses-default-github-token
+  mkdir -p "${tmp}"
+  GITHUB_WORKSPACE=${tmp}
+  export GITHUB_WORKSPACE
+  INPUT_VERBOSE=true
+  export INPUT_VERBOSE
+  INPUT_OUTPUT=output
+  export INPUT_OUTPUT
+  INPUT_FACTBASE=test.fb
+  export INPUT_FACTBASE
+  INPUT_GITHUB_TOKEN=
+  GITHUB_TOKEN=DEFTOKEN
+  export GITHUB_TOKEN
+  bundle exec judges eval "${tmp}/test.fb" "\$fb.insert" > /dev/null
+  ./entry.sh 2>&1 | tee "${tmp}/log.txt"
+  assertTrue "grep github_token=DEFTOKEN '${tmp}/log.txt'"
+}
