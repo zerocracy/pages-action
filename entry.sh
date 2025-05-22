@@ -55,6 +55,8 @@ done
 declare -a options=()
 if [ -n "${INPUT_GITHUB_TOKEN}" ]; then
     options+=("--option=github_token=${INPUT_GITHUB_TOKEN}")
+elif [ -n "${GITHUB_TOKEN}" ]; then
+    options+=("--option=github_token=${GITHUB_TOKEN}");
 fi
 while IFS= read -r o; do
     v=$(echo "${o}" | xargs)
