@@ -6,7 +6,7 @@ description: 'Build static pages from a Factbase'
 author: 'Yegor Bugayenko <yegor256@gmail.com>'
 runs:
   using: 'docker'
-  image: 'docker://yegor256/pages-action:latest'
+  image: 'docker://yegor256/pages-action:0.1.1'
 inputs:
   verbose:
     description: 'Log as much debug information as possible'
