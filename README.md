@@ -25,8 +25,7 @@ The following configuration options are supported here:
     output: my-directory
     columns: who,when,repository
     hidden: _id,_time
-    options: |
-      github_token=${{ secrets.GITHUB_TOKEN }}
+    github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 The following options are supported:

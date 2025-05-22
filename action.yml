@@ -32,6 +32,6 @@ inputs:
   today:
     description: 'ISO-8601 date-time of report generation (today, by default)'
     required: false
-  github_token:
+  github-token:
     description: 'Authentication GitHub access token'
     required: false
