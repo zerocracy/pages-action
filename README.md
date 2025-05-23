@@ -42,6 +42,7 @@ to print in the HTML;
 * `hidden` (optional) is a comma-separated list of columns to hide;
 * `today` (optional) is ISO-8601 date-time of today;
 * `verbose` (default: `false`) turns on a more detailed logging.
+* `github-token` (required) is the GitHub token
 
 More details are in the
 [`action.yml`](https://github.com/zerocracy/pages-action/blob/master/action.yml)
