@@ -9,14 +9,15 @@ VERSION=0.0.0
 echo "The 'pages-action' ${VERSION} is running"
 
 if [ -z "$1" ]; then
-    SELF=$(pwd)
+    SELF=$(dirname "$0")
 else
     SELF=$1
 fi
 
 if [ -z "${JUDGES}" ]; then
-    opts=( bundle exec "--gemfile=${SELF}/Gemfile" judges )
-    JUDGES="${opts[*]}"
+    BUNDLE_GEMFILE="${SELF}/Gemfile"
+    export BUNDLE_GEMFILE
+    JUDGES="bundle exec judges"
 fi
 echo "The 'judges' gem will be started as such: '${JUDGES}'"
 
@@ -59,11 +60,6 @@ for f in yaml xml json html; do
 done
 
 declare -a options=()
-if [ -z "${INPUT_GITHUB_TOKEN}" ]; then
-    echo "The 'github-token' plugin parameter is not set"
-else
-    options+=("--option=github_token=${INPUT_GITHUB_TOKEN}")
-fi
 while IFS= read -r o; do
     v=$(echo "${o}" | xargs)
     if [ "${v}" = "" ]; then
@@ -71,6 +67,25 @@ while IFS= read -r o; do
     fi
     options+=("--option=${v}")
 done <<< "${INPUT_OPTIONS}"
+github_token_found=false
+for opt in "${options[@]}"; do
+    if [[ "${opt}" == "--option=github_token="* ]]; then
+        github_token_found=true
+        break
+    fi
+done
+if [ "${github_token_found}" == "true" ]; then
+    echo "The 'github_token' option is set, using it"
+fi
+if [ "${github_token_found}" == "false" ]; then
+    if [ -z "$(printenv "INPUT_GITHUB-TOKEN")" ]; then
+        echo "The 'github-token' plugin parameter is not set (\$INPUT_GITHUB-TOKEN is empty)"
+    else
+        echo "The 'github-token' plugin parameter is set, using it"
+        options+=("--option=github_token=$(printenv "INPUT_GITHUB-TOKEN")");
+        github_token_found=true
+    fi
+fi
 
 ${JUDGES} "${gopts[@]}" update \
     --shuffle= \
