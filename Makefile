@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
-.PHONY: clean all assets install rake stylelint test shunit2
+.PHONY: clean all assets install rake stylelint test entries
 .SILENT:
 .SECONDARY:
 .SHELLFLAGS := -x -e -o pipefail -c
@@ -20,7 +20,7 @@ SAXON = target/saxon.jar
 
 export
 
-all: assets $(HTMLS) rake entry rmi verify
+all: assets $(HTMLS) rake entry rmi verify entries
 
 assets: $(XSLS) $(JS) $(CSS)
 
@@ -78,8 +78,8 @@ $(JS): js/*.js Makefile | target/js
 	eslint js/*.js
 	uglifyjs js/*.js > "$@"
 
-shunit2: assets
-	shunit2 entry-test.sh
+entries: assets
+	./makes/entries.sh
 
 clean:
 	rm -rf target
