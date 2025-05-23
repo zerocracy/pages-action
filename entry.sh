@@ -2,9 +2,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
 # SPDX-License-Identifier: MIT
 
-set -ex -o pipefail
+set -e -o pipefail
 
 VERSION=0.0.0
+
+echo "The 'pages-action' ${VERSION} is running"
 
 if [ -z "$1" ]; then
     SELF=$(pwd)
@@ -16,22 +18,24 @@ if [ -z "${JUDGES}" ]; then
     opts=( bundle exec "--gemfile=${SELF}/Gemfile" judges )
     JUDGES="${opts[*]}"
 fi
+echo "The 'judges' gem will be started as such: '${JUDGES}'"
 
-# Convert the factbase to a few human-readable formats
 if [ -z "${GITHUB_WORKSPACE}" ]; then
     echo 'Probably you are running this script not from GitHub Actions.'
     echo "Use 'make' instead: it configures all environment variables correctly."
     exit 1
 fi
-cd "${GITHUB_WORKSPACE}"
+cd "${GITHUB_WORKSPACE}" || exit 1
+echo "The workspace directory is: $(pwd)"
 
 declare -a gopts=()
 if [ -n "${INPUT_VERBOSE}" ]; then
     gopts+=("--verbose")
     export GLI_DEBUG=true
+else
+    echo "Since the 'verbose' is not set to 'true', you won't see detailed logs"
 fi
 
-# Convert the factbase to a few human-readable formats
 if [ -z "${INPUT_OUTPUT}" ]; then
     echo "It is mandatory to specify the 'output' argument, which is the name"
     echo "of a directory where YAML, JSON, and other human-readable files"
@@ -39,9 +43,11 @@ if [ -z "${INPUT_OUTPUT}" ]; then
     exit 1
 fi
 mkdir -p "${INPUT_OUTPUT}"
+echo "The output directory is: ${INPUT_OUTPUT}"
 
 name=$(basename "${INPUT_FACTBASE}")
 name="${name%.*}"
+echo "The name of the factbase is: '${name}'"
 
 for f in yaml xml json html; do
     ${JUDGES} "${gopts[@]}" print \
@@ -53,7 +59,9 @@ for f in yaml xml json html; do
 done
 
 declare -a options=()
-if [ -n "${INPUT_GITHUB_TOKEN}" ]; then
+if [ -z "${INPUT_GITHUB_TOKEN}" ]; then
+    echo "The 'github-token' plugin parameter is not set"
+else
     options+=("--option=github_token=${INPUT_GITHUB_TOKEN}")
 fi
 while IFS= read -r o; do
@@ -76,12 +84,12 @@ ${JUDGES} "${gopts[@]}" print \
     "${INPUT_FACTBASE}" \
     "${INPUT_OUTPUT}/${name}.rich.xml"
 
-# This is the day of "today", when we want to see the situation in the project
 if [ -z "${INPUT_TODAY}" ]; then
     INPUT_TODAY=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+else
+    echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
 
-# Build a summary HTML.
 html=${INPUT_OUTPUT}/${name}-vitals.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
@@ -94,6 +102,6 @@ java -jar "${SELF}/target/saxon.jar" \
     "logo=${INPUT_LOGO}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
     "js=$(cat "${SELF}/target/js/main.js")"
-html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
+    html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
 echo "HTML generated at ${html}"
 rm "${INPUT_OUTPUT}/${name}.rich.xml"

@@ -16,7 +16,7 @@ testPublishesEmptyFactbase() {
   INPUT_COLUMNS=details
   export INPUT_COLUMNS
   bundle exec judges eval "${tmp}/test.fb" "\$fb.insert" > /dev/null
-  ./entry.sh 2>&1 | tee "${tmp}/log.txt"
+  ./entry.sh > "${tmp}/log.txt" 2>&1
   assertTrue 'YAML file is absent' "[ -e '${tmp}/output/test.yaml' ]"
   assertTrue 'XML file is absent' "[ -e '${tmp}/output/test.xml' ]"
   assertTrue 'JSON file is absent' "[ -e '${tmp}/output/test.json' ]"
@@ -38,7 +38,7 @@ testPassesGithubToken() {
   INPUT_GITHUB_TOKEN=THETOKEN
   export INPUT_GITHUB_TOKEN
   bundle exec judges eval "${tmp}/test.fb" "\$fb.insert" > /dev/null
-  ./entry.sh 2>&1 | tee "${tmp}/log.txt"
+  ./entry.sh > "${tmp}/log.txt" 2>&1
   assertTrue "grep github_token=THETOKEN '${tmp}/log.txt'"
 }
 
@@ -57,6 +57,6 @@ testDoesntUseDefaultGithubToken() {
   GITHUB_TOKEN=NEVERTOKEN
   export GITHUB_TOKEN
   bundle exec judges eval "${tmp}/test.fb" "\$fb.insert" > /dev/null
-  ./entry.sh 2>&1 | tee "${tmp}/log.txt"
+  ./entry.sh > "${tmp}/log.txt" 2>&1
   assertTrue "grep -v github_token=NEVERTOKEN '${tmp}/log.txt'"
 }
