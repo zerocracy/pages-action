@@ -35,3 +35,4 @@ inputs:
   github-token:
     description: 'Authentication GitHub access token'
     required: false
+    default: ${{ github.token }}

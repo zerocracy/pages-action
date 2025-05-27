@@ -25,7 +25,6 @@ The following configuration options are supported here:
     output: my-directory
     columns: who,when,repository
     hidden: _id,_time
-    github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 The following options are supported:
@@ -42,7 +41,7 @@ to print in the HTML;
 * `hidden` (optional) is a comma-separated list of columns to hide;
 * `today` (optional) is ISO-8601 date-time of today;
 * `verbose` (default: `false`) turns on a more detailed logging.
-* `github-token` (required) is the GitHub token
+* `github-token` (optional) is the GitHub token, defaulted to repo-scoped token
 
 More details are in the
 [`action.yml`](https://github.com/zerocracy/pages-action/blob/master/action.yml)
