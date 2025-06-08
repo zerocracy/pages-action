@@ -32,7 +32,7 @@ if [ -z "${GITHUB_WORKSPACE}" ]; then
     echo "Use 'make' instead: it configures all environment variables correctly."
     exit 1
 fi
-cd "${GITHUB_WORKSPACE}" || exit 1
+cd "${GITHUB_WORKSPACE}"
 echo "The workspace directory is: $(pwd)"
 
 declare -a gopts=()
