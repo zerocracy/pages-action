@@ -96,7 +96,7 @@ fi
 ${JUDGES} "${gopts[@]}" update \
     --shuffle= \
     --no-log \
-    --no-summary \
+    --summary=off \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
