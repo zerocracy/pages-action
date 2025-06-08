@@ -8,6 +8,10 @@ VERSION=0.0.0
 
 echo "The 'pages-action' ${VERSION} is running"
 
+if [ "${INPUT_VERBOSE}" == 'true' ]; then
+    set -x
+fi
+
 if [ -z "$1" ]; then
     SELF=$(dirname "$0")
 else
