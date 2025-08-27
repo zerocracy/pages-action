@@ -10,7 +10,7 @@ LABEL "version"="0.0.0"
 # hadolint ignore=DL3008
 RUN apt-get update -y --fix-missing \
   && apt-get -y install --no-install-recommends \
-    openjdk-17-jdk \
+    openjdk-21-jdk \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
