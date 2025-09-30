@@ -1,4 +1,4 @@
-name: CSS Validation
+name: css validation
 
 on: [push, pull_request]
 
@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Validate CSS
+    - name: validate CSS
       uses: gchudnov/w3c-css@v1.0.0
       with:
         css: 'target/css/main.css'
