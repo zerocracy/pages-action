@@ -56,4 +56,6 @@ In order to test this action, just run (provided, you have
 make
 ```
 
-Should work.
+Then, you should be able to open the `target/html/simple-vitals.html`
+  in a browser.
+
