@@ -17,7 +17,7 @@ This is how this vitals page looks for [our team][vitals].
 The following configuration options are supported here:
 
 ```yaml
-- uses: zerocracy/pages-action@0.3.1
+- uses: zerocracy/pages-action@0.4.0
   with:
     factbase: foo.fb
     verbose: true
