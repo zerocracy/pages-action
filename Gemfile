@@ -10,6 +10,7 @@ gem 'fbe', '>=0.2.3'
 gem 'judges', '>=0.38.1'
 gem 'minitest', '~>5.25', require: false
 gem 'minitest-reporters', '~>1.7', require: false
+gem 'online', '~>0.0'
 gem 'qbash', '>=0.4.0', require: false
 gem 'rake', '>=13', require: false
 gem 'redcarpet', '~>3.5'

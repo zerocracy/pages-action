@@ -3,9 +3,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
 # SPDX-License-Identifier: MIT
 
-require 'webmock/minitest'
+require 'online'
 require 'nokogiri'
 require 'w3c_validators'
+require 'webmock/minitest'
 require_relative '../test__helper'
 
 # Test.
@@ -29,6 +30,7 @@ class TestVitals < Minitest::Test
       end
     assert_empty(xml.errors, xml)
     refute_empty(xml.xpath('/html'), xml)
+    return unless online?
     WebMock.enable_net_connect!
     begin
       v = W3CValidators::NuValidator.new.validate_file(html)
