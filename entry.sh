@@ -111,6 +111,17 @@ else
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
 
+logo=${INPUT_LOGO}
+if [ -z "${logo}" ] && [ "${ADLESS}" == 'false' ]; then
+    logo=https://www.zerocracy.com/svg/logo.svg
+fi
+
+if [ "${INPUT_ADLESS}" == 'true' ]; then
+    echo 'The output will have no mention of Zerocracy'
+else
+    echo 'The output HTML will have links to Zerocracy'
+fi
+
 html=${INPUT_OUTPUT}/${name}-vitals.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
@@ -120,7 +131,8 @@ java -jar "${SELF}/target/saxon.jar" \
     "version=${VERSION}" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
-    "logo=${INPUT_LOGO}" \
+    "logo=${logo}" \
+    "adless=${INPUT_ADLESS}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
     "js=$(cat "${SELF}/target/js/main.js")"
     html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"

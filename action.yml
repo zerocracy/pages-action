@@ -22,7 +22,10 @@ inputs:
     default: 'default.fb'
   logo:
     description: 'URL of the logo to put on the HTML page'
-    default: 'https://www.zerocracy.com/svg/logo.svg'
+    default: ''
+  adless:
+    description: 'Hide all Zerocracy links, banners, and logos'
+    default: false
   columns:
     description: 'Comma-separated list of columns to print in the HTML'
     default: 'when,what,repository'
