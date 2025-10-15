@@ -29,9 +29,13 @@ class TestVitals < Minitest::Test
       end
     assert_empty(xml.errors, xml)
     refute_empty(xml.xpath('/html'), xml)
-    # WebMock.enable_net_connect!
-    # v = W3CValidators::NuValidator.new.validate_file(html)
-    # assert(v.errors.empty?, "#{doc}\n\n#{v.errors.join('; ')}")
+    WebMock.enable_net_connect!
+    begin
+      v = W3CValidators::NuValidator.new.validate_file(html)
+      assert_empty(v.errors, "#{doc}\n\n#{v.errors.join('; ')}")
+    rescue Errno::ECONNRESET, W3CValidators::ValidatorUnavailable, W3CValidators::ParsingError, OpenSSL::SSL::SSLError
+      skip
+    end
   end
 
   def test_fn_index
