@@ -93,10 +93,26 @@ if [ "${github_token_found}" == "false" ]; then
     fi
 fi
 
+timeout=${INPUT_TIMEOUT}
+if [ -z "${timeout}" ]; then
+    timeout=10
+fi
+timeout=$((timeout * 60))
+echo "Each judge will spend up to ${timeout} seconds"
+
+lifetime=${INPUT_LIFETIME}
+if [ -z "${lifetime}" ]; then
+    lifetime=15
+fi
+lifetime=$((lifetime * 60))
+echo "The update will run for up to ${lifetime} seconds"
+
 ${JUDGES} "${gopts[@]}" update \
     --shuffle= \
     --no-log \
     --summary=off \
+    --lifetime "${lifetime}" \
+    --timeout "${timeout}" \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"

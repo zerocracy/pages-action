@@ -39,3 +39,11 @@ inputs:
     description: 'Authentication GitHub access token'
     required: false
     default: ${{ github.token }}
+  timeout:
+    description: 'The number of minutes to spend on each judge'
+    required: false
+    default: 3
+  lifetime:
+    description: 'The number of minutes to spend on the entire lifetime'
+    required: false
+    default: 5
