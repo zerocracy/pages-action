@@ -136,8 +136,12 @@
               </span>
             </p>
             <xsl:if test="$adless = 'false'">
-              <p>
-                You can get a similar report for your project.
+              <p class="smaller gray">
+                <xsl:text>You can get a </xsl:text>
+                <a href="https://www.zerocracy.com/how-it-works.html">
+                  <xsl:text>similar report</xsl:text>
+                </a>
+                <xsl:text> for your project.</xsl:text>
               </p>
             </xsl:if>
           </header>
