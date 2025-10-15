@@ -183,9 +183,16 @@
               </time>
               <xsl:text>.</xsl:text>
               <br/>
-              <a href="https://github.com/yegor256/factbase">
-                <xsl:text>Factbase</xsl:text>
-              </a>
+              <xsl:choose>
+                <xsl:when test="$adless = 'true'">
+                  <xsl:text>Factbase</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <a href="https://github.com/yegor256/factbase">
+                    <xsl:text>Factbase</xsl:text>
+                  </a>
+                </xsl:otherwise>
+              </xsl:choose>
               <xsl:text>: </xsl:text>
               <xsl:value-of select="count(fb/f)"/>
               <xsl:text> fact</xsl:text>
@@ -212,9 +219,16 @@
               <xsl:text>, version </xsl:text>
               <xsl:value-of select="fb/@version"/>
               <xsl:text>; </xsl:text>
-              <a href="https://github.com/zerocracy/fbe">
-                <xsl:text>Fbe</xsl:text>
-              </a>
+              <xsl:choose>
+                <xsl:when test="$adless = 'true'">
+                  <xsl:text>Fbe</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <a href="https://github.com/zerocracy/fbe">
+                    <xsl:text>Fbe</xsl:text>
+                  </a>
+                </xsl:otherwise>
+              </xsl:choose>
               <xsl:text>: </xsl:text>
               <xsl:value-of select="$fbe"/>
               <xsl:text>.</xsl:text>
