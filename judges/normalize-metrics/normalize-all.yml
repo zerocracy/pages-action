@@ -31,6 +31,6 @@ input:
     total_forks: 20
 expected:
   - /fb[count(f)=5]
-  - /fb/f[n_average_issue_lifetime]
-  - /fb/f[n_average_release_interval]
+  - /fb/f[n_average_issue_lifetime = '0.33998887309142606']
+  - /fb/f[n_average_release_interval = '0.07419788377742416']
   - /fb/f[n_total_forks]

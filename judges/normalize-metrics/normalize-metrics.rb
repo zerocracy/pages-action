@@ -22,13 +22,13 @@ end
   first = facts.first
   first.all_properties.each do |prop|
     next unless fits?(prop)
-    start[prop] = first[prop][0].to_f
+    start[prop] = first[prop].first.to_f
   end
 
   facts.drop(1).each do |f|
     f.all_properties.each do |prop|
       next unless fits?(prop)
-      v = f[prop][0].to_f
+      v = f[prop].first.to_f
       start[prop] = v if start[prop].nil?
     end
   end
@@ -36,11 +36,13 @@ end
   facts.each do |f|
     f.all_properties.each do |prop|
       next unless fits?(prop)
-      v = f[prop][0]
+      v = f[prop].first
       s = start[prop]
       diff = v - s
       diff /= start[prop] unless start[prop].zero?
-      f.send(:"n_#{prop}=", diff)
+      n = "n_#{prop}"
+      next if f[n]
+      f.send(:"#{n}=", diff)
     end
   end
 end

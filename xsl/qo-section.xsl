@@ -75,12 +75,13 @@
               <xsl:if test="position() &gt; 1">
                 <xsl:text>,</xsl:text>
               </xsl:if>
+              <xsl:variable name="cell" select="*[name()=$n]/text()"/>
               <xsl:choose>
-                <xsl:when test="*[name()=$n]">
-                  <xsl:value-of select="*[name()=$n]/text()"/>
+                <xsl:when test="$cell = ''">
+                  <xsl:text>null</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:text>null</xsl:text>
+                  <xsl:value-of select="$cell"/>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:for-each>

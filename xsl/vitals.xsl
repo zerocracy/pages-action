@@ -135,7 +135,7 @@
                 </xsl:choose>
               </span>
             </p>
-            <xsl:if test="$adless == 'false'">
+            <xsl:if test="$adless = 'false'">
               <p>
                 You can get a similar report for your project.
               </p>
