@@ -301,7 +301,7 @@
         </span>
         <xsl:text> (</xsl:text>
         <xsl:variable name="c" select="count($facts[who_name=$name]/award)"/>
-        <a href="" onclick="$('.p_{$name}').toggle(); return false;">
+        <a href="#" onclick="$('.p_{$name}').toggle(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
           <xsl:if test="$c &gt; 1">

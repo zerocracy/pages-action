@@ -22,7 +22,7 @@
         <h2>
           <xsl:value-of select="$title"/>
         </h2>
-        <xsl:if test="not(empty($before))">
+        <xsl:if test="$before != ''">
           <p>
             <xsl:copy-of select="$before"/>
           </p>

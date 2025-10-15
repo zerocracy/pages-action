@@ -110,7 +110,7 @@
           <xsl:value-of select="$js" disable-output-escaping="yes"/>
         </script>
         <style>
-          <xsl:value-of select="$css" disable-output-escaping="yes"/>
+          <xsl:value-of select="$css" disable-output-escaping="no"/>
         </style>
       </head>
       <body>
@@ -118,18 +118,28 @@
           <header>
             <p>
               <xsl:if test="$logo != ''">
-                <a href="">
-                  <img alt="logo">
-                    <xsl:attribute name="src">
-                      <xsl:value-of select="$logo"/>
-                    </xsl:attribute>
-                  </img>
-                </a>
+                <img alt="logo">
+                  <xsl:attribute name="src">
+                    <xsl:value-of select="$logo"/>
+                  </xsl:attribute>
+                </img>
               </xsl:if>
               <span>
-                <xsl:value-of select="$name"/>
+                <xsl:choose>
+                  <xsl:when test="$name = 'true'">
+                    <xsl:text>noname</xsl:text>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="$name"/>
+                  </xsl:otherwise>
+                </xsl:choose>
               </span>
             </p>
+            <xsl:if test="$adless == 'false'">
+              <p>
+                You can get a similar report for your project.
+              </p>
+            </xsl:if>
           </header>
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
@@ -184,13 +194,13 @@
               <xsl:text>.</xsl:text>
               <br/>
               <xsl:choose>
-                <xsl:when test="$adless = 'true'">
-                  <xsl:text>Factbase</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
+                <xsl:when test="$adless = 'false'">
                   <a href="https://github.com/yegor256/factbase">
                     <xsl:text>Factbase</xsl:text>
                   </a>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>Factbase</xsl:text>
                 </xsl:otherwise>
               </xsl:choose>
               <xsl:text>: </xsl:text>
@@ -220,13 +230,13 @@
               <xsl:value-of select="fb/@version"/>
               <xsl:text>; </xsl:text>
               <xsl:choose>
-                <xsl:when test="$adless = 'true'">
-                  <xsl:text>Fbe</xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
+                <xsl:when test="$adless = 'false'">
                   <a href="https://github.com/zerocracy/fbe">
                     <xsl:text>Fbe</xsl:text>
                   </a>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>Fbe</xsl:text>
                 </xsl:otherwise>
               </xsl:choose>
               <xsl:text>: </xsl:text>

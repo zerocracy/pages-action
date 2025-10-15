@@ -3,12 +3,27 @@
  * SPDX-License-Identifier: MIT
  */
 
-@use 'awards.scss';
-@use 'bylaws.scss';
-@use 'qo-section.scss';
+@use 'awards' as *;
+@use 'bylaws' as *;
+@use 'qo-section' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
 $black: #131515;
 $gray: #282828;
+
+body,
+body * {
+  font-family: "Noto Sans", sans-serif;
+}
+
+code,
+pre,
+tt {
+  font-family: "Roboto Mono", monospace;
+}
 
 section {
     width: auto;
