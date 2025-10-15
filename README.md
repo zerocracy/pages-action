@@ -41,7 +41,7 @@ to print in the HTML;
 * `hidden` (optional) is a comma-separated list of columns to hide;
 * `today` (optional) is ISO-8601 date-time of today;
 * `verbose` (default: `false`) turns on a more detailed logging.
-* `ads-free` (optional) hides all Zerocracy banners, links, and logos
+* `adless` (default: `false`) hides all Zerocracy banners, links, and logos
 * `github-token` (optional) is the GitHub token, defaulted to repo-scoped token
 
 More details are in the
