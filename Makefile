@@ -49,17 +49,14 @@ target/html/%.html: target/output/%
 	while IFS= read -r xpath; do
 		xmllint --xpath "$${xpath}" "$$(dirname "$<")/$${n}/$${n}-vitals.html" > /dev/null
 	done <<< "$${xpaths}"
-	result=0
-	tidy -e "$$(dirname "$@")/$${n}.html" || result=$?
-	if [ "$${result}" -eq "2" ]; then
-		echo "$$(dirname "$@")/$${n}.html has errors"
-		exit 1
-	fi
-	tidy -e "$$(dirname "$@")/$${n}-vitals.html" || result=$?
-	if [ "$${result}" -eq "2" ]; then
-		echo "$$(dirname "$@")/$${n}-vitals.html has errors"
-		exit 1
-	fi
+	for f in $${n} $${n}-vitals; do
+		result=0
+		tidy -e "$$(dirname "$@")/$${f}.html" || result=$?
+		if [ "$${result}" -eq "2" ]; then
+			echo "$$(dirname "$@")/$${f}.html has errors"
+			exit 1
+		fi
+	done
 
 target/fb/%.fb: tests/%.yml Makefile | target/fb
 	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
