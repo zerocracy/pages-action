@@ -91,7 +91,9 @@
         <title>
           <xsl:value-of select="$name"/>
         </title>
-        <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
+        <xsl:if test="$logo != ''">
+          <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
+        </xsl:if>
         <link href="https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css" rel="stylesheet"/>
         <link href="https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css" rel="stylesheet"/>
         <xsl:for-each select="(

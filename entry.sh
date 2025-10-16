@@ -128,8 +128,9 @@ else
 fi
 
 logo=${INPUT_LOGO}
-if [ -z "${logo}" ] && [ "${ADLESS}" == 'false' ]; then
+if [ -z "${logo}" ] && [ "${INPUT_ADLESS}" == 'false' ]; then
     logo=https://www.zerocracy.com/svg/logo.svg
+    echo "The default Zerocracy logo will be used: ${logo}"
 fi
 
 if [ "${INPUT_ADLESS}" == 'true' ]; then

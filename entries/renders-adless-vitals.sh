@@ -20,3 +20,5 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
 grep "The output will have no mention of Zerocracy" 'log.txt'
+
+grep -v zerocracy 'output/test-vitals.html'
