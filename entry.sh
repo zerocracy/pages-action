@@ -4,7 +4,7 @@
 
 set -e -o pipefail
 
-VERSION=0.0.0
+VERSION=0.5.0
 
 echo "The 'pages-action' ${VERSION} is running"
 
