@@ -286,7 +286,9 @@
     <xsl:param name="name"/>
     <tr>
       <td class="avatar" title="{$id}">
-        <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
+        <a href="https://github.com/{$name}">
+          <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
+        </a>
       </td>
       <td>
         <span class="ff" title="{$id}">
