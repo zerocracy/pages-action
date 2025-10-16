@@ -143,7 +143,7 @@
                 <a href="https://www.zerocracy.com/how-it-works.html">
                   <xsl:text>similar report</xsl:text>
                 </a>
-                <xsl:text> for your project.</xsl:text>
+                <xsl:text> for your project</xsl:text>
               </p>
             </xsl:if>
           </header>
@@ -268,7 +268,6 @@
                 <a href="https://www.zerocracy.com">
                   <xsl:text>Zerocracy</xsl:text>
                 </a>
-                <xsl:text>.</xsl:text>
               </p>
             </xsl:if>
           </footer>
