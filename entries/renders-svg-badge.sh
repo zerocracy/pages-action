@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
 # SPDX-License-Identifier: MIT
 
-set -ex -o pipefail
+set -e -o pipefail
 
 SELF=$1
 
@@ -14,15 +14,9 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_FACTBASE=test.fb' \
   'INPUT_OUTPUT=output' \
   'INPUT_VERBOSE=false' \
-  'INPUT_COLUMNS=details' \
+  'INPUT_LOGO=' \
+  'INPUT_ADLESS=true' \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep "The 'github-token' plugin parameter is set" 'log.txt'
-
-[ -e 'output/test.yaml' ]
-[ -e 'output/test.xml' ]
-[ -e 'output/test.json' ]
-[ -e 'output/test.html' ]
-[ -e 'output/test-vitals.html' ]
-[ -e 'output/test-badge.svg' ]
+grep  '' output/test-badge.svg

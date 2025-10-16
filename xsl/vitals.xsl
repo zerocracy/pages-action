@@ -270,6 +270,9 @@
                 </a>
               </p>
             </xsl:if>
+            <p>
+              <img src="{$name}-badge.svg"/>
+            </p>
           </footer>
         </section>
       </body>
