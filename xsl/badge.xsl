@@ -25,13 +25,13 @@
     <xsl:variable name="rightWidth">
       <xsl:choose>
         <xsl:when test="abs($avg) &gt; 99">
-          <xsl:value-of select="72"/>
+          <xsl:value-of select="70"/>
         </xsl:when>
         <xsl:when test="abs($avg) &gt; 50">
-          <xsl:value-of select="62"/>
+          <xsl:value-of select="60"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="50"/>
+          <xsl:value-of select="47"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
