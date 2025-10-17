@@ -12,8 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: validate CSS
-        uses: gchudnov/w3c-css@v2.0.2
-        with:
-          css: 'target/css/main.css'
-          profile: 'css3'
+      - name: Validate CSS with W3C Jar
+        run: |
+          wget -O css-validator.jar https://github.com/w3c/css-validator/releases/download/cssval-20250226/css-validator.jar
+          java -jar css-validator.jar file:target/css/main.css
