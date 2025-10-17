@@ -198,7 +198,7 @@
             <br/>
             <xsl:text>⬇</xsl:text>
           </td>
-          <td colspan="1 + (1 if $fb/f[what='reconciliation'])"> </td>
+          <td colspan="{if ($fb/f[what='reconciliation']) then '2' else '1'}"> </td>
         </tr>
         <tr>
           <th>
