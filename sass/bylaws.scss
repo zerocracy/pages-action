@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: MIT
  */
 
-$strong: #b8336a;
-$em: #1c448e;
+$strong: darkred;
+$em: #275a90;
 
 .bylaws {
     counter-reset: par;
@@ -23,14 +23,15 @@ $em: #1c448e;
 
         strong {
             color: $strong;
-            font-family: monospace;
-            font-weight: bolder;
+            font-family: "Roboto Mono", monospace;
+            font-weight: normal;
         }
 
         em {
             color: $em;
-            font-family: serif;
-            font-weight: bolder;
+            font-family: "Noto Serif", sans-serif;
+            font-style: normal;
+            font-weight: normal;
         }
     }
 

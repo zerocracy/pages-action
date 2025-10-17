@@ -192,6 +192,15 @@
       </colgroup>
       <thead>
         <tr>
+          <td colspan="{$weeks + 1}"> </td>
+          <td class="smaller center orange">
+            <xsl:text>This week</xsl:text>
+            <br/>
+            <xsl:text>⬇</xsl:text>
+          </td>
+          <td colspan="1 + (1 if $fb/f[what='reconciliation'])"> </td>
+        </tr>
+        <tr>
           <th>
             <!-- Avatar -->
             <xsl:text> </xsl:text>

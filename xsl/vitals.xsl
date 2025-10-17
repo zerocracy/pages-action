@@ -189,7 +189,7 @@
               <span>
                 <xsl:attribute name="style">
                   <xsl:if test="$version = '0.0.0'">
-                    <xsl:text>background: firebrick; color: white;</xsl:text>
+                    <xsl:text>background: darkred; color: white;</xsl:text>
                   </xsl:if>
                 </xsl:attribute>
                 <xsl:value-of select="$version"/>
