@@ -47,3 +47,7 @@ inputs:
     description: 'The number of minutes to spend on the entire lifetime'
     required: false
     default: 5
+  url:
+    description: 'The URL where the static files will be visible'
+    required: false
+    default: ''

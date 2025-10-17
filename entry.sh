@@ -139,6 +139,11 @@ else
     echo 'The output HTML will have links to Zerocracy'
 fi
 
+if [ -z "${INPUT_URL}" ]; then
+    url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
+    echo "The URL of the pages to publish is this one (change it using the 'url' parameter): ${url}"
+fi
+
 html=${INPUT_OUTPUT}/${name}-vitals.html
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
@@ -149,6 +154,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
     "logo=${logo}" \
+    "url=${url}" \
     "adless=${INPUT_ADLESS}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
     "js=$(cat "${SELF}/target/js/main.js")"

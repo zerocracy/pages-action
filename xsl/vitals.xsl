@@ -10,6 +10,7 @@
   <xsl:param name="js" as="xs:string"/>
   <xsl:param name="name" as="xs:string"/>
   <xsl:param name="logo" as="xs:string"/>
+  <xsl:param name="url" as="xs:string"/>
   <xsl:param name="version" as="xs:string"/>
   <xsl:param name="fbe" as="xs:string"/>
   <xsl:param name="adless" as="xs:string"/>
@@ -52,7 +53,7 @@
     <!--
     Finds a "pmp" fact with the given "area" and then
     tries to find a given property inside. If the fact is not
-    found or the property doesn't exists, the default value
+    found or the property doesn't exist, the default value
     is returned.
     -->
     <xsl:param name="area" as="xs:string"/>
@@ -249,13 +250,13 @@
               <xsl:value-of select="$fbe"/>
               <xsl:text>.</xsl:text>
               <br/>
-              <xsl:text>The XML with all the data </xsl:text>
+              <xsl:text>The XML with all data is available </xsl:text>
               <a href="{$name}.xml">
-                <xsl:text>is here</xsl:text>
+                <xsl:text>here</xsl:text>
               </a>
-              <xsl:text>, HTML </xsl:text>
+              <xsl:text>, and the HTML is available </xsl:text>
               <a href="{$name}.html">
-                <xsl:text>is here</xsl:text>
+                <xsl:text>here</xsl:text>
               </a>
               <xsl:if test="fb/@size > 1000000">
                 <xsl:text> (they're big)</xsl:text>
@@ -272,6 +273,18 @@
             </xsl:if>
             <p>
               <img src="{$name}-badge.svg"/>
+              <br/>
+              <xsl:text>You can use this badge in the </xsl:text>
+              <tt>README.md</tt>
+              <xsl:text> file of your GitHub repositories. </xsl:text>
+              <xsl:text>It shows the average reward amount. </xsl:text>
+              <br/>
+              <xsl:text>The higher the number, the better the discipline you maintain. </xsl:text>
+              <xsl:text>Click </xsl:text>
+              <a href="#" data-text="[![discipline]({$url}/{$name}-badge.svg)]({$url}/{$name}-vitals.html)" class="copy">
+                <xsl:text>here</xsl:text>
+              </a>
+              <xsl:text> to copy the Markdown to the clipboard.</xsl:text>
             </p>
           </footer>
         </section>

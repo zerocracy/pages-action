@@ -3,6 +3,7 @@
 [![DevOps By Rultor.com](https://www.rultor.com/b/zerocracy/pages-action)](https://www.rultor.com/p/zerocracy/pages-action)
 
 [![make](https://github.com/zerocracy/pages-action/actions/workflows/make.yml/badge.svg)](https://github.com/zerocracy/pages-action/actions/workflows/make.yml)
+[![Zerocracy vitals](https://zerocracy.github.io/judges-action/zerocracy-badge.svg)](https://zerocracy.github.io/judges-action/zerocracy-vitals.html)
 [![Hits-of-Code](https://hitsofcode.com/github/zerocracy/pages-action)](https://hitsofcode.com/view/github/zerocracy/pages-action)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/zerocracy/pages-action/blob/master/LICENSE.txt)
 
