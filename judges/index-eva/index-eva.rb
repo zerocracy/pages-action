@@ -14,7 +14,9 @@ Fbe.fb.query("
     (not (eq ac 0))
     (exists pv)
     (not (eq pv 0))
-    (exists ev))
+    (exists ev)
+    (absent n_cpi)
+    (absent n_spi))
   ").each do |f|
   f.n_cpi = f.ev / f.ac
   f.n_spi = f.ev / f.pv

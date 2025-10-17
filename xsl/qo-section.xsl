@@ -69,8 +69,8 @@
                 <xsl:text>,borderWidth:1</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
-            <xsl:if test="substring-after($n, 'n_') != 'composite'">
-              <xsl:text>,hidden: true</xsl:text>
+            <xsl:if test="contains(substring-after($n, 'n_'), '_')">
+              <xsl:text>,hidden:true</xsl:text>
             </xsl:if>
             <xsl:text>,data:[</xsl:text>
             <xsl:for-each select="$facts">

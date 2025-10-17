@@ -162,7 +162,7 @@
             <xsl:call-template name="qo-section">
               <xsl:with-param name="what" select="'earned-value-prev'"/>
               <xsl:with-param name="title" select="'Earned Value Analysis (EVA)'"/>
-              <xsl:with-param name="colors" select="'n_spi:#1c448e,n_cpi:#b8336a'"/>
+              <xsl:with-param name="colors" select="'n_spi:darkred,n_cpi:darkblue'"/>
               <xsl:with-param name="before">
                 <xsl:apply-templates select="/fb/f[what='earned-value'][last()]"/>
               </xsl:with-param>
