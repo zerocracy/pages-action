@@ -165,7 +165,8 @@ svg=${INPUT_OUTPUT}/${name}.rich.xml
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${svg}" \
     "-xsl:${SELF}/target/xsl/badge.xsl" \
-    "-o:${INPUT_OUTPUT}/${name}-badge.svg"
+    "-o:${INPUT_OUTPUT}/${name}-badge.svg" \
+    "today=${INPUT_TODAY}"
 echo "SVG badge generated at: ${svg}"
 
 rm "${INPUT_OUTPUT}/${name}.rich.xml"

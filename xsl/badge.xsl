@@ -3,15 +3,18 @@
  * SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
  * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/2000/svg" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/2000/svg" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" exclude-result-prefixes="xs">
   <xsl:output method="xml" omit-xml-declaration="yes"/>
+  <xsl:param name="today" as="xs:string"/>
   <xsl:template match="/fb">
-    <xsl:variable name="sum" select="sum(.//f/award)"/>
-    <xsl:variable name="count" select="count(.//f/award)"/>
+    <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration('P256D')" as="xs:dateTime"/>
+    <xsl:variable name="facts" select=".//f[xs:dateTime(when) &gt; $since and award]"/>
+    <xsl:variable name="sum" select="sum($facts/award)" as="xs:double"/>
+    <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
     <xsl:variable name="avg">
       <xsl:choose>
         <xsl:when test="$count = 0">
-          <xsl:text>0</xsl:text>
+          <xsl:text>0.0</xsl:text>
         </xsl:when>
         <xsl:otherwise>
           <xsl:value-of select="format-number($sum div $count, '0.0')" />
