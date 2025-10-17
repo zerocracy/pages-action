@@ -11,6 +11,8 @@ export BUNDLE_GEMFILE
 bundle exec judges eval test.fb "\$fb.insert" > /dev/null
 
 env "GITHUB_WORKSPACE=$(pwd)" \
+  'GITHUB_REPOSITORY=foo/bar' \
+  'GITHUB_REPOSITORY_OWNER=foo' \
   'INPUT_FACTBASE=test.fb' \
   'INPUT_OUTPUT=output' \
   'INPUT_VERBOSE=false' \
