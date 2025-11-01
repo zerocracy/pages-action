@@ -10,19 +10,39 @@ const TIME_UNITS = {
   SECOND: 1000,
   MINUTE: 60 * 1000,
   HOUR: 60 * 60 * 1000,
-  DAY: 24 * 60 * 60 * 1000,
-  MONTH: 30 * 24 * 60 * 60 * 1000,
-  YEAR: 365 * 24 * 60 * 60 * 1000
+  DAY: 24 * 60 * 60 * 1000
 };
 const OUTDATED_THRESHOLD_HOURS = 24;
 /**
+ * Calculates the difference in months between two dates
+ * @param {Date} startDate - The earlier date
+ * @param {Date} endDate - The later date
+ * @returns {number} Number of months difference
+ */
+function getMonthsDifference(startDate, endDate) {
+  const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+  const monthsDiff = endDate.getMonth() - startDate.getMonth();
+  return yearsDiff * 12 + monthsDiff;
+}
+/**
+ * Calculates the difference in years between two dates
+ * @param {Date} startDate - The earlier date
+ * @param {Date} endDate - The later date
+ * @returns {number} Number of years difference
+ */
+function getYearsDifference(startDate, endDate) {
+  return endDate.getFullYear() - startDate.getFullYear();
+}
+/**
  * Formats a time difference as a human-readable relative time string
  * @param {number} diffInMs - Time difference in milliseconds
+ * @param {Date} startDate - The start date for accurate month/year calculation
  * @returns {string} Formatted relative time string
  */
-function formatRelativeTime(diffInMs) {
-  const years = Math.floor(diffInMs / TIME_UNITS.YEAR);
-  const months = Math.floor(diffInMs / TIME_UNITS.MONTH);
+function formatRelativeTime(diffInMs, startDate) {
+  const endDate = new Date(startDate.getTime() + diffInMs);
+  const years = getYearsDifference(startDate, endDate);
+  const months = getMonthsDifference(startDate, endDate);
   const days = Math.floor(diffInMs / TIME_UNITS.DAY);
   const hours = Math.floor(diffInMs / TIME_UNITS.HOUR);
   const minutes = Math.floor(diffInMs / TIME_UNITS.MINUTE);
