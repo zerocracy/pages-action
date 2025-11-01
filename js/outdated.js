@@ -83,7 +83,8 @@ function updateTimeDisplay($timeElement) {
   const publishedDate = Date.parse(datetime);
   const currentDate = new Date();
   const timeDiff = currentDate - publishedDate;
-  const relativeTime = formatRelativeTime(timeDiff);
+  const startDate = new Date(publishedDate);
+  const relativeTime = formatRelativeTime(timeDiff, startDate);
   $timeElement.html(`<span title="${datetime}">${relativeTime}</span>`);
   const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
   displayOutdatedWarning(hours);
