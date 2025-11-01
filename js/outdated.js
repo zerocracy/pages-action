@@ -22,7 +22,11 @@ const OUTDATED_THRESHOLD_HOURS = 24;
 function getMonthsDifference(startDate, endDate) {
   const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
   const monthsDiff = endDate.getMonth() - startDate.getMonth();
-  return yearsDiff * 12 + monthsDiff;
+  let totalMonths = yearsDiff * 12 + monthsDiff;
+  if (endDate.getDate() < startDate.getDate()) {
+    totalMonths--;
+  }
+  return Math.max(0, totalMonths);
 }
 /**
  * Calculates the difference in years between two dates
