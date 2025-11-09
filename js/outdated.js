@@ -70,22 +70,26 @@ function displayOutdatedWarning(hours) {
  * Updates the time element with relative time display
  * @param {jQuery} $timeElement - jQuery object for the time element
  */
-function updateTimeDisplay($timeElement) {
-  const datetime = $timeElement.attr('datetime');
-  if (!datetime) {
-    return;
-  }
-  const publishedDate = Date.parse(datetime);
-  const currentDate = new Date();
-  const timeDiff = currentDate - publishedDate;
-  const startDate = new Date(publishedDate);
-  const relativeTime = formatRelativeTime(timeDiff, startDate);
-  $timeElement.html(`<span title="${datetime}">${relativeTime}</span>`);
-  const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
-  displayOutdatedWarning(hours);
+function updateTimeDisplay($timeElements) {
+  $timeElements.each(function (index, element) {
+    const $element = $(element);
+    const datetime = $element.attr('datetime');
+    if (!datetime) {
+      return;
+    }
+    const publishedDate = Date.parse(datetime);
+    const currentDate = new Date();
+    const timeDiff = currentDate - publishedDate;
+    const startDate = new Date(publishedDate);
+    const relativeTime = formatRelativeTime(timeDiff, startDate);
+    $element.html(`<span title="${datetime}">${relativeTime}</span>`);
+    if (index === 0) {
+      const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
+      displayOutdatedWarning(hours);
+    }
+  });
 }
 
 $(function () {
-  const $time = $("time[itemprop='datePublished']");
-  updateTimeDisplay($time);
+  updateTimeDisplay($("time[itemprop='datePublished']"));
 });
