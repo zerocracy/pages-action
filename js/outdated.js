@@ -59,8 +59,9 @@ function formatRelativeTime(diffInMs, startDate) {
  */
 function displayOutdatedWarning(hours) {
   if (hours > OUTDATED_THRESHOLD_HOURS) {
+    const hourText = hours === 1 ? 'hour' : 'hours';
     $('article').prepend(
-      `<p class='warning'><span>This page was generated ${hours} hours ago. The information is most probably outdated.</span></p>`
+      `<p class='warning'><span>This page was generated ${hours} ${hourText} ago. The information is most probably outdated.</span></p>`
     );
   }
 }
