@@ -27,6 +27,7 @@ function getMonthsDifference(startDate, endDate) {
   totalMonths -= dateDiff >= 0 ? 0 : 1;
   return Math.max(0, totalMonths);
 }
+
 /**
  * Calculates the difference in years between two dates
  * @param {Date} startDate - The earlier date
@@ -36,6 +37,7 @@ function getMonthsDifference(startDate, endDate) {
 function getYearsDifference(startDate, endDate) {
   return endDate.getFullYear() - startDate.getFullYear();
 }
+
 /**
  * Formats a time difference as a human-readable relative time string
  * @param {number} diffInMs - Time difference in milliseconds
@@ -56,13 +58,10 @@ function formatRelativeTime(diffInMs, startDate) {
     { value: hours, singular: 'one hour ago', plural: `${hours} hours ago` },
     { value: minutes, singular: 'one minute ago', plural: `${minutes} minutes ago` }
   ];
-  for (const unit of timeUnits) {
-    if (unit.value > 0) {
-      return unit.value === 1 ? unit.singular : unit.plural;
-    }
-  }
-  return 'just now';
+  const matchedUnit = timeUnits.find((unit) => unit.value > 0);
+  return matchedUnit ? (matchedUnit.value === 1 ? matchedUnit.singular : matchedUnit.plural) : 'just now';
 }
+
 /**
  * Displays a warning message if the page is outdated
  * @param {number} hours - Number of hours since publication
@@ -74,6 +73,7 @@ function displayOutdatedWarning(hours) {
     );
   }
 }
+
 /**
  * Updates the time element with relative time display
  * @param {jQuery} $timeElement - jQuery object for the time element
@@ -92,6 +92,7 @@ function updateTimeDisplay($timeElement) {
   const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
   displayOutdatedWarning(hours);
 }
+
 $(function () {
   const $time = $("time[itemprop='datePublished']");
   updateTimeDisplay($time);
