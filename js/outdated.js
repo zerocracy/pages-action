@@ -13,6 +13,7 @@ const TIME_UNITS = {
   DAY: 24 * 60 * 60 * 1000
 };
 const OUTDATED_THRESHOLD_HOURS = 24;
+
 /**
  * Calculates the difference in months between two dates
  * @param {Date} startDate - The earlier date
