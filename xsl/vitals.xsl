@@ -160,7 +160,7 @@
               <xsl:with-param name="title" select="'Quantity of Deliverables (QoD)'"/>
             </xsl:call-template>
             <xsl:call-template name="qo-section">
-              <xsl:with-param name="what" select="'earned-value-prev'"/>
+              <xsl:with-param name="what" select="'earned-value'"/>
               <xsl:with-param name="title" select="'Earned Value Analysis (EVA)'"/>
               <xsl:with-param name="colors" select="'n_spi:darkred,n_cpi:darkblue'"/>
               <xsl:with-param name="before">

@@ -7,7 +7,7 @@ require 'fbe/fb'
 
 Fbe.fb.query("
   (and
-    (eq what 'earned-value-prev')
+    (eq what 'earned-value')
     (exists when)
     (exists start)
     (exists ac)
