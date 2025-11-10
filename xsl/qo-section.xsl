@@ -10,18 +10,16 @@
     <xsl:param name="colors" as="xs:string" select="'n_composite:orange'"/>
     <xsl:param name="before"/>
     <xsl:variable name="facts" select="/fb/f[what=$what and xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
+    <h2>
+      <xsl:value-of select="$title"/>
+    </h2>
     <xsl:choose>
       <xsl:when test="empty($facts)">
         <p class="darkred">
-          <xsl:text>There is no information about the </xsl:text>
-          <xsl:value-of select="$title"/>
-          <xsl:text>.</xsl:text>
+          <xsl:text>No information visible at the moment.</xsl:text>
         </p>
       </xsl:when>
       <xsl:otherwise>
-        <h2>
-          <xsl:value-of select="$title"/>
-        </h2>
         <xsl:if test="$before != ''">
           <p>
             <xsl:copy-of select="$before"/>
