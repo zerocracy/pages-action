@@ -145,6 +145,21 @@ if [ -z "${INPUT_URL}" ]; then
 fi
 
 html=${INPUT_OUTPUT}/${name}-vitals.html
+
+echo "Calculating integrity hashes for CSS files..."
+declare -a css_urls=(
+    "https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css"
+    "https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css"
+)
+css_links=""
+for url in "${css_urls[@]}"; do
+    echo "Calculating hash for: ${url}"
+    hash=$(curl -s "$url" | openssl dgst -sha384 -binary | openssl base64 -A)
+    echo "Hash: ${hash}"
+    css_links="${css_links}${url}|${hash}"$'\n'
+done
+css_links="${css_links%$'\n'}"
+
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/vitals.xsl" \
@@ -156,6 +171,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "logo=${logo}" \
     "url=${url}" \
     "adless=${INPUT_ADLESS}" \
+    "css-links=${css_links}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
     "js=$(cat "${SELF}/target/js/main.js")"
 html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
