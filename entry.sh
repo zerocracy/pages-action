@@ -154,7 +154,15 @@ declare -a css_urls=(
 css_links=""
 for url in "${css_urls[@]}"; do
     echo "Calculating hash for: ${url}"
-    hash=$(curl -s "$url" | openssl dgst -sha384 -binary | openssl base64 -A)
+    content=$(curl -sSf --max-time 30 "$url") || {
+        echo "ERROR: Failed to fetch CSS from: ${url}" >&2
+        exit 1
+    }
+    hash=$(echo "$content" | openssl dgst -sha384 -binary | openssl base64 -A)
+    if [ -z "$hash" ]; then
+        echo "ERROR: Failed to calculate hash for: ${url}" >&2
+        exit 1
+    fi
     echo "Hash: ${hash}"
     css_links="${css_links}${url}|${hash}"$'\n'
 done
