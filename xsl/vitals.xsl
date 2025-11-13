@@ -14,6 +14,7 @@
   <xsl:param name="version" as="xs:string"/>
   <xsl:param name="fbe" as="xs:string"/>
   <xsl:param name="adless" as="xs:string"/>
+  <xsl:param name="css-links" as="xs:string"/>
   <xsl:import href="awards.xsl"/>
   <xsl:import href="bylaws.xsl"/>
   <xsl:import href="qo-section.xsl"/>
@@ -83,6 +84,24 @@
       <xsl:text> </xsl:text>
     </script>
   </xsl:template>
+  <xsl:template name="css">
+    <xsl:param name="url"/>
+    <xsl:param name="integrity"/>
+    <link href="{$url}" rel="stylesheet" integrity="sha384-{$integrity}" crossorigin="anonymous"/>
+  </xsl:template>
+  <xsl:template name="css-links">
+    <xsl:param name="links"/>
+    <xsl:variable name="lines" select="tokenize($links, '\n')"/>
+    <xsl:for-each select="$lines[normalize-space(.) != '']">
+      <xsl:variable name="parts" select="tokenize(., '\|')"/>
+      <xsl:if test="count($parts) = 2">
+        <xsl:call-template name="css">
+          <xsl:with-param name="url" select="normalize-space($parts[1])"/>
+          <xsl:with-param name="integrity" select="normalize-space($parts[2])"/>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
   <xsl:template match="/">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
@@ -95,8 +114,9 @@
         <xsl:if test="$logo != ''">
           <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
         </xsl:if>
-        <link href="https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css" rel="stylesheet"/>
-        <link href="https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css" rel="stylesheet"/>
+        <xsl:call-template name="css-links">
+          <xsl:with-param name="links" select="$css-links"/>
+        </xsl:call-template>
         <xsl:for-each select="(
           'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
           'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js',
