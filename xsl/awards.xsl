@@ -187,13 +187,17 @@
       </colgroup>
       <thead>
         <tr>
-          <td colspan="{$weeks + 1}"> </td>
+          <td colspan="{$weeks + 1}">
+            <xsl:text> </xsl:text>
+          </td>
           <td class="smaller center orange">
             <xsl:text>This week</xsl:text>
             <br/>
             <xsl:text>⬇</xsl:text>
           </td>
-          <td colspan="{if ($fb/f[what='reconciliation']) then '2' else '1'}"> </td>
+          <td colspan="{if ($fb/f[what='reconciliation']) then '2' else '1'}">
+            <xsl:text> </xsl:text>
+          </td>
         </tr>
         <tr>
           <th>
@@ -338,26 +342,33 @@
         <xsl:for-each select="1 to $weeks">
           <xsl:variable name="week" select="."/>
           <td class="right">
-            <xsl:for-each select="$fb/f[what='reconciliation' and who=$id and z:in-week(when, $week)]">
-              <xsl:if test="position() &gt; 1">
-                <br/>
-              </xsl:if>
-              <span>
-                <xsl:attribute name="title">
-                  <xsl:text>Since </xsl:text>
-                  <xsl:value-of select="xs:date(xs:dateTime(since))"/>
-                  <xsl:text> you've accumulated </xsl:text>
-                  <xsl:value-of select="xs:integer(awarded)"/>
-                  <xsl:text> points, a payout of </xsl:text>
-                  <xsl:value-of select="xs:integer(payout)"/>
-                  <xsl:text> points has been made on </xsl:text>
-                  <xsl:value-of select="xs:date(xs:dateTime(when))"/>
-                  <xsl:text>, making the amount payable equal to </xsl:text>
-                  <xsl:value-of select="balance"/>
-                </xsl:attribute>
-                <xsl:value-of select="xs:integer(payout)"/>
-              </span>
-            </xsl:for-each>
+            <xsl:choose>
+              <xsl:when test="$fb/f[what='reconciliation' and who=$id and z:in-week(when, $week)]">
+                <xsl:for-each select="$fb/f[what='reconciliation' and who=$id and z:in-week(when, $week)]">
+                  <xsl:if test="position() &gt; 1">
+                    <br/>
+                  </xsl:if>
+                  <span>
+                    <xsl:attribute name="title">
+                      <xsl:text>Since </xsl:text>
+                      <xsl:value-of select="xs:date(xs:dateTime(since))"/>
+                      <xsl:text> you've accumulated </xsl:text>
+                      <xsl:value-of select="xs:integer(awarded)"/>
+                      <xsl:text> points, a payout of </xsl:text>
+                      <xsl:value-of select="xs:integer(payout)"/>
+                      <xsl:text> points has been made on </xsl:text>
+                      <xsl:value-of select="xs:date(xs:dateTime(when))"/>
+                      <xsl:text>, making the amount payable equal to </xsl:text>
+                      <xsl:value-of select="balance"/>
+                    </xsl:attribute>
+                    <xsl:value-of select="xs:integer(payout)"/>
+                  </span>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text> </xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
           </td>
         </xsl:for-each>
         <td>
@@ -404,6 +415,7 @@
               </xsl:when>
               <xsl:otherwise>
                 <!-- Empty -->
+                <xsl:text> </xsl:text>
               </xsl:otherwise>
             </xsl:choose>
           </td>
