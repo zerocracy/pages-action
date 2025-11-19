@@ -292,7 +292,7 @@
               </p>
             </xsl:if>
             <p>
-              <img src="{$name}-badge.svg"/>
+              <img src="{$name}-badge.svg" alt="Discipline badge"/>
               <br/>
               <xsl:text>You can use this badge in the </xsl:text>
               <tt>README.md</tt>
