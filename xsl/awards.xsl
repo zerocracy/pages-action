@@ -169,16 +169,11 @@
       </xsl:text>
     </script>
     <table id="awards">
-      <colgroup span="4">
+      <colgroup>
         <!-- Avatar -->
         <col style="width: 2.5em;"/>
         <!-- Award reason -->
         <col/>
-      </colgroup>
-      <colgroup>
-        <xsl:attribute name="span">
-          <xsl:value-of select="$weeks + 1"/>
-        </xsl:attribute>
         <xsl:for-each select="1 to $weeks">
           <!-- Weeks -->
           <col style="width: 4em;"/>
