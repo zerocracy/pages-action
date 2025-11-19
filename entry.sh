@@ -158,7 +158,7 @@ for url in "${css_urls[@]}"; do
         echo "ERROR: Failed to fetch CSS from: ${url}" >&2
         exit 1
     }
-    hash=$(echo "$content" | openssl dgst -sha384 -binary | openssl base64 -A)
+    hash=$(printf "%s" "$content" | openssl dgst -sha384 -binary | openssl base64 -A)
     if [ -z "$hash" ]; then
         echo "ERROR: Failed to calculate hash for: ${url}" >&2
         exit 1

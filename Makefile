@@ -20,7 +20,7 @@ SAXON = target/saxon.jar
 
 export
 
-all: assets $(HTMLS) rake entry rmi verify entries
+all: assets rake entry rmi verify entries
 
 assets: $(XSLS) $(JS) $(CSS)
 
@@ -63,14 +63,14 @@ target/fb/%.fb: tests/%.yml Makefile | target/fb
 	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
 	$(JUDGES) import "$<" "$@"
 
-rake: $(SAXON)
+rake: $(SAXON) $(HTMLS)
 	bundle exec rake
 
 stylelint: sass/*.scss
 	stylelint sass/*.scss --fix
 
 $(CSS): sass/*.scss stylelint Makefile | target/css
-	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"
+	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
 	eslint js/*.js

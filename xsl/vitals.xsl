@@ -215,7 +215,7 @@
                 <xsl:value-of select="$version"/>
               </span>
               <xsl:text>) on </xsl:text>
-              <time itemprop="datePublished" datetime="{current-dateTime()}">
+              <time datetime="{current-dateTime()}">
                 <xsl:value-of select="current-dateTime()"/>
               </time>
               <xsl:text>.</xsl:text>
@@ -292,10 +292,10 @@
               </p>
             </xsl:if>
             <p>
-              <img src="{$name}-badge.svg"/>
+              <img src="{$name}-badge.svg" alt="Discipline badge"/>
               <br/>
               <xsl:text>You can use this badge in the </xsl:text>
-              <tt>README.md</tt>
+              <code>README.md</code>
               <xsl:text> file of your GitHub repositories. </xsl:text>
               <xsl:text>It shows the average reward amount. </xsl:text>
               <br/>
