@@ -70,7 +70,7 @@ stylelint: sass/*.scss
 	stylelint sass/*.scss --fix
 
 $(CSS): sass/*.scss stylelint Makefile | target/css
-	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"
+	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
 	eslint js/*.js
