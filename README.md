@@ -51,6 +51,7 @@ In order to test this action, just run (provided, you have
   [GNU Make] installed):
 
 ```bash
+make install
 make
 ```
 
