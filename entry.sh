@@ -35,6 +35,28 @@ fi
 cd "${GITHUB_WORKSPACE}"
 echo "The workspace directory is: $(pwd)"
 
+if [ -z "${INPUT_FACTBASE}" ]; then
+    echo "No factbase parameter provided, looking for *.fb files in current directory..."
+    fb_files=(*.fb)
+    if [ "${fb_files[0]}" = "*.fb" ]; then
+        echo "ERROR: No .fb files found in the current directory."
+        echo "Please provide a factbase parameter or ensure there is exactly one .fb file in the directory."
+        exit 1
+    fi
+    if [ ${#fb_files[@]} -gt 1 ]; then
+        echo "ERROR: Multiple .fb files found in the current directory:"
+        for file in "${fb_files[@]}"; do
+            echo "  - ${file}"
+        done
+        echo "Please specify which factbase to use with the 'factbase' parameter."
+        exit 1
+    fi    
+    INPUT_FACTBASE="${fb_files[0]}"
+    echo "Auto-detected factbase: ${INPUT_FACTBASE}"
+else
+    echo "Using provided factbase: ${INPUT_FACTBASE}"
+fi
+
 declare -a gopts=()
 if [ -n "${INPUT_VERBOSE}" ]; then
     gopts+=("--verbose")

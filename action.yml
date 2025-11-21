@@ -19,7 +19,7 @@ inputs:
     default: 'pages'
   factbase:
     description: 'Path of the factbase file'
-    default: 'default.fb'
+    required: false
   logo:
     description: 'URL of the logo to put on the HTML page'
     default: ''
