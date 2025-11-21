@@ -50,7 +50,7 @@ if [ -z "${INPUT_FACTBASE}" ]; then
         done
         echo "Please specify which factbase to use with the 'factbase' parameter."
         exit 1
-    fi    
+    fi
     INPUT_FACTBASE="${fb_files[0]}"
     echo "Auto-detected factbase: ${INPUT_FACTBASE}"
 else
