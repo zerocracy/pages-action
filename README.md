@@ -29,7 +29,8 @@ The following configuration options are supported here:
 
 The following options are supported:
 
-* `factbase` (required) is the name of the [factbase] file;
+* `factbase` (optional) is the name of the [factbase] file. If not provided,
+the action will automatically look for a single `.fb` file in the current directory;
 * `options` (empty by default) is a list of `k=v` options to be sent to
 the [judges] command line tool;
 * `output` (default: `pages`) is the directory where .XML, .YAML,
