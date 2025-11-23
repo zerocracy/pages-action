@@ -78,7 +78,7 @@ class TestVitals < Minitest::Test
       -1 => ['0.00', '-1.00'],
       5.123 => ['0.0', '+5.12'],
       -2.456 => ['0.0', '-2.46'],
-      0.0 => ['0.0', '+0.00'],
+      0.0 => ['0.0', '+0.00']
     }.each do |value, (format, expected)|
       xml = xslt(
         "<r><xsl:value-of select=\"z:format-signed(#{value}, '#{format}')\"/></r>",
