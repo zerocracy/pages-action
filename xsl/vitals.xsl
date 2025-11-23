@@ -25,9 +25,11 @@
   <xsl:function name="z:format-signed">
     <xsl:param name="value" as="xs:double"/>
     <xsl:param name="format" as="xs:string"/>
-    <!-- Always round to 2 decimal places, ignoring the format parameter -->
-    <xsl:variable name="rounded" select="round($value * 100) div 100"/>
-    <xsl:variable name="formatted" select="format-number($rounded, '0.00')"/>
+    <xsl:if test="$format != '0.0' and $format != '0.00'">
+      <xsl:value-of select="error((), concat('Format must be &quot;0.0&quot; or &quot;0.00&quot;, but got: ', $format))"/>
+    </xsl:if>
+    <xsl:variable name="rounded" as="xs:double" select="if ($format = '0.0') then round($value * 10) div 10 else round($value * 100) div 100"/>
+    <xsl:variable name="formatted" select="format-number($rounded, $format)"/>
     <xsl:choose>
       <xsl:when test="$value &gt;= 0">
         <xsl:text>+</xsl:text>

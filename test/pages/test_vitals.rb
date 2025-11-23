@@ -73,18 +73,30 @@ class TestVitals < Minitest::Test
 
   def test_fn_format_signed
     {
-      3.3 => ['0.00', '+3.30'],
-      0 => ['0.00', '+0.00'],
-      -1 => ['0.00', '-1.00'],
-      5.123 => ['0.0', '+5.12'],
-      -2.456 => ['0.0', '-2.46'],
-      0.0 => ['0.0', '+0.00']
+      3.3 => ['0.0', '+3.3'],
+      0 => ['0.0', '+0.0'],
+      -1 => ['0.0', '-1.0'],
+      5.123 => ['0.0', '+5.1'],
+      -2.456 => ['0.0', '-2.5'],
+      0.0 => ['0.0', '+0.0'],
+      10.5 => ['0.00', '+10.50'],
+      -7.8 => ['0.00', '-7.80'],
+      10.6 => ['0.00', '+10.60'],
     }.each do |value, (format, expected)|
       xml = xslt(
         "<r><xsl:value-of select=\"z:format-signed(#{value}, '#{format}')\"/></r>",
         '<fb/>'
       )
       assert_equal(expected, xml.xpath('/r/text()').to_s, "Failed for value #{value} with format #{format}: #{xml}")
+    end
+    # Test that invalid formats are rejected
+    ['0', '0.000', '0.0000', 'invalid'].each do |invalid_format|
+      assert_raises(RuntimeError) do
+        xslt(
+          "<r><xsl:value-of select=\"z:format-signed(1.0, '#{invalid_format}')\"/></r>",
+          '<fb/>'
+        )
+      end
     end
   end
 
@@ -132,7 +144,7 @@ class TestVitals < Minitest::Test
     xml = Nokogiri::XML.parse(doc)
     desc = xml.xpath('//header/p[2]/text()').to_s
     assert_match(/"simple"/, desc, xml)
-    assert_match(/-0\.67 average points per task/, desc, xml)
+    assert_match(/-0\.7 average points per task/, desc, xml)
     assert_match(/-4 total points earned/, desc, xml)
     assert_match(/2 contributors/, desc, xml)
   end
