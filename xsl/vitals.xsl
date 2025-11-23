@@ -173,7 +173,7 @@
           <xsl:if test="$version-mismatch = 'true'">
             <p class="warning">
               <span>
-              <xsl:text> Since this page is rendered not by the latest version of pages-actions plugin, some information may be rendered incorrectly.</xsl:text>
+              <xsl:text>Since this page is rendered not by the latest version of pages-actions plugin, some information may be rendered incorrectly.</xsl:text>
               </span>
             </p>
           </xsl:if>

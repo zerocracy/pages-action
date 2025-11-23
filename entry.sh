@@ -19,7 +19,7 @@ if [ -z "${LATEST_VERSION}" ]; then
             echo "Version check: Current version (${VERSION}) matches latest release (${LATEST_VERSION})"
         else
             echo "Could not fetch latest version from GitHub API"
-            LATEST_VERSION=$(VERSION)
+            LATEST_VERSION="$(VERSION)"
         fi
     else
         echo "curl not available, skipping version check"
