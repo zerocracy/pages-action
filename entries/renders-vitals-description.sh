@@ -67,5 +67,5 @@ grep -q '1 contributors' 'output/test-vitals.html' || {
   exit 1
 }
 
-echo "✅ Date filtering test passed"
+echo "✅ Description test passed"
 

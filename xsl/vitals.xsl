@@ -25,7 +25,9 @@
   <xsl:function name="z:format-signed">
     <xsl:param name="value" as="xs:double"/>
     <xsl:param name="format" as="xs:string"/>
-    <xsl:variable name="formatted" select="format-number($value, $format)"/>
+    <!-- Always round to 2 decimal places, ignoring the format parameter -->
+    <xsl:variable name="rounded" select="round($value * 100) div 100"/>
+    <xsl:variable name="formatted" select="format-number($rounded, '0.00')"/>
     <xsl:choose>
       <xsl:when test="$value &gt;= 0">
         <xsl:text>+</xsl:text>
@@ -113,16 +115,7 @@
     <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; $since and award]"/>
     <xsl:variable name="sum" select="sum($facts/award)" as="xs:double"/>
     <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
-    <xsl:variable name="avg" as="xs:double">
-      <xsl:choose>
-        <xsl:when test="$count = 0">
-          <xsl:value-of select="xs:double('0')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$sum div $count"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
+    <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else $sum div $count"/>
     <xsl:variable name="contributors" select="count(distinct-values($facts/who_name))" as="xs:integer"/>
     <xsl:variable name="avgFormatted" select="z:format-signed($avg, '0.0')"/>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
