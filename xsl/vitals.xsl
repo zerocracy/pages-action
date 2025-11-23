@@ -12,6 +12,8 @@
   <xsl:param name="logo" as="xs:string"/>
   <xsl:param name="url" as="xs:string"/>
   <xsl:param name="version" as="xs:string"/>
+  <xsl:param name="latest-version" as="xs:string"/>
+  <xsl:param name="version-mismatch" as="xs:string"/>
   <xsl:param name="fbe" as="xs:string"/>
   <xsl:param name="adless" as="xs:string"/>
   <xsl:param name="css-links" as="xs:string"/>
@@ -168,6 +170,13 @@
               </p>
             </xsl:if>
           </header>
+          <xsl:if test="$version-mismatch = 'true'">
+            <p class="warning">
+              <span>
+              <xsl:text> Since this page is rendered not by the latest version of pages-actions plugin, some information may be rendered incorrectly.</xsl:text>
+              </span>
+            </p>
+          </xsl:if>
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
             <xsl:apply-templates select="/" mode="bylaws"/>
