@@ -54,8 +54,8 @@ grep -q '30 total points earned' 'output/test-vitals.html' || {
 }
 
 # Verify average is calculated correctly (30 / 2 = 15.0)
-grep -qE '15\.0 average points per task' 'output/test-vitals.html' || {
-  echo "ERROR: Expected '15.0 average points per task' but found:"
+grep -qE '15\.00 average points per task' 'output/test-vitals.html' || {
+  echo "ERROR: Expected '15.00 average points per task' but found:"
   grep 'average points per task' 'output/test-vitals.html'
   exit 1
 }
