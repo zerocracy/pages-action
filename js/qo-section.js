@@ -16,6 +16,11 @@ function qo_render(canvas, data) {
     data: data,
     options: {
       responsive: false,
+      plugins: {
+        legend: {
+          position: 'right'
+        }
+      }
     }
   });
 }

@@ -3,7 +3,12 @@
  * SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
  * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="xs z">
+  <xsl:function name="z:snake-case-to-title" as="xs:string">
+    <xsl:param name="line" as="xs:string"/>
+    <xsl:variable name="words" select="tokenize($line, '_')"/>
+    <xsl:value-of select="string-join(for $word in $words return concat(upper-case(substring($word, 1, 1)), substring($word, 2)), ' ')"/>
+  </xsl:function>
   <xsl:template name="qo-section">
     <xsl:param name="what" as="xs:string"/>
     <xsl:param name="title" as="xs:string"/>
@@ -51,7 +56,7 @@
               <xsl:text>,</xsl:text>
             </xsl:if>
             <xsl:text>{label:'</xsl:text>
-            <xsl:value-of select="substring-after($n, 'n_')"/>
+            <xsl:value-of select="z:snake-case-to-title(substring-after($n, 'n_'))"/>
             <xsl:text>',borderColor:</xsl:text>
             <xsl:variable name='c' select="substring-before(substring-after(concat(',', $colors, ','), concat(',', $n, ':')), ',')"/>
             <xsl:choose>
