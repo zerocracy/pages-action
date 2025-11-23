@@ -22,6 +22,20 @@
   <xsl:import href="dot.xsl"/>
   <xsl:import href="eva-summary.xsl"/>
   <xsl:variable name="fb" select="/fb"/>
+  <xsl:function name="z:format-signed">
+    <xsl:param name="value" as="xs:double"/>
+    <xsl:param name="format" as="xs:string"/>
+    <xsl:variable name="formatted" select="format-number($value, $format)"/>
+    <xsl:choose>
+      <xsl:when test="$value &gt;= 0">
+        <xsl:text>+</xsl:text>
+        <xsl:value-of select="$formatted"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$formatted"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
   <xsl:function name="z:index">
     <!--
     Converts a number to a "span" with a properly formatted index value.
@@ -39,16 +53,7 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
-      <xsl:variable name="v" select="format-number($i, '0.00')"/>
-      <xsl:choose>
-        <xsl:when test="$i &gt;= 0">
-          <xsl:text>+</xsl:text>
-          <xsl:value-of select="$v"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$v"/>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:value-of select="z:format-signed($i, '0.00')"/>
     </span>
   </xsl:function>
   <xsl:function name="z:pmp">
@@ -108,28 +113,18 @@
     <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; $since and award]"/>
     <xsl:variable name="sum" select="sum($facts/award)" as="xs:double"/>
     <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
-    <xsl:variable name="avg">
+    <xsl:variable name="avg" as="xs:double">
       <xsl:choose>
         <xsl:when test="$count = 0">
-          <xsl:text>0.0</xsl:text>
+          <xsl:value-of select="xs:double('0')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="format-number($sum div $count, '0.0')"/>
+          <xsl:value-of select="$sum div $count"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="contributors" select="count(distinct-values($facts/who_name))" as="xs:integer"/>
-    <xsl:variable name="avgFormatted">
-      <xsl:choose>
-        <xsl:when test="xs:double($avg) &gt;= 0">
-          <xsl:text>+</xsl:text>
-          <xsl:value-of select="$avg"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$avg"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
+    <xsl:variable name="avgFormatted" select="z:format-signed($avg, '0.0')"/>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <head>
