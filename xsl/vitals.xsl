@@ -104,6 +104,32 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template match="/">
+    <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration('P256D')" as="xs:dateTime"/>
+    <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; $since and award]"/>
+    <xsl:variable name="sum" select="sum($facts/award)" as="xs:double"/>
+    <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
+    <xsl:variable name="avg">
+      <xsl:choose>
+        <xsl:when test="$count = 0">
+          <xsl:text>0.0</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="format-number($sum div $count, '0.0')"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="contributors" select="count(distinct-values($facts/who_name))" as="xs:integer"/>
+    <xsl:variable name="avgFormatted">
+      <xsl:choose>
+        <xsl:when test="xs:double($avg) &gt;= 0">
+          <xsl:text>+</xsl:text>
+          <xsl:value-of select="$avg"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="$avg"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
     <html>
       <head>
@@ -158,6 +184,17 @@
                   </xsl:otherwise>
                 </xsl:choose>
               </span>
+            </p>
+            <p>
+              <xsl:text>The "</xsl:text>
+              <xsl:value-of select="$name"/>
+              <xsl:text>" product is supervised by Zerocracy: </xsl:text>
+              <xsl:value-of select="$avgFormatted"/>
+              <xsl:text> average points per task, </xsl:text>
+              <xsl:value-of select="format-number($sum, '0')"/>
+              <xsl:text> total points earned, </xsl:text>
+              <xsl:value-of select="$contributors"/>
+              <xsl:text> contributors.</xsl:text>
             </p>
             <xsl:if test="$adless = 'false'">
               <p class="smaller gray">
