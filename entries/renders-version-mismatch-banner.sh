@@ -23,4 +23,4 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 
 grep "WARNING: Current version" log.txt
 grep "differs from latest release" log.txt
-grep "rendered not by the latest version of pages-actions plugin" output/test-vitals.html
+grep "rendered not by the latest version of pages-action plugin" output/test-vitals.html

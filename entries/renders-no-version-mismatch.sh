@@ -24,7 +24,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 
 grep "Version check:" log.txt
 grep "matches latest release" log.txt
-if grep -q "rendered not by the latest version of pages-actions plugin" output/test-vitals.html; then
+if grep -q "rendered not by the latest version of pages-action plugin" output/test-vitals.html; then
     echo "ERROR: Warning banner should not appear when versions match"
     exit 1
 fi
