@@ -131,10 +131,6 @@ class TestVitals < Minitest::Test
     doc = File.read(html)
     xml = Nokogiri::XML.parse(doc)
     desc = xml.xpath('//header/p[2]/text()').to_s
-    # Based on simple.yml test data:
-    # Awards: 14, -56, -8, 15, -24, 55
-    # Sum: -4, Count: 6, Average: -4/6 = -0.666... ≈ -0.67
-    # Contributors: 2 (6305016 and 526301)
     assert_match(/"simple"/, desc, xml)
     assert_match(/-0\.67 average points per task/, desc, xml)
     assert_match(/-4 total points earned/, desc, xml)
