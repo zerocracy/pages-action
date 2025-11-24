@@ -13,7 +13,6 @@
   <xsl:param name="url" as="xs:string"/>
   <xsl:param name="version" as="xs:string"/>
   <xsl:param name="latest-version" as="xs:string"/>
-  <xsl:param name="version-mismatch" as="xs:string"/>
   <xsl:param name="fbe" as="xs:string"/>
   <xsl:param name="adless" as="xs:string"/>
   <xsl:param name="css-links" as="xs:string"/>
@@ -170,10 +169,17 @@
               </p>
             </xsl:if>
           </header>
-          <xsl:if test="$version-mismatch = 'true'">
+          <xsl:if test="$version != $latest-version">
             <p class="warning">
               <span>
-              <xsl:text>Since this page is rendered not by the latest version of pages-action plugin, some information may be rendered incorrectly.</xsl:text>
+                <xsl:text>The page was rendered by the pages-action </xsl:text>
+                <a href="https://github.com/zerocracy/pages-action/releases/tag/{$version}">
+                  <xsl:value-of select="$version"/>
+                </a>
+                <xsl:text>, while the latest version is </xsl:text>
+                <a href="https://github.com/zerocracy/pages-action/releases/tag/{$latest-version}">
+                  <xsl:value-of select="$latest-version"/>
+                </a>
               </span>
             </p>
           </xsl:if>

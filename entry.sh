@@ -7,30 +7,17 @@ set -e -o pipefail
 VERSION=0.0.0
 
 echo "Checking for the latest version of zerocracy/pages-action..."
-VERSION_MISMATCH="false"
 
 if [ -z "${LATEST_VERSION}" ]; then
     if command -v curl >/dev/null 2>&1; then
         LATEST_VERSION=$(curl -s --max-time 10 https://api.github.com/repos/zerocracy/pages-action/releases/latest | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/' || echo "")
-        if [ -n "${LATEST_VERSION}" ] && [ "${LATEST_VERSION}" != "${VERSION}" ]; then
-            echo "WARNING: Current version (${VERSION}) differs from latest release (${LATEST_VERSION})"
-            VERSION_MISMATCH="true"
-        elif [ -n "${LATEST_VERSION}" ]; then
-            echo "Version check: Current version (${VERSION}) matches latest release (${LATEST_VERSION})"
-        else
+        if [ -z "${LATEST_VERSION}" ]; then
             echo "Could not fetch latest version from GitHub API"
             LATEST_VERSION="$(VERSION)"
         fi
     else
         echo "curl not available, skipping version check"
-    fi
-else
-    echo "Using pre-set LATEST_VERSION: ${LATEST_VERSION}"
-    if [ "${LATEST_VERSION}" != "${VERSION}" ]; then
-        echo "WARNING: Current version (${VERSION}) differs from latest release (${LATEST_VERSION})"
-        VERSION_MISMATCH="true"
-    else
-        echo "Version check: Current version (${VERSION}) matches latest release (${LATEST_VERSION})"
+        LATEST_VERSION="$(VERSION)"
     fi
 fi
 

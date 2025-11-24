@@ -21,6 +21,5 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep "WARNING: Current version" log.txt
-grep "differs from latest release" log.txt
-grep "rendered not by the latest version of pages-action plugin" output/test-vitals.html
+grep "rendered by the pages-action" output/test-vitals.html
+grep "while the latest version is" output/test-vitals.html
