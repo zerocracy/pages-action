@@ -169,7 +169,7 @@
               </p>
             </xsl:if>
           </header>
-          <xsl:if test="$version != $latest-version">
+          <xsl:if test="$latest-version != '' and $version != $latest-version">
             <p class="warning">
               <span>
                 <xsl:text>The page was rendered by the pages-action </xsl:text>
