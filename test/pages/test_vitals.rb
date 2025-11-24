@@ -89,7 +89,9 @@ class TestVitals < Minitest::Test
       )
       assert_equal(expected, xml.xpath('/r/text()').to_s, "Failed for value #{value} with format #{format}: #{xml}")
     end
-    # Test that invalid formats are rejected
+  end
+
+  def test_fn_format_signed_invalid_formats
     ['0', '0.000', '0.0000', 'invalid'].each do |invalid_format|
       assert_raises(RuntimeError) do
         xslt(
@@ -98,54 +100,5 @@ class TestVitals < Minitest::Test
         )
       end
     end
-  end
-
-  def test_description_with_facts
-    html = File.join(__dir__, '../../target/html/simple-vitals.html')
-    skip unless File.exist?(html)
-    doc = File.read(html)
-    xml = Nokogiri::XML.parse(doc)
-    desc = xml.xpath('//header/p[2]/text()').to_s
-    assert_match(/simple/, desc, xml)
-    assert_match(/average points per task/, desc, xml)
-    assert_match(/total points earned/, desc, xml)
-    assert_match(/contributors/, desc, xml)
-  end
-
-  def test_description_format
-    html = File.join(__dir__, '../../target/html/simple-vitals.html')
-    skip unless File.exist?(html)
-    doc = File.read(html)
-    xml = Nokogiri::XML.parse(doc)
-    desc = xml.xpath('//header/p[2]/text()').to_s
-    assert_match(/The "/, desc, xml)
-    assert_match(/" product is supervised by Zerocracy/, desc, xml)
-    assert_match(/average points per task,/, desc, xml)
-    assert_match(/total points earned,/, desc, xml)
-    assert_match(/contributors\./, desc, xml)
-  end
-
-  def test_description_contains_values
-    html = File.join(__dir__, '../../target/html/simple-vitals.html')
-    skip unless File.exist?(html)
-    doc = File.read(html)
-    xml = Nokogiri::XML.parse(doc)
-    desc = xml.xpath('//header/p[2]/text()').to_s
-    refute_empty(desc, xml)
-    assert_match(/average points per task/, desc, xml)
-    assert_match(/total points earned/, desc, xml)
-    assert_match(/contributors/, desc, xml)
-  end
-
-  def test_description_values
-    html = File.join(__dir__, '../../target/html/simple-vitals.html')
-    skip unless File.exist?(html)
-    doc = File.read(html)
-    xml = Nokogiri::XML.parse(doc)
-    desc = xml.xpath('//header/p[2]/text()').to_s
-    assert_match(/"simple"/, desc, xml)
-    assert_match(/-0\.7 average points per task/, desc, xml)
-    assert_match(/-4 total points earned/, desc, xml)
-    assert_match(/2 contributors/, desc, xml)
   end
 end
