@@ -6,6 +6,21 @@ set -e -o pipefail
 
 VERSION=0.0.0
 
+echo "Checking for the latest version of zerocracy/pages-action..."
+
+if [ -z "${LATEST_VERSION}" ]; then
+    if command -v curl >/dev/null 2>&1; then
+        LATEST_VERSION=$(curl -s --max-time 10 https://api.github.com/repos/zerocracy/pages-action/releases/latest | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/' || echo "")
+        if [ -z "${LATEST_VERSION}" ]; then
+            echo "Could not fetch latest version from GitHub API"
+            LATEST_VERSION="${VERSION}"
+        fi
+    else
+        echo "curl not available, skipping version check"
+        LATEST_VERSION="${VERSION}"
+    fi
+fi
+
 echo "The 'pages-action' ${VERSION} is running"
 
 if [ "${INPUT_VERBOSE}" == 'true' ]; then
@@ -196,6 +211,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "-o:${html}" \
     "today=${INPUT_TODAY}" \
     "version=${VERSION}" \
+    "latest-version=${LATEST_VERSION}" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
     "logo=${logo}" \

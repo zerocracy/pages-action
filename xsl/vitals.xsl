@@ -12,6 +12,7 @@
   <xsl:param name="logo" as="xs:string"/>
   <xsl:param name="url" as="xs:string"/>
   <xsl:param name="version" as="xs:string"/>
+  <xsl:param name="latest-version" as="xs:string"/>
   <xsl:param name="fbe" as="xs:string"/>
   <xsl:param name="adless" as="xs:string"/>
   <xsl:param name="css-links" as="xs:string"/>
@@ -168,6 +169,20 @@
               </p>
             </xsl:if>
           </header>
+          <xsl:if test="$latest-version != '' and $version != $latest-version">
+            <p class="warning">
+              <span>
+                <xsl:text>The page was rendered by the pages-action </xsl:text>
+                <a href="https://github.com/zerocracy/pages-action/releases/tag/{$version}">
+                  <xsl:value-of select="$version"/>
+                </a>
+                <xsl:text>, while the latest version is </xsl:text>
+                <a href="https://github.com/zerocracy/pages-action/releases/tag/{$latest-version}">
+                  <xsl:value-of select="$latest-version"/>
+                </a>
+              </span>
+            </p>
+          </xsl:if>
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
             <xsl:apply-templates select="/" mode="bylaws"/>

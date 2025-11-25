@@ -19,9 +19,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_LOGO=' \
   'INPUT_ADLESS=true' \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
-  'LATEST_VERSION=0.0.0' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep "The output will have no mention of Zerocracy" 'log.txt'
-
-grep -v zerocracy 'output/test-vitals.html'
+grep "rendered by the pages-action" output/test-vitals.html
+grep "while the latest version is" output/test-vitals.html

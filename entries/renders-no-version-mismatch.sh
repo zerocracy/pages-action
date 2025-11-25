@@ -22,6 +22,8 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'LATEST_VERSION=0.0.0' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep "The output will have no mention of Zerocracy" 'log.txt'
-
-grep -v zerocracy 'output/test-vitals.html'
+if grep -q "while the latest version is" 'output/test-vitals.html'; then
+    echo "ERROR: Warning banner should not appear when versions match"
+    exit 1
+fi
+grep "test-vitals" 'output/test-vitals.html'
