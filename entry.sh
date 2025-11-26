@@ -185,8 +185,8 @@ html=${INPUT_OUTPUT}/${name}-vitals.html
 
 echo "Calculating integrity hashes for CSS files..."
 declare -a css_urls=(
-    "https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css"
-    "https://cdn.jsdelivr.net/gh/yegor256/drops@gh-pages/drops.min.css"
+    "https://cdn.jsdelivr.net/npm/tacit-css@1.9.5/dist/tacit-css.min.css"
+    "https://cdn.jsdelivr.net/npm/drops@0.3.2/dist/drops-0.3.2.min.css"
 )
 css_links=""
 for url in "${css_urls[@]}"; do
