@@ -42,16 +42,11 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 
 test -f 'output/test-vitals.html'
 
-if ! grep -qE 'The "test" product is supervised by Zerocracy:' 'output/test-vitals.html' || \
-   ! grep -qE '\+15\.0 average points per task' 'output/test-vitals.html' || \
-   ! grep -qE '30 total points earned' 'output/test-vitals.html' || \
-   ! grep -qE '1 contributors\.' 'output/test-vitals.html'; then
-  echo "ERROR: Expected full description text not found:"
-  echo "  Expected: The \"test\" product is supervised by Zerocracy: +15.0 average points per task, 30 total points earned, 1 contributors."
-  echo "  Found:"
-  grep -oE 'The "[^"]*" product is supervised by Zerocracy:[^<]*contributors\.' 'output/test-vitals.html' || echo "(pattern not found)"
-  exit 1
-fi
+grep 'The "test" product is supervised by Zerocracy:' 'output/test-vitals.html'
+grep '\+15\.0 average points per task' 'output/test-vitals.html'
+grep '30 total points earned' 'output/test-vitals.html'
+grep '1 contributors\.' 'output/test-vitals.html'
+grep -E 'The "[^"]*" product is supervised by Zerocracy:[^<]*contributors\.' 'output/test-vitals.html'
 
 
 rm -f test.fb
