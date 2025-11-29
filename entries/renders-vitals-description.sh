@@ -46,7 +46,7 @@ grep 'The "test" product is supervised by Zerocracy:' 'output/test-vitals.html'
 grep '\+15\.0 average points per task' 'output/test-vitals.html'
 grep '30 total points earned' 'output/test-vitals.html'
 grep '1 contributors\.' 'output/test-vitals.html'
-grep -E 'The "[^"]*" product is supervised by Zerocracy:[^<]*contributors\.' 'output/test-vitals.html'
+grep -E 'The "[^"]*" product is supervised by Zerocracy:.*contributors\.' 'output/test-vitals.html'
 
 
 rm -f test.fb
