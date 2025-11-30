@@ -43,11 +43,11 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 test -f 'output/test-vitals.html'
 
 grep '<meta name="description"' 'output/test-vitals.html'
-grep 'The "test" product is supervised by Zerocracy:' 'output/test-vitals.html'
+grep 'The &#34;test&#34; product is supervised by Zerocracy:' 'output/test-vitals.html'
 grep '\+15\.0 average points per task' 'output/test-vitals.html'
 grep '30 total points earned' 'output/test-vitals.html'
 grep '1 contributors\.' 'output/test-vitals.html'
-grep -E 'The "[^"]*" product is supervised by Zerocracy:.*contributors\.' 'output/test-vitals.html'
+grep -E 'The &#34;[^&]*&#34; product is supervised by Zerocracy:.*contributors\.' 'output/test-vitals.html'
 
 
 rm -f test.fb
