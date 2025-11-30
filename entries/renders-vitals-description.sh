@@ -28,7 +28,7 @@ bundle exec judges eval test.fb "
   f.who_name = 'user2'
 " > /dev/null
 
-env "GITHUB_WORKSPACE=$(pwd)" \
+env "GITHUB_WORKSPACE=${SELF}" \
   'GITHUB_REPOSITORY=foo/bar' \
   'GITHUB_REPOSITORY_OWNER=foo' \
   'INPUT_FACTBASE=test.fb' \
@@ -42,6 +42,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 
 test -f 'output/test-vitals.html'
 
+grep '<meta name="description"' 'output/test-vitals.html'
 grep 'The "test" product is supervised by Zerocracy:' 'output/test-vitals.html'
 grep '\+15\.0 average points per task' 'output/test-vitals.html'
 grep '30 total points earned' 'output/test-vitals.html'

@@ -118,6 +118,22 @@
       <head>
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+        <meta name="description">
+          <xsl:attribute name="content">
+            <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
+            <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
+            <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
+            <xsl:text>The "</xsl:text>
+            <xsl:value-of select="$name"/>
+            <xsl:text>" product is supervised by Zerocracy: </xsl:text>
+            <xsl:value-of select="z:format-signed($avg, '0.0')"/>
+            <xsl:text> average points per task, </xsl:text>
+            <xsl:value-of select="format-number(sum($facts/award), '0')"/>
+            <xsl:text> total points earned, </xsl:text>
+            <xsl:value-of select="count(distinct-values($facts/who_name))"/>
+            <xsl:text> contributors.</xsl:text>
+          </xsl:attribute>
+        </meta>
         <title>
           <xsl:value-of select="$name"/>
         </title>
@@ -167,22 +183,6 @@
                   </xsl:otherwise>
                 </xsl:choose>
               </span>
-            </p>
-            <p class="smaller">
-              <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
-              <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
-              <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
-              <xsl:text>The "</xsl:text>
-              <xsl:value-of select="$name"/>
-              <xsl:text>" product is supervised by Zerocracy: </xsl:text>
-              <xsl:value-of select="z:format-signed($avg, '0.0')"/>
-              <xsl:text> average points per task, </xsl:text>
-              <br/>
-              <xsl:value-of select="format-number(sum($facts/award), '0')"/>
-              <xsl:text> total points earned, </xsl:text>
-              <br/>
-              <xsl:value-of select="count(distinct-values($facts/who_name))"/>
-              <xsl:text> contributors.</xsl:text>
             </p>
             <xsl:if test="$adless = 'false'">
               <p class="smaller gray">
