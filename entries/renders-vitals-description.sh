@@ -28,7 +28,7 @@ bundle exec judges eval test.fb "
   f.who_name = 'user2'
 " > /dev/null
 
-env "GITHUB_WORKSPACE=${SELF}" \
+env "GITHUB_WORKSPACE=$(pwd)" \
   'GITHUB_REPOSITORY=foo/bar' \
   'GITHUB_REPOSITORY_OWNER=foo' \
   'INPUT_FACTBASE=test.fb' \
