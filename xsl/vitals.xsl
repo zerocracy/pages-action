@@ -134,6 +134,29 @@
             <xsl:text> contributors.</xsl:text>
           </xsl:attribute>
         </meta>
+        <meta property="og:title">
+          <xsl:attribute name="content">
+            <xsl:text>Vitals page of the "</xsl:text>
+            <xsl:value-of select="$name"/>
+            <xsl:text>" project</xsl:text>
+          </xsl:attribute>
+        </meta>
+        <meta property="og:type" content="website"/>
+        <meta property="og:url">
+          <xsl:attribute name="content">
+            <xsl:value-of select="$url"/>
+          </xsl:attribute>
+        </meta>
+        <xsl:if test="$adless = 'false'">
+          <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
+        </xsl:if>
+        <meta property="og:description">
+          <xsl:attribute name="content">
+            <xsl:text>A summary of the "</xsl:text>
+            <xsl:value-of select="$name"/>
+            <xsl:text>" project vitals: discipline, quality of service, quantity of deliverables, earned value analysis, and more.</xsl:text>
+          </xsl:attribute>
+        </meta>
         <title>
           <xsl:value-of select="$name"/>
         </title>
