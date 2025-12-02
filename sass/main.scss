@@ -80,16 +80,17 @@ header {
     font-family: monospace;
 }
 
+/* stylelint-disable no-descending-specificity */
+
+/* @todo #31 Dark color palette was roughly made. The palette can probably be improved */
 .palette-dark {
   body {
     color: #eee;
     background-color: $black;
   }
+
   h1, h2, h3, h4, h5, h6 {
     color: #eee;
-  }
-  footer {
-    color: #aaa;
   }
 
   header {
@@ -98,11 +99,46 @@ header {
       color: $black;
     }
   }
+
   .warning {
     span {
-      background: red;
-      background: $gray;
       color: $black;
     }
   }
+
+  footer {
+    color: #aaa;
+  }
+
 }
+
+/* @todo #31 Mild color palette was roughly made. The palette can probably be improved */
+.palette-mild {
+  body {
+    color: #333;
+    background-color: #777;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #333;
+  }
+
+  header {
+    span {
+      background-color: #777;
+      color: #333;
+    }
+  }
+
+  .warning {
+    span {
+      color: white;
+    }
+  }
+
+  footer {
+    color: #444;
+  }
+}
+
+/* stylelint-enable no-descending-specificity */
