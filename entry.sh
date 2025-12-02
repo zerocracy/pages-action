@@ -176,7 +176,8 @@ else
     echo 'The output HTML will have links to Zerocracy'
 fi
 
-if [ -z "${INPUT_URL}" ]; then
+url=${INPUT_URL}
+if [ -z "${url}" ]; then
     url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
     echo "The URL of the pages to publish is this one (change it using the 'url' parameter): ${url}"
 fi
@@ -189,19 +190,19 @@ declare -a css_urls=(
     "https://cdn.jsdelivr.net/npm/drops@0.3.2/dist/drops-0.3.2.min.css"
 )
 css_links=""
-for url in "${css_urls[@]}"; do
-    echo "Calculating hash for: ${url}"
-    content=$(curl -sSf --max-time 30 "$url") || {
-        echo "ERROR: Failed to fetch CSS from: ${url}" >&2
+for css in "${css_urls[@]}"; do
+    echo "Calculating hash for: ${css}"
+    content=$(curl -sSf --max-time 30 "$css") || {
+        echo "ERROR: Failed to fetch CSS from: ${css}" >&2
         exit 1
     }
     hash=$(printf "%s" "$content" | openssl dgst -sha384 -binary | openssl base64 -A)
     if [ -z "$hash" ]; then
-        echo "ERROR: Failed to calculate hash for: ${url}" >&2
+        echo "ERROR: Failed to calculate hash for: ${css}" >&2
         exit 1
     fi
     echo "Hash: ${hash}"
-    css_links="${css_links}${url}|${hash}"$'\n'
+    css_links="${css_links}${css}|${hash}"$'\n'
 done
 css_links="${css_links%$'\n'}"
 
