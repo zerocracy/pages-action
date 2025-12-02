@@ -83,7 +83,7 @@ function updateTimeDisplay($timeElements) {
     const timeDiff = currentDate - publishedDate;
     const startDate = new Date(publishedDate);
     const relativeTime = formatRelativeTime(timeDiff, startDate);
-    $element.html(`<span title="${datetime}">${relativeTime}</span>`);
+    $element.html(`${relativeTime}>`);
     if (index === 0) {
       const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
       displayOutdatedWarning(hours);
@@ -91,6 +91,6 @@ function updateTimeDisplay($timeElements) {
   });
 }
 
-$(function () {
-  updateTimeDisplay($("time[itemprop='datePublished']"));
+$(document).ready(function() {
+  updateTimeDisplay($("time[datetime]"));
 });
