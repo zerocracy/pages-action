@@ -84,6 +84,9 @@ function updateTimeDisplay($timeElements) {
     const startDate = new Date(publishedDate);
     const relativeTime = formatRelativeTime(timeDiff, startDate);
     $element.text(relativeTime);
+    // @todo #413 The call of displayOutdatedWarning() is hardcoded here.
+    //  This is a wrong place to call this function. 
+    //  Consider making a separate call outside updateTimeDisplay()
     if (index === 0) {
       const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
       displayOutdatedWarning(hours);
