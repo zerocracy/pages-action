@@ -91,6 +91,6 @@ function updateTimeDisplay($timeElements) {
   });
 }
 
-$(document).ready(function() {
+$(function() {
   updateTimeDisplay($("time.relative-time[datetime]"));
 });
