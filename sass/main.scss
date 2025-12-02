@@ -1,4 +1,5 @@
 /**
+
  * SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
  * SPDX-License-Identifier: MIT
  */
@@ -77,4 +78,31 @@ header {
 
 .ff {
     font-family: monospace;
+}
+
+.palette-dark {
+  body {
+    color: #eee;
+    background-color: $black;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #eee;
+  }
+  footer {
+    color: #aaa;
+  }
+
+  header {
+    span {
+      background-color: #eee;
+      color: $black;
+    }
+  }
+  .warning {
+    span {
+      background: red;
+      background: $gray;
+      color: $black;
+    }
+  }
 }
