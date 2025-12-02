@@ -118,22 +118,21 @@
       <head>
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-        <meta name="description">
-          <xsl:attribute name="content">
-            <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
-            <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
-            <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
-            <xsl:text>The "</xsl:text>
-            <xsl:value-of select="$name"/>
-            <xsl:text>" product is supervised by Zerocracy: </xsl:text>
-            <xsl:value-of select="z:format-signed($avg, '0.0')"/>
-            <xsl:text> average points per task, </xsl:text>
-            <xsl:value-of select="format-number(sum($facts/award), '0')"/>
-            <xsl:text> total points earned, </xsl:text>
-            <xsl:value-of select="count(distinct-values($facts/who_name))"/>
-            <xsl:text> contributors.</xsl:text>
-          </xsl:attribute>
-        </meta>
+        <xsl:variable name="description">
+          <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
+          <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
+          <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
+          <xsl:text>The "</xsl:text>
+          <xsl:value-of select="$name"/>
+          <xsl:text>" product is supervised by Zerocracy: </xsl:text>
+          <xsl:value-of select="z:format-signed($avg, '0.0')"/>
+          <xsl:text> average points per task, </xsl:text>
+          <xsl:value-of select="format-number(sum($facts/award), '0')"/>
+          <xsl:text> total points earned, </xsl:text>
+          <xsl:value-of select="count(distinct-values($facts/who_name))"/>
+          <xsl:text> contributors.</xsl:text>
+        </xsl:variable>
+        <meta name="description" content="{$description}"/>
         <meta property="og:title">
           <xsl:attribute name="content">
             <xsl:text>Vitals page of the "</xsl:text>
@@ -150,13 +149,7 @@
         <xsl:if test="$adless = 'false'">
           <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
         </xsl:if>
-        <meta property="og:description">
-          <xsl:attribute name="content">
-            <xsl:text>A summary of the "</xsl:text>
-            <xsl:value-of select="$name"/>
-            <xsl:text>" project vitals: discipline, quality of service, quantity of deliverables, earned value analysis, and more.</xsl:text>
-          </xsl:attribute>
-        </meta>
+        <meta property="og:description" content="{$description}"/>
         <title>
           <xsl:value-of select="$name"/>
         </title>
