@@ -10,7 +10,7 @@
   <xsl:param name="js" as="xs:string"/>
   <xsl:param name="name" as="xs:string"/>
   <xsl:param name="logo" as="xs:string"/>
-  <xsl:param name="palette" as="xs:string"/>
+  <xsl:param name="palette" as="xs:string" select="'classic'"/>
   <xsl:param name="url" as="xs:string"/>
   <xsl:param name="version" as="xs:string"/>
   <xsl:param name="latest-version" as="xs:string"/>
