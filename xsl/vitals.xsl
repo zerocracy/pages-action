@@ -273,9 +273,9 @@
                 </xsl:attribute>
                 <xsl:value-of select="$version"/>
               </span>
-              <xsl:text>) on </xsl:text>
-              <time datetime="{current-dateTime()}">
-                <xsl:value-of select="current-dateTime()"/>
+              <xsl:text>) </xsl:text>
+              <time class="relative-time" title="{$today}" datetime="{$today}">
+                on <xsl:value-of select="$today"/>
               </time>
               <xsl:text>.</xsl:text>
               <br/>
