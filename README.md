@@ -49,6 +49,7 @@ More details are in the [`action.yml`][action] file.
 ## How to Contribute
 
 You need to have
+  [GNU Bash],
   [GNU Make],
   [Node], [Npm],
   [Java],
@@ -72,6 +73,7 @@ Then, you should be able to open the `target/html/simple-vitals.html`
 [vitals]: https://zerocracy.github.io/judges-action/zerocracy-vitals.html
 [judges]: https://github.com/yegor256/judges
 [action]: https://github.com/zerocracy/pages-action/blob/master/action.yml
+[GNU Bash]: https://www.gnu.org/software/bash/
 [GNU Make]: https://www.gnu.org/software/make/
 [Docker]: https://www.docker.com/
 [Node]: https://nodejs.org/en
