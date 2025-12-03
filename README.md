@@ -56,6 +56,7 @@ You need to have
   and
   [Docker]
   installed.
+
 In order to test this action, just run:
 
 ```bash
