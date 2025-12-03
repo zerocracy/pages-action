@@ -148,6 +148,9 @@
         </meta>
         <xsl:if test="$adless = 'false'">
           <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
+          <meta property="og:image:type" content="image/png"/>
+          <meta property="og:image:width" content="1200"/>
+          <meta property="og:image:height" content="630"/>
         </xsl:if>
         <meta property="og:description" content="{$description}"/>
         <title>
