@@ -48,8 +48,15 @@ More details are in the [`action.yml`][action] file.
 
 ## How to Contribute
 
-In order to test this action, just run (provided, you have
-  [GNU Make] installed):
+You need to have
+  [GNU Make],
+  [Node], [Npm],
+  [Java],
+  [xmllint],
+  and
+  [Docker]
+  installed.
+In order to test this action, just run:
 
 ```bash
 make install
@@ -65,3 +72,8 @@ Then, you should be able to open the `target/html/simple-vitals.html`
 [judges]: https://github.com/yegor256/judges
 [action]: https://github.com/zerocracy/pages-action/blob/master/action.yml
 [GNU Make]: https://www.gnu.org/software/make/
+[Docker]: https://www.docker.com/
+[Node]: https://nodejs.org/en
+[Npm]: https://www.npmjs.com/
+[xmllint]: https://gnome.pages.gitlab.gnome.org/libxml2/xmllint.html
+[Java]: https://www.java.com/en/
