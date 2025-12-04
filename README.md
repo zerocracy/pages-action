@@ -36,7 +36,8 @@ the [judges] command line tool;
 * `output` (default: `pages`) is the directory where .XML, .YAML,
 and .HTML files are supposed to be saved to;
 * `logo` (optional) is the URL of the logo to put on the vitals HTML page;
-* `palette` (optional) is the color palette of the vitals HTML page (`classic`, `dark`, `mild`; default: `classic`)
+* `palette` (optional) is the color palette of the vitals HTML page 
+   (`classic`, `dark`, `mild`; default: `classic`)
 * `columns` (optional) is a comma-separated list of columns
 to print in the HTML;
 * `hidden` (optional) is a comma-separated list of columns to hide;

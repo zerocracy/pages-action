@@ -174,6 +174,8 @@ palette=${INPUT_PALETTE}
 if [ -z "${palette}" ]; then
     palette="classic"
     echo "The default Zerocracy palette will be used: ${palette}"
+else
+    echo "Using provided palette: ${palette}"
 fi
 
 if [ "${INPUT_ADLESS}" == 'true' ]; then
