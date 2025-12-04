@@ -34,6 +34,6 @@ grep -E '<time.*title="2024-07-05T00:00:00Z".*>.*</time>' 'output/test-vitals.ht
 echo "<time> should have datetime attribute"
 grep -E '<time.*datetime="2024-07-05T00:00:00Z">on 2024-07-05T00:00:00Z</time>' 'output/test-vitals.html'
 echo "vitals should contain <footer>"
-grep -E '<footer.*>' 'output/test-vitals.html' 'output/test-vitals.html'
+grep -E '<footer.*>' 'output/test-vitals.html'
 
 echo "OK"

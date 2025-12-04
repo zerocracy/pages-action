@@ -58,8 +58,12 @@ function formatRelativeTime(diffInMs, startDate) {
  * Displays a warning message if the page is outdated
  */
 function displayOutdatedWarning() {
-  if ($("#page-outdated-warning").length == 0) {
+  if ($("#page-outdated-warning").length === 0) {
     const generatedTime = Date.parse($("#generated-time").attr("datetime"));
+    if (isNaN(generatedTime)) {
+      console.error("Cound not parse the generated time");
+      return;
+    }
     const timeDiff = Date.now() - generatedTime;
     const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
     if (hours > OUTDATED_THRESHOLD_HOURS) {
@@ -77,11 +81,11 @@ function displayOutdatedWarning() {
 function updateTimeDisplay() {
   $("time.relative-time[datetime]").each(function (index, element) {
     const $element = $(element);
-    const datetime = $element.attr('datetime');
-    if (!datetime) {
+    const publishedDate = Date.parse($element.attr('datetime'));
+    if (isNaN(publishedDate)) {
+      console.error("Cound not parse date and time");
       return;
     }
-    const publishedDate = Date.parse(datetime);
     const currentDate = new Date();
     const timeDiff = currentDate - publishedDate;
     const startDate = new Date(publishedDate);
