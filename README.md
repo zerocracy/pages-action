@@ -18,7 +18,7 @@ This is how this vitals page looks for [our team][vitals].
 The following configuration options are supported here:
 
 ```yaml
-- uses: zerocracy/pages-action@0.6.2
+- uses: zerocracy/pages-action@0.6.3
   with:
     factbase: foo.fb
     verbose: true
@@ -49,8 +49,17 @@ More details are in the [`action.yml`][action] file.
 
 ## How to Contribute
 
-In order to test this action, just run (provided, you have
-  [GNU Make] installed):
+You need to have
+  [GNU Bash],
+  [GNU Make],
+  [Node], [Npm],
+  [Java],
+  [xmllint],
+  and
+  [Docker]
+  installed.
+
+In order to test this action, just run:
 
 ```bash
 make install
@@ -65,4 +74,10 @@ Then, you should be able to open the `target/html/simple-vitals.html`
 [vitals]: https://zerocracy.github.io/judges-action/zerocracy-vitals.html
 [judges]: https://github.com/yegor256/judges
 [action]: https://github.com/zerocracy/pages-action/blob/master/action.yml
+[GNU Bash]: https://www.gnu.org/software/bash/
 [GNU Make]: https://www.gnu.org/software/make/
+[Docker]: https://www.docker.com/
+[Node]: https://nodejs.org/en
+[Npm]: https://www.npmjs.com/
+[xmllint]: https://gnome.pages.gitlab.gnome.org/libxml2/xmllint.html
+[Java]: https://www.java.com/en/

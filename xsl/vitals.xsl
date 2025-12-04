@@ -122,22 +122,41 @@
       <head>
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-        <meta name="description">
+        <xsl:variable name="description">
+          <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
+          <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
+          <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
+          <xsl:text>The "</xsl:text>
+          <xsl:value-of select="$name"/>
+          <xsl:text>" product is supervised by Zerocracy: </xsl:text>
+          <xsl:value-of select="z:format-signed($avg, '0.0')"/>
+          <xsl:text> average points per task, </xsl:text>
+          <xsl:value-of select="format-number(sum($facts/award), '0')"/>
+          <xsl:text> total points earned, </xsl:text>
+          <xsl:value-of select="count(distinct-values($facts/who_name))"/>
+          <xsl:text> contributors.</xsl:text>
+        </xsl:variable>
+        <meta name="description" content="{$description}"/>
+        <meta property="og:title">
           <xsl:attribute name="content">
-            <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
-            <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
-            <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
-            <xsl:text>The "</xsl:text>
+            <xsl:text>Vitals page of the "</xsl:text>
             <xsl:value-of select="$name"/>
-            <xsl:text>" product is supervised by Zerocracy: </xsl:text>
-            <xsl:value-of select="z:format-signed($avg, '0.0')"/>
-            <xsl:text> average points per task, </xsl:text>
-            <xsl:value-of select="format-number(sum($facts/award), '0')"/>
-            <xsl:text> total points earned, </xsl:text>
-            <xsl:value-of select="count(distinct-values($facts/who_name))"/>
-            <xsl:text> contributors.</xsl:text>
+            <xsl:text>" project</xsl:text>
           </xsl:attribute>
         </meta>
+        <meta property="og:type" content="website"/>
+        <meta property="og:url">
+          <xsl:attribute name="content">
+            <xsl:value-of select="$url"/>
+          </xsl:attribute>
+        </meta>
+        <xsl:if test="$adless = 'false'">
+          <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
+          <meta property="og:image:type" content="image/png"/>
+          <meta property="og:image:width" content="1200"/>
+          <meta property="og:image:height" content="630"/>
+        </xsl:if>
+        <meta property="og:description" content="{$description}"/>
         <title>
           <xsl:value-of select="$name"/>
         </title>
@@ -198,20 +217,6 @@
               </p>
             </xsl:if>
           </header>
-          <xsl:if test="$latest-version != '' and $version != $latest-version">
-            <p class="warning">
-              <span>
-                <xsl:text>The page was rendered by the pages-action </xsl:text>
-                <a href="https://github.com/zerocracy/pages-action/releases/tag/{$version}">
-                  <xsl:value-of select="$version"/>
-                </a>
-                <xsl:text>, while the latest version is </xsl:text>
-                <a href="https://github.com/zerocracy/pages-action/releases/tag/{$latest-version}">
-                  <xsl:value-of select="$latest-version"/>
-                </a>
-              </span>
-            </p>
-          </xsl:if>
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
             <xsl:apply-templates select="/" mode="bylaws"/>
@@ -234,6 +239,20 @@
             <xsl:apply-templates select="/" mode="dot"/>
           </article>
           <footer>
+            <xsl:if test="$latest-version != '' and $version != $latest-version">
+              <p class="red">
+                <span>
+                  <xsl:text>The page was rendered by the pages-action </xsl:text>
+                  <a href="https://github.com/zerocracy/pages-action/releases/tag/{$version}">
+                    <xsl:value-of select="$version"/>
+                  </a>
+                  <xsl:text>, while the latest version is </xsl:text>
+                  <a href="https://github.com/zerocracy/pages-action/releases/tag/{$latest-version}">
+                    <xsl:value-of select="$latest-version"/>
+                  </a>
+                </span>
+              </p>
+            </xsl:if>
             <p>
               <xsl:text>The value of "</xsl:text>
               <span class="ff">
@@ -258,9 +277,9 @@
                 </xsl:attribute>
                 <xsl:value-of select="$version"/>
               </span>
-              <xsl:text>) on </xsl:text>
-              <time datetime="{current-dateTime()}">
-                <xsl:value-of select="current-dateTime()"/>
+              <xsl:text>) </xsl:text>
+              <time class="relative-time" title="{$today}" datetime="{$today}">
+                on <xsl:value-of select="$today"/>
               </time>
               <xsl:text>.</xsl:text>
               <br/>
