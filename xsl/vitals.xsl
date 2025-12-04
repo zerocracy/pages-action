@@ -274,7 +274,7 @@
                 <xsl:value-of select="$version"/>
               </span>
               <xsl:text>) </xsl:text>
-              <time class="relative-time" title="{$today}" datetime="{$today}">
+              <time id="generated-time" class="relative-time" title="{$today}" datetime="{$today}">
                 on <xsl:value-of select="$today"/>
               </time>
               <xsl:text>.</xsl:text>
