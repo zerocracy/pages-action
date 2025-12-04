@@ -61,7 +61,7 @@ function displayOutdatedWarning() {
   if ($("#page-outdated-warning").length === 0) {
     const generatedTime = Date.parse($("#generated-time").attr("datetime"));
     if (isNaN(generatedTime)) {
-      console.error("Cound not parse the generated time");
+      console.error("Could not parse the generated time");
       return;
     }
     const timeDiff = Date.now() - generatedTime;
@@ -83,7 +83,7 @@ function updateTimeDisplay() {
     const $element = $(element);
     const publishedDate = Date.parse($element.attr('datetime'));
     if (isNaN(publishedDate)) {
-      console.error("Cound not parse date and time");
+      console.error("Could not parse date and time");
       return;
     }
     const currentDate = new Date();
