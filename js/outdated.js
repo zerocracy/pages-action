@@ -56,23 +56,26 @@ function formatRelativeTime(diffInMs, startDate) {
 
 /**
  * Displays a warning message if the page is outdated
- * @param {number} hours - Number of hours since publication
  */
-function displayOutdatedWarning(hours) {
-  if (hours > OUTDATED_THRESHOLD_HOURS) {
-    const hourText = hours === 1 ? 'hour' : 'hours';
-    $('footer').prepend(
-      `<p class='red'>This page was generated ${hours} ${hourText} ago. The information is most probably outdated.</p>`
-    );
+function displayOutdatedWarning() {
+  if ($("#page-outdated-warning").length == 0) {
+    const generatedTime = Date.parse($("#generated-time").attr("datetime"));
+    const timeDiff = Date.now() - generatedTime;
+    const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
+    if (hours > OUTDATED_THRESHOLD_HOURS) {
+      const hourText = hours === 1 ? 'hour' : 'hours';
+      $('footer').prepend(
+        `<p id="page-outdated-warning" class='red'>This page was generated ${hours} ${hourText} ago. The information is most probably outdated.</p>`
+      );
+    }
   }
 }
 
 /**
  * Updates the time element with relative time display
- * @param {jQuery} $timeElements - jQuery object for the time element
  */
-function updateTimeDisplay($timeElements) {
-  $timeElements.each(function (index, element) {
+function updateTimeDisplay() {
+  $("time.relative-time[datetime]").each(function (index, element) {
     const $element = $(element);
     const datetime = $element.attr('datetime');
     if (!datetime) {
@@ -84,16 +87,14 @@ function updateTimeDisplay($timeElements) {
     const startDate = new Date(publishedDate);
     const relativeTime = formatRelativeTime(timeDiff, startDate);
     $element.text(relativeTime);
-    // @todo #413 The call of displayOutdatedWarning() is hardcoded here.
-    //  This is a wrong place to call this function.
-    //  Consider making a separate call outside updateTimeDisplay()
-    if (index === 0) {
-      const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
-      displayOutdatedWarning(hours);
-    }
   });
 }
 
 $(function() {
-  updateTimeDisplay($("time.relative-time[datetime]"));
+  updateTimeDisplay();
+  displayOutdatedWarning();
+  setTimeout(function() {
+    updateTimeDisplay();
+    displayOutdatedWarning();
+  }, TIME_UNITS.MINUTE);
 });
