@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+name: css validation
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-css:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build CSS
+        run: make assets
+      - name: Validate CSS with W3C Jar
+        run: |
+          wget -O css-validator.jar \
+          https://github.com/w3c/css-validator/releases/download/cssval-20250226/css-validator.jar
+          java -jar css-validator.jar file:target/css/main.css
