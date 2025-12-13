@@ -170,6 +170,14 @@ if [ -z "${logo}" ] && [ "${INPUT_ADLESS}" == 'false' ]; then
     echo "The default Zerocracy logo will be used: ${logo}"
 fi
 
+palette=${INPUT_PALETTE}
+if [ -z "${palette}" ]; then
+    palette="classic"
+    echo "The default Zerocracy palette will be used: ${palette}"
+else
+    echo "Using provided palette: ${palette}"
+fi
+
 if [ "${INPUT_ADLESS}" == 'true' ]; then
     echo 'The output will have no mention of Zerocracy'
 else
@@ -216,6 +224,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
     "logo=${logo}" \
+    "palette=${palette}" \
     "url=${url}" \
     "adless=${INPUT_ADLESS}" \
     "css-links=${css_links}" \
