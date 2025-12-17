@@ -151,7 +151,8 @@ GEM
     loog (0.6.1)
       logger (~> 1.0)
     mini_portile2 (2.8.9)
-    minitest (5.27.0)
+    minitest (6.0.0)
+      prism (~> 1.5)
     minitest-reporters (1.7.1)
       ansi
       builder
@@ -306,7 +307,7 @@ DEPENDENCIES
   factbase (~> 0.17)
   fbe (~> 0.41)
   judges (~> 0.57)
-  minitest (~> 5.25)
+  minitest (~> 6.0)
   minitest-reporters (~> 1.7)
   online (~> 0.1)
   qbash (~> 0.4)
