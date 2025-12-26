@@ -59,17 +59,15 @@ function formatRelativeTime(diffInMs, startDate) {
  */
 function displayOutdatedWarning() {
   if ($("#page-outdated-warning").length === 0) {
-    const generatedTime = Date.parse($("#generated-time").attr("datetime"));
-    if (isNaN(generatedTime)) {
+    const time = Date.parse($("#generated-time").attr("datetime"));
+    if (isNaN(time)) {
       console.error("Could not parse the generated time");
       return;
     }
-    const timeDiff = Date.now() - generatedTime;
-    const hours = Math.floor(timeDiff / TIME_UNITS.HOUR);
+    const hours = Math.floor((Date.now() - time) / TIME_UNITS.HOUR);
     if (hours > OUTDATED_THRESHOLD_HOURS) {
-      const hourText = hours === 1 ? 'hour' : 'hours';
       $('footer').prepend(
-        `<p id="page-outdated-warning" class='red'>This page was generated ${hours} ${hourText} ago. The information is most probably outdated.</p>`
+        `<p id="page-outdated-warning" class='red'>This page was generated ${hours} ${hours == 1 ? 'hour' : 'hours'} ago. The information is most probably outdated.</p>`
       );
     }
   }
