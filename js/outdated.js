@@ -67,7 +67,7 @@ function displayOutdatedWarning() {
     const hours = Math.floor((Date.now() - time) / TIME_UNITS.HOUR);
     if (hours > OUTDATED_THRESHOLD_HOURS) {
       $('footer').prepend(
-        `<p id="page-outdated-warning" class='red'>This page was generated ${hours} ${hours == 1 ? 'hour' : 'hours'} ago. The information is most probably outdated.</p>`
+        `<p id="page-outdated-warning" class='red'>This page was generated ${hours} ${hours === 1 ? 'hour' : 'hours'} ago. The information is most probably outdated.</p>`
       );
     }
   }
@@ -95,7 +95,7 @@ function updateTimeDisplay() {
 $(function() {
   updateTimeDisplay();
   displayOutdatedWarning();
-  setTimeout(function() {
+  setInterval(function() {
     updateTimeDisplay();
     displayOutdatedWarning();
   }, TIME_UNITS.MINUTE);
