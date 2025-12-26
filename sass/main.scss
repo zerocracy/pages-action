@@ -1,4 +1,5 @@
 /**
+
  * SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
  * SPDX-License-Identifier: MIT
  */
@@ -67,3 +68,68 @@ header {
 .ff {
     font-family: monospace;
 }
+
+/* stylelint-disable no-descending-specificity */
+
+/* @todo #31 Implement dark palette.
+    This dark color palette was roughly made and needs improving. */
+.palette-dark {
+  body {
+    color: #eee;
+    background-color: $black;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #eee;
+  }
+
+  header {
+    span {
+      background-color: #eee;
+      color: $black;
+    }
+  }
+
+  .warning {
+    span {
+      color: $black;
+    }
+  }
+
+  footer {
+    color: #aaa;
+  }
+
+}
+
+/* @todo #31 Implement mild palette.
+    This mil color palette was roughly made and needs improving. */
+.palette-mild {
+  body {
+    color: #333;
+    background-color: #999;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #333;
+  }
+
+  header {
+    span {
+      background-color: #999;
+      color: #333;
+    }
+  }
+
+  .warning {
+    span {
+      color: white;
+    }
+  }
+
+  footer {
+    color: #444;
+  }
+}
+
+/* stylelint-enable no-descending-specificity */
