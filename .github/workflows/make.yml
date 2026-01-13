@@ -25,7 +25,7 @@ jobs:
           node-version: 24
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.4.8
+          ruby-version: 4.0.1
           bundler-cache: true
       - run: bundle config set --global path "$(pwd)/vendor/bundle"
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes libxml2-utils
