@@ -24,6 +24,7 @@ The following configuration options are supported here:
     verbose: true
     output: my-directory
     columns: who,when,repository
+    highlighted: stale,tombstone
     hidden: _id,_time
 ```
 
@@ -40,6 +41,7 @@ and .HTML files are supposed to be saved to;
    (`classic`, `dark`, `mild`; default: `classic`)
 * `columns` (optional) is a comma-separated list of columns
 to print in the HTML;
+* `highlighted` (optional) is a comma-separated list of columns to highlight;
 * `hidden` (optional) is a comma-separated list of columns to hide;
 * `today` (optional) is ISO-8601 date-time of today;
 * `verbose` (default: `false`) turns on a more detailed logging.

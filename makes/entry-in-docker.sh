@@ -17,4 +17,5 @@ docker run --rm \
     -e INPUT_OUTPUT=pages \
     -e INPUT_COLUMNS=what,when,who \
     -e INPUT_HIDDEN=_id \
+    -e INPUT_HIGHLIGHTED=stale,tombstone \
     "${img}"
