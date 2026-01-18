@@ -33,7 +33,7 @@ inputs:
     description: 'Comma-separated list of columns to print in the HTML'
     default: 'when,what,repository'
   highlighted:
-    description: 'Comma-separated list of columns to highlight while rendering (no spaces)'
+    description: 'Comma-separated list of columns to highlight'
     default: 'stale,tombstone'
   hidden:
     description: 'Comma-separated list of properties to hide'
