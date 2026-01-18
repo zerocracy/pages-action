@@ -34,6 +34,7 @@ target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) 
 	export INPUT_FACTBASE=$<
 	export INPUT_ADLESS=false
 	export INPUT_COLUMNS=what,when,who
+	export INPUT_HIGHLIGHTED=stale,tombstone
 	export INPUT_HIDDEN=_id,_time,_version
 	export INPUT_TODAY='2024-07-05T00:00:00Z'
 	fb=$$(basename $<)
@@ -67,14 +68,14 @@ rake: $(SAXON) $(HTMLS)
 	bundle exec rake
 
 stylelint: sass/*.scss
-	stylelint sass/*.scss --fix
+	npx stylelint sass/*.scss --fix
 
 $(CSS): sass/*.scss stylelint Makefile | target/css
-	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
+	npx sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
-	eslint js/*.js
-	uglifyjs js/*.js > "$@"
+	npx eslint js/*.js
+	npx uglifyjs js/*.js > "$@"
 
 entries: assets
 	./makes/entries.sh

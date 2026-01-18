@@ -7,7 +7,7 @@ source 'http://rubygems.org'
 
 gem 'factbase', '~>0.17'
 gem 'fbe', '~>0.41'
-gem 'judges', '~>0.57'
+gem 'judges', '~>0.59'
 gem 'minitest', '~>6.0', require: false
 gem 'minitest-reporters', '~>1.7', require: false
 gem 'online', '~>0.1'
