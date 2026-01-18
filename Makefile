@@ -68,14 +68,14 @@ rake: $(SAXON) $(HTMLS)
 	bundle exec rake
 
 stylelint: sass/*.scss
-	npx stylelint sass/*.scss --fix
+	stylelint sass/*.scss --fix
 
 $(CSS): sass/*.scss stylelint Makefile | target/css
-	npx sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
+	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
-	npx eslint js/*.js
-	npx uglifyjs js/*.js > "$@"
+	eslint js/*.js
+	uglifyjs js/*.js > "$@"
 
 entries: assets
 	./makes/entries.sh
