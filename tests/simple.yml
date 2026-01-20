@@ -13,6 +13,8 @@
   _id: 1
   what: pmp
   area: hr
+  tombstone: 2026-01-04T18:00:00.000Z
+  stale: 'branch'
   days_of_running_balance: 30
   some_policy: '(award (let x 25) (give x "when you deserve it"))'
   second_policy: >

@@ -34,6 +34,7 @@ target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) 
 	export INPUT_FACTBASE=$<
 	export INPUT_ADLESS=false
 	export INPUT_COLUMNS=what,when,who
+	export INPUT_HIGHLIGHTED=stale,tombstone
 	export INPUT_HIDDEN=_id,_time,_version
 	export INPUT_TODAY='2024-07-05T00:00:00Z'
 	fb=$$(basename $<)
