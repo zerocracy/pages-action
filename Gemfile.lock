@@ -72,7 +72,7 @@ GEM
       net-http (~> 0.5)
     faraday-retry (2.4.0)
       faraday (~> 2.0)
-    fbe (0.48.2)
+    fbe (0.48.3)
       backtrace (~> 0.4)
       baza.rb (~> 0.9)
       decoor (~> 0.1)
@@ -111,7 +111,7 @@ GEM
     filesize (0.2.0)
     gli (2.22.2)
       ostruct
-    graphql (2.5.16)
+    graphql (2.5.17)
       base64
       fiber-storage
       logger
