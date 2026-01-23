@@ -4,7 +4,7 @@
 
 set -e -o pipefail
 
-VERSION=0.0.0
+VERSION=0.6.4
 
 echo "Checking for the latest version of zerocracy/pages-action..."
 
