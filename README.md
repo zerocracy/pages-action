@@ -58,6 +58,8 @@ You need to have
   [Node], [Npm],
   [Java],
   [xmllint],
+  [HTML Tidy],
+  [OpenSSL],
   and
   [Docker]
   installed.
@@ -84,3 +86,5 @@ Then, you should be able to open the `target/html/simple-vitals.html`
 [Npm]: https://www.npmjs.com/
 [xmllint]: https://gnome.pages.gitlab.gnome.org/libxml2/xmllint.html
 [Java]: https://www.java.com/en/
+[HTML Tidy]: https://www.html-tidy.org/
+[OpenSSL]: https://www.openssl.org/
