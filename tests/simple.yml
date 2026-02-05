@@ -9,6 +9,8 @@
     //a[.="@torvalds"]
     //span[@class="darkgreen" and .="+14"]
     //span[.="129"]
+    //div[@class="assessment"]/h2[.="Assessment"]
+    //div[@class="assessment"]/p
 -
   _id: 1
   what: pmp
