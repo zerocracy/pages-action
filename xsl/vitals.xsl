@@ -18,6 +18,7 @@
   <xsl:param name="adless" as="xs:string"/>
   <xsl:param name="css-links" as="xs:string"/>
   <xsl:import href="awards.xsl"/>
+  <xsl:import href="assessment.xsl"/>
   <xsl:import href="bylaws.xsl"/>
   <xsl:import href="qo-section.xsl"/>
   <xsl:import href="dot.xsl"/>
@@ -219,6 +220,7 @@
           </header>
           <article>
             <xsl:apply-templates select="/" mode="awards"/>
+            <xsl:apply-templates select="/" mode="assessment"/>
             <xsl:apply-templates select="/" mode="bylaws"/>
             <xsl:call-template name="qo-section">
               <xsl:with-param name="what" select="'quality-of-service'"/>
