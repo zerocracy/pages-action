@@ -11,6 +11,9 @@
     //span[.="129"]
     //div[@class="assessment"]/h2[.="Assessment"]
     //div[@class="assessment"]/p
+    //div[@class="repositories"]/h2[.="Repositories where the work is happening"]
+    //div[@class="repositories"]/ul/li/a[.="yegor256/factbase"]
+    //div[@class="repositories"]/ul/li/a[.="yegor256/judges"]
 -
   _id: 1
   what: pmp
@@ -46,6 +49,8 @@
   where: github
   is_human: 1
   why: for important issue reported
+  repository: 777
+  repository_name: yegor256/factbase
 -
   _id: 3
   when: 2024-06-16T22:22:22.8492Z
@@ -54,6 +59,8 @@
   where: github
   is_human: 1
   why: for fun
+  repository: 888
+  repository_name: yegor256/judges
 -
   _id: 4
   when: 2024-07-05T22:22:22.8492Z
@@ -63,6 +70,7 @@
   is_human: 1
   why: for being a good boy
   href: https://github.com/yegor256/judges/issues/111
+  repository: 111
 -
   _id: 5
   when: 2024-07-04T22:22:22.8492Z
@@ -72,6 +80,7 @@
   is_human: 1
   why: for being a great programmer
   href: https://github.com/yegor256/judges/issues/111
+  repository: 111
 -
   _id: 6
   when: 2024-07-03T22:22:22.8492Z
@@ -81,6 +90,7 @@
   is_human: 1
   why: for being a bad boy
   href: https://github.com/yegor256/judges/issues/111
+  repository: 111
 -
   _id: 7
   when: 2024-07-02T22:22:22.8492Z
@@ -90,6 +100,7 @@
   is_human: 1
   why: for new release
   href: https://github.com/yegor256/judges/issues/111
+  repository: 111
 -
   _id: 8
   when: 2024-07-03T22:22:22.8492Z
