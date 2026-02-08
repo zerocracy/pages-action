@@ -11,7 +11,7 @@
     //span[.="129"]
     //div[@class="assessment"]/h2[.="Assessment"]
     //div[@class="assessment"]/p
-    //div[@class="repositories"]/h2[.="Repositories where the work is happening"]
+    //div[@class="repositories"]/h2[starts-with(., "Repositories where")]
     //div[@class="repositories"]/ul/li/a[.="yegor256/factbase"]
     //div[@class="repositories"]/ul/li/a[.="yegor256/judges"]
 -
