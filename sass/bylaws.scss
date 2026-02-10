@@ -37,13 +37,13 @@ $em: #275a90;
 
     @media (max-width: 1280px) {
         .columns {
-            column-count: 4;
+            column-count: 2;
         }
     }
 
     @media (max-width: 768px) {
         .columns {
-            column-count: 3;
+            column-count: 1;
         }
     }
 }
