@@ -79,7 +79,7 @@ class Minitest::Test
           "-xsl:#{Shellwords.escape(xsl)}",
           "-o:#{Shellwords.escape(output)}"
         ] + vars.map { |k, v| Shellwords.escape("#{k}=#{v}") },
-        log: fake_loog
+        stdout: fake_loog
       )
       Nokogiri::XML.parse(File.read(output))
     end
