@@ -165,6 +165,9 @@
         <xsl:if test="$logo != ''">
           <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
         </xsl:if>
+                    <xsl:if='true' test="not($adless='yes')">
+              <link rel="stylesheet" href="https://www.zerocracy.com/css/palette.css"/>
+                                  </xsl:if>
         <xsl:call-template name="css-links">
           <xsl:with-param name="links" select="$css-links"/>
         </xsl:call-template>
