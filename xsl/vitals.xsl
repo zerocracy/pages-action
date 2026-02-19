@@ -181,7 +181,9 @@
           </xsl:call-template>
         </xsl:for-each>
         <script type="text/javascript">
+//<![CDATA[
           <xsl:value-of select="$js" disable-output-escaping="yes"/>
+//]]>
         </script>
         <style>
           <xsl:value-of select="$css" disable-output-escaping="no"/>

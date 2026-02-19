@@ -36,6 +36,7 @@
           </canvas>
         </div>
         <script type="text/javascript">
+//<![CDATA[
           <xsl:text>$(function(){const color = chroma('#D3D3D3'); qo_render('</xsl:text>
           <xsl:value-of select="$what"/>
           <xsl:text>',{labels:[</xsl:text>
@@ -94,6 +95,7 @@
             <xsl:text>]}</xsl:text>
           </xsl:for-each>
           <xsl:text>]});});</xsl:text>
+//]]>
         </script>
       </xsl:otherwise>
     </xsl:choose>

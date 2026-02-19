@@ -155,11 +155,14 @@
   </xsl:template>
   <xsl:template match="/fb" mode="awards-non-empty">
     <script type="text/javascript">
+//<![CDATA[
       <xsl:text>const weeks = </xsl:text>
       <xsl:value-of select="$weeks"/>
       <xsl:text>;</xsl:text>
+//]]>
     </script>
     <script type="text/javascript">
+//<![CDATA[
       <xsl:text>
         $(function() {
           $("#awards").tablesorter({
@@ -167,6 +170,7 @@
           });
         });
       </xsl:text>
+//]]>
     </script>
     <table id="awards">
       <colgroup>
