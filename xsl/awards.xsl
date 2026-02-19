@@ -155,11 +155,17 @@
   </xsl:template>
   <xsl:template match="/fb" mode="awards-non-empty">
     <script type="text/javascript">
+      <xsl:text disable-output-escaping="yes">//&lt;![CDATA[
+</xsl:text>
       <xsl:text>const weeks = </xsl:text>
       <xsl:value-of select="$weeks"/>
       <xsl:text>;</xsl:text>
+      <xsl:text disable-output-escaping="yes">
+//]]&gt;</xsl:text>
     </script>
     <script type="text/javascript">
+      <xsl:text disable-output-escaping="yes">//&lt;![CDATA[
+</xsl:text>
       <xsl:text>
         $(function() {
           $("#awards").tablesorter({
@@ -167,6 +173,8 @@
           });
         });
       </xsl:text>
+      <xsl:text disable-output-escaping="yes">
+//]]&gt;</xsl:text>
     </script>
     <table id="awards">
       <colgroup>
