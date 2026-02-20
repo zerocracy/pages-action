@@ -10,7 +10,10 @@
     //span[@class="darkgreen" and .="+14"]
     //span[.="129"]
     //div[@class="assessment"]/h2[.="Assessment"]
-    //div[@class="assessment"]/p
+    //div[@class="assessment"]/pre
+    //div[@class="assessment"]/pre[contains(., "Last assessed on 2024-09-15")]
+    //div[@class="assessment"]/p[@class="darkred"]
+    //div[@class="assessment"]/p[.="3 assessments on factbase were found"]
     //div[@class="repositories"]/h2[starts-with(., "Repositories where")]
     //div[@class="repositories"]/ul/li/a[.="yegor256/factbase"]
     //div[@class="repositories"]/ul/li/a[.="yegor256/judges"]
@@ -212,6 +215,21 @@
 -
   _id: 24
   what: assessment
+  when: 2024-09-15T10:00:00.000Z
   text: |
     The project shows steady progress with consistent contributions.
     Code quality metrics are within acceptable ranges.
+-
+  _id: 25
+  what: assessment
+  when: 2024-07-01T08:00:00.000Z
+  text: |
+    Early stage review: team is ramping up.
+    Some minor issues identified in code review process.
+-
+  _id: 26
+  what: assessment
+  when: 2024-03-20T12:00:00.000Z
+  text: |
+    Initial assessment: project structure looks promising.
+    Onboarding of contributors is in progress.
