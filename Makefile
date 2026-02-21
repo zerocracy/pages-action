@@ -16,6 +16,7 @@ JUDGES = bundle exec judges
 DIRS = target target/html target/fb target/xsl target/css target/js
 CSS = target/css/main.css
 JS = target/js/main.js
+JS_TEST = target/js/test.js
 SAXON = target/saxon.jar
 
 export
@@ -27,7 +28,7 @@ assets: $(XSLS) $(JS) $(CSS)
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp "$<" "$@"
 
-target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) | target/html
+target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS_TEST) $(SAXON) | target/html
 	export INPUT_VERBOSE=yes
 	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
@@ -37,6 +38,7 @@ target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) 
 	export INPUT_HIGHLIGHTED=stale,tombstone
 	export INPUT_HIDDEN=_id,_time,_version
 	export INPUT_TODAY='2024-07-05T00:00:00Z'
+	export INPUT_JS_FILE=$(JS_TEST)
 	fb=$$(basename $<)
 	fb=$${fb%.*}
 	export INPUT_OUTPUT=target/output/$${fb}
@@ -76,6 +78,9 @@ $(CSS): sass/*.scss stylelint Makefile | target/css
 $(JS): js/*.js Makefile | target/js
 	eslint js/*.js
 	uglifyjs js/*.js > "$@"
+
+$(JS_TEST): $(JS) tests/symbols.js | target/js
+	cat $^ > "$@"
 
 entries: assets
 	./makes/entries.sh

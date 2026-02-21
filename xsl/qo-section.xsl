@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="xs z">
+  <xsl:include href="cdata_wrapper.xsl"/>
   <xsl:function name="z:snake-case-to-title" as="xs:string">
     <xsl:param name="line" as="xs:string"/>
     <xsl:variable name="words" select="tokenize($line, '_')"/>
@@ -35,9 +36,7 @@
             <xsl:text> </xsl:text>
           </canvas>
         </div>
-        <script type="text/javascript">
-          <xsl:text disable-output-escaping="yes">//&lt;![CDATA[
-</xsl:text>
+        <xsl:variable name="js-content">
           <xsl:text>$(function(){const color = chroma('#D3D3D3'); qo_render('</xsl:text>
           <xsl:value-of select="$what"/>
           <xsl:text>',{labels:[</xsl:text>
@@ -96,9 +95,10 @@
             <xsl:text>]}</xsl:text>
           </xsl:for-each>
           <xsl:text>]});});</xsl:text>
-          <xsl:text disable-output-escaping="yes">
-//]]&gt;</xsl:text>
-        </script>
+        </xsl:variable>
+        <xsl:call-template name="script-with-cdata">
+          <xsl:with-param name="content" select="string($js-content)"/>
+        </xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
