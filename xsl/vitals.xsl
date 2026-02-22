@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="xs z">
-  <xsl:include href="cdata_wrapper.xsl"/>
+  <xsl:include href="script-with-cdata.xsl"/>
   <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
   <xsl:param name="today" as="xs:string"/>
   <xsl:param name="css" as="xs:string"/>
