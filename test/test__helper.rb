@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
 ENV['RACK_ENV'] = 'test'
@@ -27,6 +27,7 @@ end
 
 require 'minitest/reporters'
 Minitest::Reporters.use! [Minitest::Reporters::SpecReporter.new]
+Minitest.load :minitest_reporter
 
 require 'judges/options'
 require 'loog'
@@ -78,7 +79,7 @@ class Minitest::Test
           "-xsl:#{Shellwords.escape(xsl)}",
           "-o:#{Shellwords.escape(output)}"
         ] + vars.map { |k, v| Shellwords.escape("#{k}=#{v}") },
-        log: fake_loog
+        stdout: fake_loog
       )
       Nokogiri::XML.parse(File.read(output))
     end

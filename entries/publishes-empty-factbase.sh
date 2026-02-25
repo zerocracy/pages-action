@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
 set -ex -o pipefail
@@ -25,3 +25,4 @@ grep "The 'github-token' plugin parameter is set" 'log.txt'
 [ -e 'output/test.json' ]
 [ -e 'output/test.html' ]
 [ -e 'output/test-vitals.html' ]
+[ -e 'output/test-badge.svg' ]

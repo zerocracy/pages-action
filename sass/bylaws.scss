@@ -1,10 +1,10 @@
 /**
- * SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+ * SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
  * SPDX-License-Identifier: MIT
  */
 
-$strong: #b8336a;
-$em: #1c448e;
+$strong: darkred;
+$em: #275a90;
 
 .bylaws {
     counter-reset: par;
@@ -23,26 +23,27 @@ $em: #1c448e;
 
         strong {
             color: $strong;
-            font-family: monospace;
-            font-weight: bolder;
+            font-family: "Roboto Mono", monospace;
+            font-weight: normal;
         }
 
         em {
             color: $em;
-            font-family: serif;
-            font-weight: bolder;
+            font-family: "Noto Serif", sans-serif;
+            font-style: normal;
+            font-weight: normal;
         }
     }
 
     @media (max-width: 1280px) {
         .columns {
-            column-count: 4;
+            column-count: 2;
         }
     }
 
     @media (max-width: 768px) {
         .columns {
-            column-count: 3;
+            column-count: 1;
         }
     }
 }

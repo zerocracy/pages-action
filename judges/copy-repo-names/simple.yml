@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+options:
+  testing: true
+input:
+  -
+    what: award
+    repository: 12345
+    where: github
+  -
+    what: award
+    repository: 12345
+    where: github
+  -
+    what: award
+    repository: 67890
+    where: github
+expected:
+  - /fb/f[repository='12345' and repository_name='yegor256/test']
+  - /fb/f[repository='67890' and repository_name='yegor256/test']

@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
-# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
-require 'webmock/minitest'
+require 'online'
 require 'nokogiri'
 require 'w3c_validators'
+require 'webmock/minitest'
 require_relative '../test__helper'
 
 # Test.
@@ -29,9 +30,14 @@ class TestVitals < Minitest::Test
       end
     assert_empty(xml.errors, xml)
     refute_empty(xml.xpath('/html'), xml)
-    # WebMock.enable_net_connect!
-    # v = W3CValidators::NuValidator.new.validate_file(html)
-    # assert(v.errors.empty?, "#{doc}\n\n#{v.errors.join('; ')}")
+    return unless online?
+    WebMock.enable_net_connect!
+    begin
+      v = W3CValidators::NuValidator.new.validate_file(html)
+      assert_empty(v.errors, "#{doc}\n\n#{v.errors.join('; ')}")
+    rescue Errno::ECONNRESET, W3CValidators::ValidatorUnavailable, W3CValidators::ParsingError, OpenSSL::SSL::SSLError
+      skip
+    end
   end
 
   def test_fn_index
@@ -63,5 +69,45 @@ class TestVitals < Minitest::Test
       '
     )
     assert_equal('bar', xml.xpath('/r/text()').to_s, xml)
+  end
+
+  def test_fn_format_signed
+    {
+      3.3 => ['0.0', '+3.3'],
+      0 => ['0.0', '+0.0'],
+      -1 => ['0.0', '-1.0'],
+      5.123 => ['0.0', '+5.1'],
+      -2.456 => ['0.0', '-2.5'],
+      0.0 => ['0.0', '+0.0'],
+      10.5 => ['0.00', '+10.50'],
+      -7.8 => ['0.00', '-7.80'],
+      10.6 => ['0.00', '+10.60']
+    }.each do |value, (format, expected)|
+      xml = xslt(
+        "<r><xsl:value-of select=\"z:format-signed(#{value}, '#{format}')\"/></r>",
+        '<fb/>'
+      )
+      assert_equal(expected, xml.xpath('/r/text()').to_s, "Failed for value #{value} with format #{format}: #{xml}")
+    end
+  end
+
+  def test_fn_format_signed_invalid_formats
+    ['0', '0.000', '0.0000', 'invalid'].each do |invalid_format|
+      assert_raises(RuntimeError) do
+        xslt(
+          "<r><xsl:value-of select=\"z:format-signed(1.0, '#{invalid_format}')\"/></r>",
+          '<fb/>'
+        )
+      end
+    end
+  end
+
+  def test_bylaws_responsive_columns_in_css
+    f = File.join(__dir__, '../../target/css/main.css')
+    skip "File not found:  #{f}" unless File.exist?(f)
+    css = File.read(f).gsub(/\s+/, '')
+    assert_includes(css, '.bylaws.columns{column-count:5}', 'Desktop layout broken')
+    assert_includes(css, '@media(max-width:1280px){.bylaws.columns{column-count:2}}', 'Tablet layout broken')
+    assert_includes(css, '@media(max-width:768px){.bylaws.columns{column-count:1}}', 'Phone layout broken')
   end
 end

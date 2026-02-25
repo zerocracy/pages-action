@@ -1,10 +1,25 @@
 #!/usr/bin/env bash
-# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
 set -e -o pipefail
 
 VERSION=0.0.0
+
+echo "Checking for the latest version of zerocracy/pages-action..."
+
+if [ -z "${LATEST_VERSION}" ]; then
+    if command -v curl >/dev/null 2>&1; then
+        LATEST_VERSION=$(curl -s --max-time 10 https://api.github.com/repos/zerocracy/pages-action/releases/latest | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/' || echo "")
+        if [ -z "${LATEST_VERSION}" ]; then
+            echo "Could not fetch latest version from GitHub API"
+            LATEST_VERSION="unknown"
+        fi
+    else
+        echo "curl not available, skipping version check"
+        LATEST_VERSION="unknown"
+    fi
+fi
 
 echo "The 'pages-action' ${VERSION} is running"
 
@@ -35,6 +50,28 @@ fi
 cd "${GITHUB_WORKSPACE}"
 echo "The workspace directory is: $(pwd)"
 
+if [ -z "${INPUT_FACTBASE}" ]; then
+    echo "No factbase parameter provided, looking for *.fb files in current directory..."
+    fb_files=(*.fb)
+    if [ "${fb_files[0]}" = "*.fb" ]; then
+        echo "ERROR: No .fb files found in the current directory."
+        echo "Please provide a factbase parameter or ensure there is exactly one .fb file in the directory."
+        exit 1
+    fi
+    if [ ${#fb_files[@]} -gt 1 ]; then
+        echo "ERROR: Multiple .fb files found in the current directory:"
+        for file in "${fb_files[@]}"; do
+            echo "  - ${file}"
+        done
+        echo "Please specify which factbase to use with the 'factbase' parameter."
+        exit 1
+    fi
+    INPUT_FACTBASE="${fb_files[0]}"
+    echo "Auto-detected factbase: ${INPUT_FACTBASE}"
+else
+    echo "Using provided factbase: ${INPUT_FACTBASE}"
+fi
+
 declare -a gopts=()
 if [ -n "${INPUT_VERBOSE}" ]; then
     gopts+=("--verbose")
@@ -60,6 +97,7 @@ for f in yaml xml json html; do
     ${JUDGES} "${gopts[@]}" print \
         --format "${f}" \
         --columns "${INPUT_COLUMNS}" \
+        --highlighted "${INPUT_HIGHLIGHTED}"\
         --hidden "${INPUT_HIDDEN}" \
         "${INPUT_FACTBASE}" \
         "${INPUT_OUTPUT}/${name}.${f}"
@@ -93,10 +131,26 @@ if [ "${github_token_found}" == "false" ]; then
     fi
 fi
 
+timeout=${INPUT_TIMEOUT}
+if [ -z "${timeout}" ]; then
+    timeout=10
+fi
+timeout=$((timeout * 60))
+echo "Each judge will spend up to ${timeout} seconds"
+
+lifetime=${INPUT_LIFETIME}
+if [ -z "${lifetime}" ]; then
+    lifetime=15
+fi
+lifetime=$((lifetime * 60))
+echo "The update will run for up to ${lifetime} seconds"
+
 ${JUDGES} "${gopts[@]}" update \
     --shuffle= \
     --no-log \
     --summary=off \
+    --lifetime "${lifetime}" \
+    --timeout "${timeout}" \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
@@ -111,18 +165,81 @@ else
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
 
+logo=${INPUT_LOGO}
+if [ -z "${logo}" ] && [ "${INPUT_ADLESS}" == 'false' ]; then
+    logo=https://www.zerocracy.com/svg/logo.svg
+    echo "The default Zerocracy logo will be used: ${logo}"
+fi
+
+palette=${INPUT_PALETTE}
+if [ -z "${palette}" ]; then
+    palette="classic"
+    echo "The default Zerocracy palette will be used: ${palette}"
+else
+    echo "Using provided palette: ${palette}"
+fi
+
+if [ "${INPUT_ADLESS}" == 'true' ]; then
+    echo 'The output will have no mention of Zerocracy'
+else
+    echo 'The output HTML will have links to Zerocracy'
+fi
+
+url=${INPUT_URL}
+if [ -z "${url}" ]; then
+    url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
+    echo "The URL of the pages to publish is this one (change it using the 'url' parameter): ${url}"
+fi
+
 html=${INPUT_OUTPUT}/${name}-vitals.html
+
+echo "Calculating integrity hashes for CSS files..."
+declare -a css_urls=(
+    "https://cdn.jsdelivr.net/npm/tacit-css@1.9.5/dist/tacit-css.min.css"
+    "https://cdn.jsdelivr.net/npm/drops@0.3.2/dist/drops-0.3.2.min.css"
+)
+css_links=""
+for css in "${css_urls[@]}"; do
+    echo "Calculating hash for: ${css}"
+    content=$(curl -sSf --max-time 30 "$css") || {
+        echo "ERROR: Failed to fetch CSS from: ${css}" >&2
+        exit 1
+    }
+    hash=$(printf "%s" "$content" | openssl dgst -sha384 -binary | openssl base64 -A)
+    if [ -z "$hash" ]; then
+        echo "ERROR: Failed to calculate hash for: ${css}" >&2
+        exit 1
+    fi
+    echo "Hash: ${hash}"
+    css_links="${css_links}${css}|${hash}"$'\n'
+done
+css_links="${css_links%$'\n'}"
+
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/vitals.xsl" \
     "-o:${html}" \
     "today=${INPUT_TODAY}" \
     "version=${VERSION}" \
+    "latest-version=${LATEST_VERSION}" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
-    "logo=${INPUT_LOGO}" \
+    "logo=${logo}" \
+    "palette=${palette}" \
+    "url=${url}" \
+    "adless=${INPUT_ADLESS}" \
+    "css-links=${css_links}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
     "js=$(cat "${SELF}/target/js/main.js")"
-    html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
+html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
 echo "HTML generated at: ${html}"
+
+svg=${INPUT_OUTPUT}/${name}.rich.xml
+java -jar "${SELF}/target/saxon.jar" \
+    "-s:${svg}" \
+    "-xsl:${SELF}/target/xsl/badge.xsl" \
+    "-o:${INPUT_OUTPUT}/${name}-badge.svg" \
+    "today=${INPUT_TODAY}"
+echo "SVG badge generated at: ${svg}"
+
 rm "${INPUT_OUTPUT}/${name}.rich.xml"

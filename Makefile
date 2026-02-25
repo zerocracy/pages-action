@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
@@ -20,7 +20,7 @@ SAXON = target/saxon.jar
 
 export
 
-all: assets $(HTMLS) rake entry rmi verify entries
+all: assets rake entry rmi verify entries
 
 assets: $(XSLS) $(JS) $(CSS)
 
@@ -32,7 +32,9 @@ target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS) $(SAXON) 
 	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
+	export INPUT_ADLESS=false
 	export INPUT_COLUMNS=what,when,who
+	export INPUT_HIGHLIGHTED=stale,tombstone
 	export INPUT_HIDDEN=_id,_time,_version
 	export INPUT_TODAY='2024-07-05T00:00:00Z'
 	fb=$$(basename $<)
@@ -49,23 +51,20 @@ target/html/%.html: target/output/%
 	while IFS= read -r xpath; do
 		xmllint --xpath "$${xpath}" "$$(dirname "$<")/$${n}/$${n}-vitals.html" > /dev/null
 	done <<< "$${xpaths}"
-	result=0
-	tidy -e "$$(dirname "$@")/$${n}.html" || result=$?
-	if [ "$${result}" -eq "2" ]; then
-		echo "$$(dirname "$@")/$${n}.html has errors"
-		exit 1
-	fi
-	tidy -e "$$(dirname "$@")/$${n}-vitals.html" || result=$?
-	if [ "$${result}" -eq "2" ]; then
-		echo "$$(dirname "$@")/$${n}-vitals.html has errors"
-		exit 1
-	fi
+	for f in $${n} $${n}-vitals; do
+		result=0
+		tidy -e "$$(dirname "$@")/$${f}.html" || result=$$?
+		if [ "$${result}" -eq 2 ]; then
+			echo "$$(dirname "$@")/$${f}.html has errors"
+			exit 1
+		fi
+	done
 
 target/fb/%.fb: tests/%.yml Makefile | target/fb
 	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
 	$(JUDGES) import "$<" "$@"
 
-rake: $(SAXON)
+rake: $(SAXON) $(HTMLS)
 	bundle exec rake
 
 node_modules/.bin/stylelint:
@@ -75,7 +74,7 @@ stylelint: node_modules/.bin/stylelint
 	./node_modules/.bin/stylelint stylelint sass/*.scss --fix
 
 $(CSS): sass/*.scss stylelint Makefile | target/css
-	sass --no-source-map --style=compressed --no-quiet --stop-on-error sass/main.scss "$@"
+	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
 	eslint js/*.js

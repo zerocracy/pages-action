@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 ---
 -
@@ -9,10 +9,17 @@
     //a[.="@torvalds"]
     //span[@class="darkgreen" and .="+14"]
     //span[.="129"]
+    //div[@class="assessment"]/h2[.="Assessment"]
+    //div[@class="assessment"]/p
+    //div[@class="repositories"]/h2[starts-with(., "Repositories where")]
+    //div[@class="repositories"]/ul/li/a[.="yegor256/factbase"]
+    //div[@class="repositories"]/ul/li/a[.="yegor256/judges"]
 -
   _id: 1
   what: pmp
   area: hr
+  tombstone: 2026-01-04T18:00:00.000Z
+  stale: 'branch'
   days_of_running_balance: 30
   some_policy: '(award (let x 25) (give x "when you deserve it"))'
   second_policy: >
@@ -42,6 +49,8 @@
   where: github
   is_human: 1
   why: for important issue reported
+  repository: 777
+  repository_name: yegor256/factbase
 -
   _id: 3
   when: 2024-06-16T22:22:22.8492Z
@@ -50,6 +59,8 @@
   where: github
   is_human: 1
   why: for fun
+  repository: 888
+  repository_name: yegor256/judges
 -
   _id: 4
   when: 2024-07-05T22:22:22.8492Z
@@ -59,6 +70,7 @@
   is_human: 1
   why: for being a good boy
   href: https://github.com/yegor256/judges/issues/111
+  repository: 111
 -
   _id: 5
   when: 2024-07-04T22:22:22.8492Z
@@ -68,6 +80,7 @@
   is_human: 1
   why: for being a great programmer
   href: https://github.com/yegor256/judges/issues/111
+  repository: 111
 -
   _id: 6
   when: 2024-07-03T22:22:22.8492Z
@@ -77,6 +90,7 @@
   is_human: 1
   why: for being a bad boy
   href: https://github.com/yegor256/judges/issues/111
+  repository: 111
 -
   _id: 7
   when: 2024-07-02T22:22:22.8492Z
@@ -86,6 +100,7 @@
   is_human: 1
   why: for new release
   href: https://github.com/yegor256/judges/issues/111
+  repository: 111
 -
   _id: 8
   when: 2024-07-03T22:22:22.8492Z
@@ -160,7 +175,7 @@
   _id: 17
   start: 2024-04-17T22:22:22.8492Z
   when: 2024-05-17T22:22:22.8492Z
-  what: earned-value-prev
+  what: earned-value
   ac: 433
   ev: 4373.5
   pv: 7484.2
@@ -168,7 +183,7 @@
   _id: 18
   start: 2024-03-17T22:22:22.8492Z
   when: 2024-05-17T22:22:22.8492Z
-  what: earned-value-prev
+  what: earned-value
   ac: 654
   ev: 5373.5
   pv: 8484.2
@@ -194,3 +209,9 @@
   who: 526301
   name: yegor256
   where: github
+-
+  _id: 24
+  what: assessment
+  text: |
+    The project shows steady progress with consistent contributions.
+    Code quality metrics are within acceptable ranges.

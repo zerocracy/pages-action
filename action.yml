@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: Copyright (c) 2024-2025 Zerocracy
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 ---
 name: 'pages-action'
@@ -19,13 +19,22 @@ inputs:
     default: 'pages'
   factbase:
     description: 'Path of the factbase file'
-    default: 'default.fb'
+    required: false
   logo:
     description: 'URL of the logo to put on the HTML page'
-    default: 'https://www.zerocracy.com/svg/logo.svg'
+    default: ''
+  palette:
+    description: 'Palette name (e.g. classic, dark, mild)'
+    default: 'classic'
+  adless:
+    description: 'Hide all Zerocracy links, banners, and logos'
+    default: false
   columns:
     description: 'Comma-separated list of columns to print in the HTML'
     default: 'when,what,repository'
+  highlighted:
+    description: 'Comma-separated list of columns to highlight'
+    default: 'stale,tombstone'
   hidden:
     description: 'Comma-separated list of properties to hide'
     default: '_id,_time,_version'
@@ -36,3 +45,15 @@ inputs:
     description: 'Authentication GitHub access token'
     required: false
     default: ${{ github.token }}
+  timeout:
+    description: 'The number of minutes to spend on each judge'
+    required: false
+    default: 3
+  lifetime:
+    description: 'The number of minutes to spend on the entire lifetime'
+    required: false
+    default: 5
+  url:
+    description: 'The URL where the static files will be visible'
+    required: false
+    default: ''
