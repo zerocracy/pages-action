@@ -230,7 +230,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "adless=${INPUT_ADLESS}" \
     "css-links=${css_links}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
-    "js=$(cat "${SELF}/target/js/main.js")"
+    "js=$(cat "${SELF}/${INPUT_JS_FILE:-target/js/main.js}")"
 html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
 echo "HTML generated at: ${html}"
 
