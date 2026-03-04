@@ -236,7 +236,8 @@
   where: github
   repository: 777
   repository_name: yegor256/test
-  description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod'
+  description: >-
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
   stars: 1
   forks: 0
   language: Ruby
