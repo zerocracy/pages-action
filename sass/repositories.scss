@@ -4,8 +4,65 @@
  */
 
 .repositories {
-  ul {
-    list-style-type: none;
-    margin-left: 0;
+  .repositories-grid {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .repo-row {
+    display: contents;
+  }
+
+  .repo-main,
+  .repo-details {
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+    overflow: hidden;
+  }
+
+  .repo-main {
+    padding-left: 0.3em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .repo-details {
+    padding-left: 1em;
+    padding-right: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15em;
+  }
+
+  .repo-row:nth-child(even) .repo-main,
+  .repo-row:nth-child(even) .repo-details {
+    background-color: rgb(128 128 128 / 6%);
+  }
+
+  .repo-desc {
+    color: #000;
+    overflow: hidden;
+    max-height: 4rem;
+    white-space: normal;
+  }
+
+  .repo-stats {
+    font-size: 0.85em;
+    opacity: 0.75;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .repositories-grid {
+      display: block;
+    }
+
+    .repo-row {
+      display: block;
+    }
   }
 }

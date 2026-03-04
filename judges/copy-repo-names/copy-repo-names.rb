@@ -6,13 +6,22 @@
 require 'fbe/fb'
 require 'fbe/octo'
 
-facts = Fbe.fb.query('(and (exists repository) (not (exists repository_name)))').each.to_a
-return if facts.empty?
+known = Fbe.fb.query('(eq what "repo-details")').each.filter_map(&:repository).to_a
+ids = Fbe.fb.query('(exists repository)').each.map(&:repository).uniq - known
+return if ids.empty?
 
-names = facts.map(&:repository).uniq.to_h { |id| [id, Fbe.octo.repo_name_by_id(id)] }
+repos = ids.to_h { |id| [id, Fbe.octo.repository(id)] }
 
-facts.each do |f|
-  n = names[f.repository]
-  next if n.nil?
-  f.repository_name = n
+repos.each do |id, json|
+  d = Fbe.fb.insert
+  d.what = 'repo-details'
+  d.where = 'github'
+  d.repository = id
+  d.repository_name = json[:full_name]
+  d.description = json[:description].to_s
+  d.stars = json[:stargazers_count]
+  d.forks = json[:forks_count]
+  d.language = json[:language].to_s
+  d.open_issues = json[:open_issues_count]
+  d.updated_at = json[:updated_at]
 end
