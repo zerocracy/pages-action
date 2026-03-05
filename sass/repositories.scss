@@ -2,6 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
  * SPDX-License-Identifier: MIT
  */
+$highlight: #f5f5f5;
 
 .repositories {
   .repositories-grid {
@@ -38,7 +39,7 @@
 
   .repo-row:nth-child(even) .repo-main,
   .repo-row:nth-child(even) .repo-details {
-    background-color: rgb(128 128 128 / 6%);
+    background-color: $highlight;
   }
 
   .repo-desc {
@@ -63,6 +64,10 @@
 
     .repo-row {
       display: block;
+
+      .repo-details {
+        padding-top: 0;
+      }
     }
   }
 }
