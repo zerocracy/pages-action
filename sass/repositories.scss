@@ -2,70 +2,33 @@
  * SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
  * SPDX-License-Identifier: MIT
  */
-$highlight: #f5f5f5;
 
 .repositories {
-  .repositories-grid {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr);
-    max-width: 100%;
-    overflow: hidden;
-  }
-
-  .repo-row {
-    display: contents;
-  }
-
-  .repo-main,
-  .repo-details {
-    padding-top: 0.3em;
-    padding-bottom: 0.3em;
-    overflow: hidden;
-  }
-
-  .repo-main {
-    padding-left: 0.3em;
+  td {
     text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .repo-details {
-    padding-left: 1em;
-    padding-right: 1em;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15em;
-  }
-
-  .repo-row:nth-child(even) .repo-main,
-  .repo-row:nth-child(even) .repo-details {
-    background-color: $highlight;
   }
 
   .repo-desc {
-    color: #000;
+    display: block;
     overflow: hidden;
     max-height: 4rem;
-    white-space: normal;
   }
 
   .repo-stats {
-    font-size: 0.85em;
-    opacity: 0.75;
+    display: block;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   @media (max-width: 768px) {
-    .repositories-grid {
+    .repositories-table {
       display: block;
     }
 
-    .repo-row {
+    tr.repo-row {
       display: block;
 
-      .repo-details {
+      td.repo-details {
         padding-top: 0;
       }
     }
