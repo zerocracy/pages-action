@@ -15,8 +15,7 @@
     //div[@class="assessment"]/p[@class="darkred"]
     //div[@class="assessment"]/p[.="3 assessments on factbase were found"]
     //div[@class="repositories"]/h2[starts-with(., "Repositories where")]
-    //div[@class="repositories"]/ul/li/a[.="yegor256/factbase"]
-    //div[@class="repositories"]/ul/li/a[.="yegor256/judges"]
+    //div[@class="repositories"]//a[.="yegor256/test"]
 -
   _id: 1
   what: pmp
@@ -53,7 +52,6 @@
   is_human: 1
   why: for important issue reported
   repository: 777
-  repository_name: yegor256/factbase
 -
   _id: 3
   when: 2024-06-16T22:22:22.8492Z
@@ -63,7 +61,6 @@
   is_human: 1
   why: for fun
   repository: 888
-  repository_name: yegor256/judges
 -
   _id: 4
   when: 2024-07-05T22:22:22.8492Z
@@ -233,3 +230,16 @@
   text: |
     Initial assessment: project structure looks promising.
     Onboarding of contributors is in progress.
+-
+  _id: 27
+  what: repo-details
+  where: github
+  repository: 777
+  repository_name: yegor256/test
+  description: >-
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+  stars: 1
+  forks: 0
+  language: Ruby
+  open_issues: 0
+  updated_at: 2024-07-01T00:00:00Z

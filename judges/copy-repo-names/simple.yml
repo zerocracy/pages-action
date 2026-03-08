@@ -17,5 +17,6 @@ input:
     repository: 67890
     where: github
 expected:
-  - /fb/f[repository='12345' and repository_name='yegor256/test']
-  - /fb/f[repository='67890' and repository_name='yegor256/test']
+  - /fb/f[what='repo-details' and repository='12345']
+  - /fb/f[what='repo-details' and repository='67890']
+  - /fb/f[what='repo-details' and repository_name='yegor256/test']
