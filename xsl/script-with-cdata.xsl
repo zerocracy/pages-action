@@ -11,9 +11,9 @@
   <xsl:template name="script-with-cdata">
     <xsl:param name="content"/>
     <script type="text/javascript">
-      <xsl:text disable-output-escaping="yes">&lt;![CDATA[</xsl:text>
+      <xsl:text disable-output-escaping="yes">//&lt;![CDATA[&#10;</xsl:text>
       <xsl:value-of select="$content" disable-output-escaping="yes"/>
-      <xsl:text disable-output-escaping="yes">]]&gt;</xsl:text>
+      <xsl:text disable-output-escaping="yes">&#10;//]]&gt;</xsl:text>
     </script>
   </xsl:template>
 </xsl:stylesheet>
