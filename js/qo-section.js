@@ -20,6 +20,15 @@ function qo_render(canvas, data) {
         legend: {
           position: 'right'
         }
+      },
+      scales: {
+        x: {
+          ticks: {
+            maxRotation: 45,
+            autoSkip: true,
+            maxTicksLimit: 12
+          }
+        }
       }
     }
   });
