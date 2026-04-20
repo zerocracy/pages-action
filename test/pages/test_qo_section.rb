@@ -81,4 +81,41 @@ class TestQoSection < Minitest::Test
     )
     assert_equal('2024-W52', xml.xpath('//r/text()').to_s.strip)
   end
+
+  def test_inline_js_syntax_in_generated_html
+    skip('node is not installed') unless system('which node > /dev/null 2>&1')
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      "</xsl:call-template></r>",
+      '<fb>
+        <f>
+          <when>2024-07-03T22:22:22Z</when>
+          <what>quality-of-service</what>
+          <n_composite>0.5</n_composite>
+          <n_average_issue_lifetime>-0.3</n_average_issue_lifetime>
+        </f>
+        <f>
+          <when>2024-06-23T22:22:22Z</when>
+          <what>quality-of-service</what>
+          <n_composite>0.8</n_composite>
+          <n_average_issue_lifetime>0.1</n_average_issue_lifetime>
+        </f>
+      </fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    scripts = xml.xpath('//script[not(@src)]')
+    refute_empty(scripts, 'Expected inline scripts to be generated')
+    scripts.each_with_index do |script, idx|
+      js = script.content.strip
+      next if js.empty?
+      Dir.mktmpdir do |dir|
+        file = File.join(dir, "test_#{idx}.js")
+        File.write(file, js)
+        output = `node --check #{Shellwords.escape(file)} 2>&1`
+        assert($?.success?, "JS syntax error in script ##{idx}: #{output}\nContent: #{js}")
+      end
+    end
+  end
 end
