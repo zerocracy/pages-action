@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
+require 'English'
 require_relative '../test__helper'
 
 # Test.
@@ -83,7 +84,6 @@ class TestQoSection < Minitest::Test
   end
 
   def test_inline_js_syntax_in_generated_html
-    skip('node is not installed') unless system('which node > /dev/null 2>&1')
     xml = xslt(
       "<r><xsl:call-template name='qo-section'>" \
       "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
@@ -105,16 +105,14 @@ class TestQoSection < Minitest::Test
       </fb>',
       'today' => '2024-09-26T04:04:04Z'
     )
-    scripts = xml.xpath('//script[not(@src)]')
-    refute_empty(scripts, 'Expected inline scripts to be generated')
-    scripts.each_with_index do |script, idx|
-      js = script.content.strip
-      next if js.empty?
+    scripts = xml.xpath('//script[not(@src)]').map { |s| s.content.strip }.reject(&:empty?)
+    refute_empty(scripts, 'Expected non-empty inline scripts to be generated')
+    scripts.each_with_index do |js, idx|
       Dir.mktmpdir do |dir|
         file = File.join(dir, "test_#{idx}.js")
         File.write(file, js)
-        output = `node --check #{Shellwords.escape(file)} 2>&1`
-        assert($?.success?, "JS syntax error in script ##{idx}: #{output}\nContent: #{js}")
+        `node --check #{Shellwords.escape(file)} 2>&1`
+        assert_predicate($CHILD_STATUS, :success?, "JS syntax error in script ##{idx}: #{$CHILD_STATUS}\nContent: #{js}")
       end
     end
   end
