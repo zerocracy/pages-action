@@ -88,7 +88,7 @@ class TestQoSection < Minitest::Test
       "<r><xsl:call-template name='qo-section'>" \
       "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
       "<xsl:with-param name='title' select=\"'QoS'\"/>" \
-      "</xsl:call-template></r>",
+      '</xsl:call-template></r>',
       '<fb>
         <f>
           <when>2024-07-03T22:22:22Z</when>
@@ -111,8 +111,11 @@ class TestQoSection < Minitest::Test
       Dir.mktmpdir do |dir|
         file = File.join(dir, "test_#{idx}.js")
         File.write(file, js)
-        `node --check #{Shellwords.escape(file)} 2>&1`
-        assert_predicate($CHILD_STATUS, :success?, "JS syntax error in script ##{idx}: #{$CHILD_STATUS}\nContent: #{js}")
+        output = `node --check #{Shellwords.escape(file)} 2>&1`
+        assert_predicate(
+          $CHILD_STATUS, :success?,
+          "JS syntax error in script ##{idx}: #{$CHILD_STATUS}\n#{output}\nContent: #{js}"
+        )
       end
     end
   end
