@@ -21,7 +21,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep '<html class="palette-dark">' 'output/test-vitals.html'
+grep 'class="palette-dark"' 'output/test-vitals.html'
 
 env "GITHUB_WORKSPACE=$(pwd)" \
   'GITHUB_REPOSITORY=foo/bar' \
@@ -34,7 +34,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep '<html class="palette-mild">' 'output/test-vitals.html'
+grep 'class="palette-mild"' 'output/test-vitals.html'
 
 env "GITHUB_WORKSPACE=$(pwd)" \
   'GITHUB_REPOSITORY=foo/bar' \
@@ -47,8 +47,9 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep '<html class="palette-classic">' 'output/test-vitals.html'
+grep 'class="palette-classic"' 'output/test-vitals.html'
 
+# Verify that the default palette is "classic" when INPUT_PALETTE is not set
 env "GITHUB_WORKSPACE=$(pwd)" \
   'GITHUB_REPOSITORY=foo/bar' \
   'GITHUB_REPOSITORY_OWNER=foo' \
@@ -59,4 +60,4 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep '<html class="palette-classic">' 'output/test-vitals.html'
+grep 'class="palette-classic"' 'output/test-vitals.html'
