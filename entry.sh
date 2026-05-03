@@ -215,6 +215,30 @@ for css in "${css_urls[@]}"; do
 done
 css_links="${css_links%$'\n'}"
 
+echo "Calculating integrity hashes for JS files..."
+declare -a js_urls=(
+    "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js"
+    "https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
+    "https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"
+)
+js_links=""
+for js in "${js_urls[@]}"; do
+    echo "Calculating hash for: ${js}"
+    content=$(curl -sSf --max-time 30 "$js") || {
+        echo "ERROR: Failed to fetch JS from: ${js}" >&2
+        exit 1
+    }
+    hash=$(printf "%s" "$content" | openssl dgst -sha384 -binary | openssl base64 -A)
+    if [ -z "$hash" ]; then
+        echo "ERROR: Failed to calculate hash for: ${js}" >&2
+        exit 1
+    fi
+    echo "Hash: ${hash}"
+    js_links="${js_links}${js}|${hash}"$'\n'
+done
+js_links="${js_links%$'\n'}"
+
 java -jar "${SELF}/target/saxon.jar" \
     "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/vitals.xsl" \
@@ -229,6 +253,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "url=${url}" \
     "adless=${INPUT_ADLESS}" \
     "css-links=${css_links}" \
+    "js-links=${js_links}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
     "js=$(cat "${SELF}/${INPUT_JS_FILE:-target/js/main.js}")"
 html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"

@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'factbase', '~>0.17'
 gem 'fbe', '~>0.41'
