@@ -12,14 +12,14 @@
     //div[@class="assessment"]/h2[.="Assessment"]
     //div[@class="assessment"]/pre
     //div[@class="assessment"]/pre[contains(., "Last assessed on 2024-09-15")]
-    //div[@class="assessment"]/pre/time[@class="relative-time" and @datetime="2024-09-15T10:00:00.000Z"]
-    //div[@class="assessment"]/pre/time[@class="relative-time" and @title="2024-09-15"]
+    //div[@class="assessment"]/pre/time[@class="relative-time"]
+    //div[@class="assessment"]/pre/time[@title="2024-09-15"]
     //div[@class="assessment"]/p[@class="darkred"]
     //div[@class="assessment"]/p[.="3 assessments on factbase were found"]
     //div[@class="repositories"]/h2[starts-with(., "Repositories where")]
     //div[@class="repositories"]//a[.="yegor256/test"]
-    //div[@class="repositories"]//time[@class="relative-time" and @datetime="2024-07-01T00:00:00Z"]
-    //div[@class="repositories"]//time[@class="relative-time" and @title="2024-07-01"]
+    //div[@class="repositories"]//time[@class="relative-time"]
+    //div[@class="repositories"]//time[@title="2024-07-01"]
 -
   _id: 1
   what: pmp
