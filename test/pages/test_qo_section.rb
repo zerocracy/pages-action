@@ -25,4 +25,60 @@ class TestQoSection < Minitest::Test
     )
     assert_equal('Average Issue Lifetime', xml.xpath('//r/text()').to_s.strip)
   end
+
+  def test_iso_week_regular
+    xml = xslt(
+      '<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2024-07-15T00:00:00Z\'))"/></r>',
+      '<fb/>'
+    )
+    assert_equal('2024-W29', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_year_boundary_dec31
+    xml = xslt(
+      '<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2023-12-31T00:00:00Z\'))"/></r>',
+      '<fb/>'
+    )
+    assert_equal('2023-W52', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_jan1
+    xml = xslt(
+      '<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2024-01-01T00:00:00Z\'))"/></r>',
+      '<fb/>'
+    )
+    assert_equal('2024-W01', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_dec25
+    xml = xslt(
+      '<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2023-12-25T00:00:00Z\'))"/></r>',
+      '<fb/>'
+    )
+    assert_equal('2023-W52', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_friday
+    xml = xslt(
+      '<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2023-12-29T00:00:00Z\'))"/></r>',
+      '<fb/>'
+    )
+    assert_equal('2023-W52', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_saturday
+    xml = xslt(
+      '<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2023-12-30T00:00:00Z\'))"/></r>',
+      '<fb/>'
+    )
+    assert_equal('2023-W52', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_sunday_dec31_two_thousand_twenty_four
+    xml = xslt(
+      '<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2024-12-29T00:00:00Z\'))"/></r>',
+      '<fb/>'
+    )
+    assert_equal('2024-W52', xml.xpath('//r/text()').to_s.strip)
+  end
 end
