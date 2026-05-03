@@ -153,6 +153,7 @@ class TestVitals < Minitest::Test
           fbe=0.0.50
           adless=false
           css-links=
+          js-links=
           css=body{}
           js=
         ].map { |p| Shellwords.escape(p) },
