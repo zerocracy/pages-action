@@ -10,7 +10,7 @@
   -->
   <xsl:template name="script-with-cdata">
     <xsl:param name="content"/>
-    <script type="text/javascript">
+    <script>
       <xsl:text disable-output-escaping="yes">//&lt;![CDATA[&#10;</xsl:text>
       <xsl:value-of select="$content" disable-output-escaping="yes"/>
       <xsl:text disable-output-escaping="yes">&#10;//]]&gt;</xsl:text>

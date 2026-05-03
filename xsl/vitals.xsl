@@ -94,7 +94,7 @@
   </xsl:function>
   <xsl:template name="javascript">
     <xsl:param name="url"/>
-    <script type="text/javascript" src="{$url}">
+    <script src="{$url}">
       <xsl:text> </xsl:text>
     </script>
   </xsl:template>
@@ -118,7 +118,7 @@
   </xsl:template>
   <xsl:template match="/">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
-    <html>
+    <html lang="en">
       <xsl:attribute name="class">
           <xsl:value-of select="concat('palette-', $palette)"/>
       </xsl:attribute>
