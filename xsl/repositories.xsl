@@ -35,7 +35,15 @@
               <xsl:text> open issues</xsl:text>
               <xsl:if test="updated_at != ''">
                 <xsl:text> · updated </xsl:text>
-                <xsl:value-of select="substring(updated_at, 1, 10)"/>
+                <time class="relative-time">
+                  <xsl:attribute name="datetime">
+                    <xsl:value-of select="updated_at"/>
+                  </xsl:attribute>
+                  <xsl:attribute name="title">
+                    <xsl:value-of select="substring(updated_at, 1, 10)"/>
+                  </xsl:attribute>
+                  <xsl:value-of select="substring(updated_at, 1, 10)"/>
+                </time>
               </xsl:if>
               <xsl:text> ]</xsl:text>
             </li>
