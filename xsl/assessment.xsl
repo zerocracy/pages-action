@@ -14,8 +14,11 @@
       </h2>
       <pre>
         <xsl:value-of select="text"/>
-        <xsl:text>Last assessed on </xsl:text>
-        <xsl:value-of select="xs:date(xs:dateTime(when))"/>
+        <xsl:text>Last assessed </xsl:text>
+        <time class="relative-time" datetime="{when}" title="{when}">
+          <xsl:text>on </xsl:text>
+          <xsl:value-of select="xs:date(xs:dateTime(when))"/>
+        </time>
       </pre>
       <xsl:if test="total &gt; 1">
         <p class="darkred">

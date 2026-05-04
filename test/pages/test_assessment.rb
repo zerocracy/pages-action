@@ -27,13 +27,12 @@ class TestAssessment < Minitest::Test
     times = xml.xpath('//*[local-name()="time" and @class="relative-time"]')
     refute_empty(
       times,
-      "Expected a <time class=\"relative-time\"> element so js/outdated.js can " \
-      "convert the assessment date to a human-readable relative time, but " \
-      "got: #{xml}"
+      'Expected a <time class="relative-time"> element so js/outdated.js can ' \
+      "convert the assessment date to a human-readable relative time, but got: #{xml}"
     )
     assert(
       times.any? { |t| t['datetime']&.start_with?('2024-07-05') },
-      "Expected the relative-time element to carry the assessment date in its " \
+      'Expected the relative-time element to carry the assessment date in its ' \
       "datetime attribute, got: #{times.map { |t| t['datetime'] }.inspect}"
     )
   end
