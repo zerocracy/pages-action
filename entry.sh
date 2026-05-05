@@ -70,6 +70,10 @@ if [ -z "${INPUT_FACTBASE}" ]; then
     echo "Auto-detected factbase: ${INPUT_FACTBASE}"
 else
     echo "Using provided factbase: ${INPUT_FACTBASE}"
+    if [ ! -f "${INPUT_FACTBASE}" ]; then
+        echo "ERROR: The factbase file '${INPUT_FACTBASE}' does not exist."
+        exit 1
+    fi
 fi
 
 declare -a gopts=()
