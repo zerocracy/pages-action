@@ -19,6 +19,16 @@ function qo_render(canvas, data) {
       plugins: {
         legend: {
           position: 'right'
+        },
+        tooltip: {
+          callbacks: {
+            title: function(items) {
+              if (data.fullDates) {
+                return data.fullDates[items[0].dataIndex];
+              }
+              return items[0].label;
+            }
+          }
         }
       },
       scales: {
