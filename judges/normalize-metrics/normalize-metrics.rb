@@ -36,10 +36,10 @@ end
   facts.each do |f|
     f.all_properties.each do |prop|
       next unless fits?(prop)
+      next if start[prop].zero?
       v = f[prop].first
       s = start[prop]
-      diff = v - s
-      diff /= start[prop] unless start[prop].zero?
+      diff = (v - s).to_f / start[prop]
       n = "n_#{prop}"
       next if f[n]
       f.send(:"#{n}=", diff)
