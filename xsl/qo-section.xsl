@@ -69,6 +69,16 @@
             <xsl:value-of select="format-date(xs:date(xs:dateTime(when)), '[M1]/[D1]')"/>
             <xsl:text>'</xsl:text>
           </xsl:for-each>
+          <xsl:text>],fullDates:[</xsl:text>
+          <xsl:for-each select="$facts/f">
+            <xsl:sort select="when" data-type="text" order="ascending"/>
+            <xsl:if test="position() &gt; 1">
+              <xsl:text>,</xsl:text>
+            </xsl:if>
+            <xsl:text>'</xsl:text>
+            <xsl:value-of select="format-date(xs:date(xs:dateTime(when)), '[D1] [MN,*-3] [Y]')"/>
+            <xsl:text>'</xsl:text>
+          </xsl:for-each>
           <xsl:text>],</xsl:text>
           <xsl:text>datasets:[</xsl:text>
           <xsl:for-each select="distinct-values($facts/f/*[starts-with(name(), 'n_')]/name())">
