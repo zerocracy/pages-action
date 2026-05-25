@@ -5,12 +5,12 @@
 
 require 'fbe/fb'
 
-return unless Fbe.fb.query('(eq what "latest-assessment")').each.to_a.empty?
-
 assessments = Fbe.fb.query('(and (eq what "assessment") (exists text) (exists when))').each.to_a
 return if assessments.empty?
 
 latest = assessments.max_by(&:when)
+
+Fbe.fb.query('(eq what "latest-assessment")').delete!
 
 f = Fbe.fb.insert
 f.what = 'latest-assessment'

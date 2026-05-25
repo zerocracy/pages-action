@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: latest-assessment
+    when: 2024-07-01T08:00:00.000Z
+    text: Stale assessment.
+    total: 1
+  -
+    what: assessment
+    when: 2024-07-01T08:00:00.000Z
+    text: Older assessment.
+  -
+    what: assessment
+    when: 2024-10-01T10:00:00.000Z
+    text: Refreshed assessment.
+expected:
+  - /fb[count(f)=3]
+  - /fb/f[what='latest-assessment' and total=2]
+  - /fb/f[what='latest-assessment' and text='Refreshed assessment.']
