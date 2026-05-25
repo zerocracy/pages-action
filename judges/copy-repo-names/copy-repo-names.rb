@@ -10,7 +10,16 @@ known = Fbe.fb.query('(eq what "repo-details")').each.filter_map(&:repository).t
 ids = Fbe.fb.query('(exists repository)').each.map(&:repository).uniq - known
 return if ids.empty?
 
-repos = ids.to_h { |id| [id, Fbe.octo.repository(id)] }
+repos =
+  ids.filter_map do |id|
+    [id, Fbe.octo.repository(id)]
+  rescue Octokit::NotFound, Octokit::Deprecated => e
+    $loog.warn("GitHub repository ##{id} is absent: #{e.class}: #{e.message}")
+    nil
+  rescue Octokit::Unauthorized, Octokit::Forbidden => e
+    $loog.warn("GitHub repository ##{id} is not accessible: #{e.class}: #{e.message}")
+    nil
+  end.to_h
 
 repos.each do |id, json|
   d = Fbe.fb.insert
