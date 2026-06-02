@@ -77,7 +77,7 @@ else
 fi
 
 declare -a gopts=()
-if [ -n "${INPUT_VERBOSE}" ]; then
+if [ "${INPUT_VERBOSE}" == 'true' ]; then
     gopts+=("--verbose")
     export GLI_DEBUG=true
 else
