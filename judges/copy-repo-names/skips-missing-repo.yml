@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+options:
+  testing: true
+input:
+  -
+    what: award
+    repository: 12345
+    where: github
+  -
+    what: award
+    repository: 404123
+    where: github
+expected:
+  - /fb/f[what='repo-details' and repository='12345']
+  - /fb[count(f[what='repo-details' and repository='404123'])=0]
