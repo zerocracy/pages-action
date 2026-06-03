@@ -3,15 +3,11 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
+require 'loog'
 require 'nokogiri'
 require 'qbash'
-require 'loog'
 require_relative '../test__helper'
 
-# Test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2024 Yegor Bugayenko
-# License:: MIT
 class TestAwards < Minitest::Test
   def test_fn_payables
     xml = xslt(
@@ -173,10 +169,7 @@ class TestAwards < Minitest::Test
       0 => ['lightgray', '&#x2014;'],
       -7 => ['darkred', '-7']
     }.each do |k, v|
-      xml = xslt(
-        "<xsl:copy-of select='z:award(#{k})'/>",
-        '<fb/>'
-      )
+      xml = xslt("<xsl:copy-of select='z:award(#{k})'/>", '<fb/>')
       assert_equal(v[0], xml.xpath('/span/@class').to_s, xml)
       assert_equal(v[1], xml.xpath('/span/text()').to_s, xml)
     end

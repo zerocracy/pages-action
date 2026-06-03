@@ -3,16 +3,12 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
-require 'online'
 require 'nokogiri'
+require 'online'
 require 'w3c_validators'
 require 'webmock/minitest'
 require_relative '../test__helper'
 
-# Test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2024 Yegor Bugayenko
-# License:: MIT
 class TestVitals < Minitest::Test
   def test_validate_html_via_w3c
     WebMock.enable_net_connect!
@@ -36,10 +32,7 @@ class TestVitals < Minitest::Test
       0 => ['darkgreen', '+0.00'],
       -1 => ['darkred', '-1.00']
     }.each do |k, v|
-      xml = xslt(
-        "<xsl:copy-of select='z:index(#{k})'/>",
-        '<fb/>'
-      )
+      xml = xslt("<xsl:copy-of select='z:index(#{k})'/>", '<fb/>')
       assert_equal(v[0], xml.xpath('/span/@class').to_s, xml)
       assert_equal(v[1], xml.xpath('/span/text()').to_s, xml)
     end
@@ -73,10 +66,7 @@ class TestVitals < Minitest::Test
       -7.8 => ['0.00', '-7.80'],
       10.6 => ['0.00', '+10.60']
     }.each do |value, (format, expected)|
-      xml = xslt(
-        "<r><xsl:value-of select=\"z:format-signed(#{value}, '#{format}')\"/></r>",
-        '<fb/>'
-      )
+      xml = xslt("<r><xsl:value-of select=\"z:format-signed(#{value}, '#{format}')\"/></r>", '<fb/>')
       assert_equal(expected, xml.xpath('/r/text()').to_s, "Failed for value #{value} with format #{format}: #{xml}")
     end
   end
@@ -84,17 +74,14 @@ class TestVitals < Minitest::Test
   def test_fn_format_signed_invalid_formats
     ['0', '0.000', '0.0000', 'invalid'].each do |invalid_format|
       assert_raises(RuntimeError) do
-        xslt(
-          "<r><xsl:value-of select=\"z:format-signed(1.0, '#{invalid_format}')\"/></r>",
-          '<fb/>'
-        )
+        xslt("<r><xsl:value-of select=\"z:format-signed(1.0, '#{invalid_format}')\"/></r>", '<fb/>')
       end
     end
   end
 
   def test_bylaws_responsive_columns_in_css
     f = File.join(__dir__, '../../target/css/main.css')
-    skip "File not found:  #{f}" unless File.exist?(f)
+    skip("File not found:  #{f}") unless File.exist?(f)
     css = File.read(f).gsub(/\s+/, '')
     assert_includes(css, '.bylaws.columns{column-count:5}', 'Desktop layout broken')
     assert_includes(css, '@media(max-width:1280px){.bylaws.columns{column-count:2}}', 'Tablet layout broken')

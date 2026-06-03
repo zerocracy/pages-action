@@ -14,17 +14,14 @@ end
 
 %w[quantity-of-deliverables quality-of-service].each do |qo|
   facts = Fbe.fb.query("(eq what '#{qo}')").each.to_a
-
   facts.sort_by!(&:when)
   next if facts.empty?
-
   start = {}
   first = facts.first
   first.all_properties.each do |prop|
     next unless fits?(prop)
     start[prop] = first[prop].first.to_f
   end
-
   facts.drop(1).each do |f|
     f.all_properties.each do |prop|
       next unless fits?(prop)
@@ -32,7 +29,6 @@ end
       start[prop] = v if start[prop].nil?
     end
   end
-
   facts.each do |f|
     f.all_properties.each do |prop|
       next unless fits?(prop)

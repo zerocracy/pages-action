@@ -3,8 +3,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
-require 'fbe/fb'
 require 'fbe/award'
+require 'fbe/fb'
 require 'redcarpet'
 
 return unless Fbe.fb.query('(eq what "bylaws")').each.to_a.empty?

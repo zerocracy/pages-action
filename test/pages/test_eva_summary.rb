@@ -5,10 +5,6 @@
 
 require_relative '../test__helper'
 
-# Test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2024 Yegor Bugayenko
-# License:: MIT
 class TestEvaSummary < Minitest::Test
   def test_template_long
     xml = xslt(

@@ -6,10 +6,6 @@
 require 'nokogiri'
 require_relative '../test__helper'
 
-# Test.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2024 Yegor Bugayenko
-# License:: MIT
 class TestBadge < Minitest::Test
   def test_validate_svg
     WebMock.enable_net_connect!
@@ -23,7 +19,7 @@ class TestBadge < Minitest::Test
           c.strict
         end
       rescue StandardError => e
-        raise "#{svg}\n\n#{e}"
+        raise("#{svg}\n\n#{e}")
       end
     assert_empty(xml.errors, svg)
     refute_empty(xml.xpath('/svg'), svg)

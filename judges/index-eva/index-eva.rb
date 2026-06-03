@@ -5,7 +5,8 @@
 
 require 'fbe/fb'
 
-Fbe.fb.query("
+Fbe.fb.query(
+  "
   (and
     (eq what 'earned-value')
     (exists when)
@@ -17,7 +18,8 @@ Fbe.fb.query("
     (exists ev)
     (absent n_cpi)
     (absent n_spi))
-  ").each do |f|
+  "
+).each do |f|
   f.n_cpi = f.ev / f.ac
   f.n_spi = f.ev / f.pv
 end
