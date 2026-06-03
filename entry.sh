@@ -239,11 +239,11 @@ java -jar "${SELF}/target/saxon.jar" \
 html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
 echo "HTML generated at: ${html}"
 
-svg=${INPUT_OUTPUT}/${name}.rich.xml
+svg=${INPUT_OUTPUT}/${name}-badge.svg
 java -jar "${SELF}/target/saxon.jar" \
-    "-s:${svg}" \
+    "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/badge.xsl" \
-    "-o:${INPUT_OUTPUT}/${name}-badge.svg" \
+    "-o:${svg}" \
     "today=${INPUT_TODAY}"
 echo "SVG badge generated at: ${svg}"
 
