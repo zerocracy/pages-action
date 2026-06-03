@@ -137,14 +137,14 @@ fi
 
 timeout=${INPUT_TIMEOUT}
 if [ -z "${timeout}" ]; then
-    timeout=10
+    timeout=3
 fi
 timeout=$((timeout * 60))
 echo "Each judge will spend up to ${timeout} seconds"
 
 lifetime=${INPUT_LIFETIME}
 if [ -z "${lifetime}" ]; then
-    lifetime=15
+    lifetime=5
 fi
 lifetime=$((lifetime * 60))
 echo "The update will run for up to ${lifetime} seconds"
