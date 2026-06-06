@@ -109,7 +109,8 @@ done
 
 declare -a options=()
 while IFS= read -r o; do
-    v=$(echo "${o}" | xargs)
+    v="${o#"${o%%[![:space:]]*}"}"
+    v="${v%"${v##*[![:space:]]}"}"
     if [ "${v}" = "" ]; then
         continue
     fi
