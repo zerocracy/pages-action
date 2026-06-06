@@ -107,7 +107,7 @@
     <xsl:param name="links"/>
     <xsl:variable name="lines" select="tokenize($links, '\n')"/>
     <xsl:for-each select="$lines[normalize-space(.) != '']">
-      <xsl:variable name="parts" select="tokenize(., '\|')"/>
+      <xsl:variable name="parts" select="tokenize(., '\x{01}')"/>
       <xsl:if test="count($parts) = 2">
         <xsl:call-template name="css">
           <xsl:with-param name="url" select="normalize-space($parts[1])"/>
