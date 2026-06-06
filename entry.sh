@@ -216,7 +216,7 @@ for css in "${css_urls[@]}"; do
         exit 1
     fi
     echo "Hash: ${hash}"
-    css_links="${css_links}${css}"$'\x01'"${hash}"$'\n'
+    css_links="${css_links}${css}|${hash}"$'\n'
 done
 css_links="${css_links%$'\n'}"
 
