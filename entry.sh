@@ -10,7 +10,12 @@ echo "Checking for the latest version of zerocracy/pages-action..."
 
 if [ -z "${LATEST_VERSION}" ]; then
     if command -v curl >/dev/null 2>&1; then
-        LATEST_VERSION=$(curl -s --max-time 10 https://api.github.com/repos/zerocracy/pages-action/releases/latest | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/' || echo "")
+        auth=""
+        token="$(printenv "INPUT_GITHUB-TOKEN" || true)"
+        if [ -n "${token}" ]; then
+            auth="-H \"Authorization: token ${token}\""
+        fi
+        LATEST_VERSION=$(curl -s --max-time 10 $auth https://api.github.com/repos/zerocracy/pages-action/releases/latest | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/' || echo "")
         if [ -z "${LATEST_VERSION}" ]; then
             echo "Could not fetch latest version from GitHub API"
             LATEST_VERSION="unknown"
