@@ -10,7 +10,7 @@ test -e target/fb/simple.fb
 
 docker run --rm \
     "--user=$(id -u):$(id -g)" \
-    -v "$(realpath "$(pwd)")/target/fb/:/work" \
+    -v "$(cd "$(pwd)" && pwd)/target/fb/:/work" \
     -e GITHUB_WORKSPACE=/work \
     -e INPUT_FACTBASE=simple.fb \
     -e INPUT_VERBOSE=true \
