@@ -16,7 +16,7 @@ RUN apt-get update -y --fix-missing \
 
 # hadolint ignore=DL3008
 RUN rm -rf /usr/lib/node_modules \
-  && curl -sL -o /tmp/nodesource_setup.sh https://deb.nodesource.com/setup_18.x \
+  && curl -sL -o /tmp/nodesource_setup.sh https://deb.nodesource.com/setup_24.x \
   && bash /tmp/nodesource_setup.sh \
   && apt-get update -y --fix-missing \
   && apt-get -y install --no-install-recommends \
