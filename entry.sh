@@ -130,7 +130,9 @@ if [ "${github_token_found}" == "false" ]; then
         echo "The 'github-token' plugin parameter is not set (\$INPUT_GITHUB-TOKEN is empty)"
     else
         echo "The 'github-token' plugin parameter is set, using it"
+        set +x
         options+=("--option=github_token=$(printenv "INPUT_GITHUB-TOKEN")");
+        [ "${INPUT_VERBOSE}" == 'true' ] && set -x
         github_token_found=true
     fi
 fi
