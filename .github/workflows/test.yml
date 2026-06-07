@@ -1,10 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 ---
-# This action doesn't test the current version of the code, which is in
-# the 'master' branch or in the branch that you work with. Instead, it always
-# tests agains the latest version released to the Docker Hub. It's not possible,
-# as far as I understand, to change this behavior.
 name: test
 'on':
   push:
@@ -32,13 +28,17 @@ jobs:
             f.area = 'hr'; \
             f.days_of_running_balance = 28; \
             "
-      # Pay attention: if this test fails, you can'f fix it in the "master"
-      # branch, because it uses the "latest" version of the Docker image
-      # already released to Docker Hub. In order to fix this test,
-      # you should release a new version to Docker Hub and then try to fix
-      # the test here. It's a two-steps process.
-      - uses: ./
-        with:
-          verbose: true
-          output: pages
-          factbase: test.fb
+      - run: |
+          docker build -t pages-action:test .
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -v "$(pwd):/github/workspace" \
+            -e GITHUB_WORKSPACE=/github/workspace \
+            -e INPUT_VERBOSE=true \
+            -e INPUT_OUTPUT=pages \
+            -e INPUT_FACTBASE=test.fb \
+            -e INPUT_COLUMNS=when,what,repository \
+            -e INPUT_HIGHLIGHTED=stale,tombstone \
+            -e INPUT_HIDDEN=_id,_time,_version \
+            pages-action:test
+      - run: test -f pages/test.html && test -f pages/test-vitals.html
