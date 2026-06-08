@@ -88,6 +88,23 @@ class TestVitals < Minitest::Test
     assert_includes(css, '@media(max-width:768px){.bylaws.columns{column-count:1}}', 'Phone layout broken')
   end
 
+  def test_css_links_allow_pipe_in_url
+    xml = xslt(
+      <<~XSL,
+        <r>
+          <xsl:call-template name="css-links">
+            <xsl:with-param name="links" select="'https://cdn.example.com/app.css?next=a|b|abc123'"/>
+          </xsl:call-template>
+        </r>
+      XSL
+      '<fb/>'
+    )
+    link = xml.xpath('/r/link').first
+    refute_nil(link, xml)
+    assert_equal('https://cdn.example.com/app.css?next=a|b', link['href'])
+    assert_equal('sha384-abc123', link['integrity'])
+  end
+
   private
 
   def generate_vitals_html
