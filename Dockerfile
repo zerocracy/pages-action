@@ -3,9 +3,12 @@
 
 FROM ruby:4.0
 
+ARG VERSION=0.0.0
+ENV PAGES_ACTION_VERSION="${VERSION}"
+
 LABEL "repository"="https://github.com/zerocracy/pages-action"
 LABEL "maintainer"="Yegor Bugayenko"
-LABEL "version"="0.0.0"
+LABEL "version"="${VERSION}"
 
 # hadolint ignore=DL3008
 RUN apt-get update -y --fix-missing \

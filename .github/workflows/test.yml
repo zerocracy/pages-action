@@ -29,11 +29,12 @@ jobs:
             f.days_of_running_balance = 28; \
             "
       - run: |
-          docker build -t pages-action:test .
+          docker build --build-arg VERSION=0.0.1 -t pages-action:test .
           docker run --rm \
             --user "$(id -u):$(id -g)" \
             -v "$(pwd):/github/workspace" \
             -e GITHUB_WORKSPACE=/github/workspace \
+            -e LATEST_VERSION=0.0.1 \
             -e INPUT_VERBOSE=true \
             -e INPUT_OUTPUT=pages \
             -e INPUT_FACTBASE=test.fb \
@@ -41,4 +42,7 @@ jobs:
             -e INPUT_HIGHLIGHTED=stale,tombstone \
             -e INPUT_HIDDEN=_id,_time,_version \
             pages-action:test
-      - run: test -f pages/test.html && test -f pages/test-vitals.html
+      - run: |
+          test -f pages/test.html
+          test -f pages/test-vitals.html
+          grep '0.0.1' pages/test-vitals.html

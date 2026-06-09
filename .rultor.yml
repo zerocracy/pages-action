@@ -17,17 +17,13 @@ release:
   pre: false
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
-    sed -i -e "s/0.0.0/${tag}/" entry.sh
-    sed -i -e "s/0.0.0/${tag}/" Dockerfile
     sed -i -e "s/:latest/:${tag}/" action.yml
-    git add entry.sh
-    git add Dockerfile
     git add action.yml
     git commit -m "version set to ${tag}"
-    sudo make -C "$(pwd)" target/html/simple.html
+    sudo make -C "$(pwd)" "PAGES_ACTION_VERSION=${tag}" target/html/simple.html
     repo=yegor256/pages-action
-    sudo docker build "$(pwd)" --tag "${repo}:${tag}"
-    sudo docker build "$(pwd)" --tag "${repo}:latest"
+    sudo docker build "$(pwd)" --build-arg "VERSION=${tag}" --tag "${repo}:${tag}"
+    sudo docker build "$(pwd)" --build-arg "VERSION=${tag}" --tag "${repo}:latest"
     cat ../docker-password | sudo docker login --password-stdin -u yegor256
     sudo docker push "${repo}:${tag}"
     sudo docker push "${repo}:latest"
