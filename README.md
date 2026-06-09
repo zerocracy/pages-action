@@ -44,6 +44,12 @@ to print in the HTML;
 * `highlighted` (optional) is a comma-separated list of columns to highlight;
 * `hidden` (optional) is a comma-separated list of columns to hide;
 * `today` (optional) is ISO-8601 date-time of today;
+* `timeout` (default: `3`) is the maximum number of minutes each judge may run;
+* `lifetime` (default: `5`) is the maximum number of minutes for the entire
+`judges update` run;
+* `url` (optional) is where the static files will be visible. If omitted, it is
+derived from `GITHUB_REPOSITORY_OWNER` and `GITHUB_REPOSITORY` as a GitHub Pages
+URL;
 * `verbose` (default: `false`) turns on a more detailed logging.
 * `adless` (default: `false`) hides all Zerocracy banners, links, and logos
 * `github-token` (optional) is the GitHub token, defaulted to repo-scoped token
