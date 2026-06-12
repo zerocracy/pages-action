@@ -107,11 +107,12 @@
     <xsl:param name="links"/>
     <xsl:variable name="lines" select="tokenize($links, '\n')"/>
     <xsl:for-each select="$lines[normalize-space(.) != '']">
-      <xsl:variable name="parts" select="tokenize(., '\|')"/>
-      <xsl:if test="count($parts) = 2">
+      <xsl:variable name="url" select="replace(., '\|[^|]*$', '')"/>
+      <xsl:variable name="integrity" select="replace(., '^.*\|', '')"/>
+      <xsl:if test="$url != . and normalize-space($integrity) != ''">
         <xsl:call-template name="css">
-          <xsl:with-param name="url" select="normalize-space($parts[1])"/>
-          <xsl:with-param name="integrity" select="normalize-space($parts[2])"/>
+          <xsl:with-param name="url" select="normalize-space($url)"/>
+          <xsl:with-param name="integrity" select="normalize-space($integrity)"/>
         </xsl:call-template>
       </xsl:if>
     </xsl:for-each>
