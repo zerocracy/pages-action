@@ -19,9 +19,12 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_LOGO=' \
   'INPUT_ADLESS=true' \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
-  'LATEST_VERSION=0.0.0' \
+  'PAGES_ACTION_VERSION=0.0.1' \
+  'LATEST_VERSION=0.0.1' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
+grep "The 'pages-action' 0.0.1 is running" 'log.txt'
+grep "0.0.1" 'output/test-vitals.html'
 if grep -q "while the latest version is" 'output/test-vitals.html'; then
     echo "ERROR: Warning banner should not appear when versions match"
     exit 1

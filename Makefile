@@ -18,6 +18,7 @@ CSS = target/css/main.css
 JS = target/js/main.js
 JS_TEST = target/js/test.js
 SAXON = target/saxon.jar
+PAGES_ACTION_VERSION ?= 0.0.0
 
 export
 
@@ -114,8 +115,8 @@ verify:
 
 target/docker-image.txt: Makefile Dockerfile entry.sh
 	mkdir -p "$$(dirname $@)"
-	docker build -t pages-action "$$(pwd)"
-	docker build -t pages-action -q "$$(pwd)" > "$@"
+	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action "$$(pwd)"
+	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action -q "$$(pwd)" > "$@"
 
 $(DIRS):
 	mkdir -p "$@"
