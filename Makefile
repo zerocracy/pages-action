@@ -69,11 +69,8 @@ target/fb/%.fb: tests/%.yml Makefile | target/fb
 rake: $(SAXON) $(HTMLS)
 	bundle exec rake
 
-node_modules/.bin/stylelint:
-	npm install
-
-stylelint: node_modules/.bin/stylelint
-	./node_modules/.bin/stylelint stylelint sass/*.scss --fix
+stylelint: sass/*.scss
+    stylelint --fix sass/*.scss
 
 $(CSS): sass/*.scss stylelint Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
