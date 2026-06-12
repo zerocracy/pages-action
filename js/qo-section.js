@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: MIT
  */
 
+/* exported qo_render */
+
 /**
  * Render QO canvas.
  * @param canvas The ID of "canvas" element in HTML

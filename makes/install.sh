@@ -14,6 +14,7 @@ else
         apt-get install -y tidy
     fi
 fi
+npm --no-color install --no-save @eslint/js@9.22.0
 npm --no-color install -g eslint@9.22.0
 npm --no-color install -g uglify-js@3.19.3
 npm --no-color install -g sass@1.77.2
