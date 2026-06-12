@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="xs z">
+  <xsl:include href="script-with-cdata.xsl"/>
   <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
   <xsl:param name="today" as="xs:string"/>
   <xsl:param name="css" as="xs:string"/>
@@ -93,7 +94,7 @@
   </xsl:function>
   <xsl:template name="javascript">
     <xsl:param name="url"/>
-    <script type="text/javascript" src="{$url}">
+    <script src="{$url}">
       <xsl:text> </xsl:text>
     </script>
   </xsl:template>
@@ -117,7 +118,7 @@
   </xsl:template>
   <xsl:template match="/">
     <xsl:text disable-output-escaping='yes'>&lt;!DOCTYPE html&gt;</xsl:text>
-    <html>
+    <html lang="en">
       <xsl:attribute name="class">
           <xsl:value-of select="concat('palette-', $palette)"/>
       </xsl:attribute>
@@ -180,9 +181,9 @@
             </xsl:with-param>
           </xsl:call-template>
         </xsl:for-each>
-        <script type="text/javascript">
-          <xsl:value-of select="$js" disable-output-escaping="yes"/>
-        </script>
+        <xsl:call-template name="script-with-cdata">
+          <xsl:with-param name="content" select="$js"/>
+        </xsl:call-template>
         <style>
           <xsl:value-of select="$css" disable-output-escaping="no"/>
         </style>

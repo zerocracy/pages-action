@@ -9,6 +9,7 @@ AllCops:
   SuggestExtensions: false
   NewCops: enable
 plugins:
+  - rubocop-elegant
   - rubocop-minitest
   - rubocop-performance
   - rubocop-rake
@@ -46,4 +47,30 @@ Naming/MethodParameterName:
   MinNameLength: 2
 Layout/MultilineAssignmentLayout:
   Enabled: true
+# Judges are top-level procedural scripts, so defining methods at the top
+# level is expected here.
+Style/TopLevelMethodDefinition:
+  Enabled: false
+# The factbase API assigns dynamic properties through send(), which this cop
+# forbids.
+Style/Send:
+  Enabled: false
+# Factbase metric values are converted with to_f on purpose; the stricter
+# Float() would raise on absent or non-numeric metrics.
+Lint/NumberConversion:
+  Enabled: false
+# Tests re-raise rescued errors with a contextual string for debugging.
+Style/ImplicitRuntimeError:
+  Enabled: false
+# Tests assign to named variables for readable assertions.
+Elegant/NoRedundantVariable:
+  Exclude:
+    - 'test/**/*'
+# Test methods are named as full sentences, not single nouns or verbs.
+Elegant/GoodMethodName:
+  Exclude:
+    - 'test/**/*'
+Elegant/IndentationLadder:
+  Exclude:
+    - 'test/**/*'
 require: []

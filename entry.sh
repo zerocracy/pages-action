@@ -70,10 +70,14 @@ if [ -z "${INPUT_FACTBASE}" ]; then
     echo "Auto-detected factbase: ${INPUT_FACTBASE}"
 else
     echo "Using provided factbase: ${INPUT_FACTBASE}"
+    if [ ! -f "${INPUT_FACTBASE}" ]; then
+        echo "ERROR: The factbase file '${INPUT_FACTBASE}' does not exist."
+        exit 1
+    fi
 fi
 
 declare -a gopts=()
-if [ -n "${INPUT_VERBOSE}" ]; then
+if [ "${INPUT_VERBOSE}" == 'true' ]; then
     gopts+=("--verbose")
     export GLI_DEBUG=true
 else
@@ -126,21 +130,23 @@ if [ "${github_token_found}" == "false" ]; then
         echo "The 'github-token' plugin parameter is not set (\$INPUT_GITHUB-TOKEN is empty)"
     else
         echo "The 'github-token' plugin parameter is set, using it"
+        set +x
         options+=("--option=github_token=$(printenv "INPUT_GITHUB-TOKEN")");
+        [ "${INPUT_VERBOSE}" == 'true' ] && set -x
         github_token_found=true
     fi
 fi
 
 timeout=${INPUT_TIMEOUT}
 if [ -z "${timeout}" ]; then
-    timeout=10
+    timeout=3
 fi
 timeout=$((timeout * 60))
 echo "Each judge will spend up to ${timeout} seconds"
 
 lifetime=${INPUT_LIFETIME}
 if [ -z "${lifetime}" ]; then
-    lifetime=15
+    lifetime=5
 fi
 lifetime=$((lifetime * 60))
 echo "The update will run for up to ${lifetime} seconds"
@@ -197,6 +203,7 @@ echo "Calculating integrity hashes for CSS files..."
 declare -a css_urls=(
     "https://cdn.jsdelivr.net/npm/tacit-css@1.9.5/dist/tacit-css.min.css"
     "https://cdn.jsdelivr.net/npm/drops@0.3.2/dist/drops-0.3.2.min.css"
+    "https://www.zerocracy.com/css/palette.css"
 )
 css_links=""
 for css in "${css_urls[@]}"; do
@@ -230,15 +237,15 @@ java -jar "${SELF}/target/saxon.jar" \
     "adless=${INPUT_ADLESS}" \
     "css-links=${css_links}" \
     "css=$(cat "${SELF}/target/css/main.css")" \
-    "js=$(cat "${SELF}/target/js/main.js")"
+    "js=$(cat "${SELF}/${INPUT_JS_FILE:-target/js/main.js}")"
 html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
 echo "HTML generated at: ${html}"
 
-svg=${INPUT_OUTPUT}/${name}.rich.xml
+svg=${INPUT_OUTPUT}/${name}-badge.svg
 java -jar "${SELF}/target/saxon.jar" \
-    "-s:${svg}" \
+    "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/badge.xsl" \
-    "-o:${INPUT_OUTPUT}/${name}-badge.svg" \
+    "-o:${svg}" \
     "today=${INPUT_TODAY}"
 echo "SVG badge generated at: ${svg}"
 

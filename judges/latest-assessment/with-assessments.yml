@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: assessment
+    when: 2024-09-15T10:00:00.000Z
+    text: Latest assessment.
+  -
+    what: assessment
+    when: 2024-07-01T08:00:00.000Z
+    text: Older assessment.
+expected:
+  - /fb[count(f)=3]
+  - /fb/f[what='latest-assessment' and total=2]
+  - /fb/f[what='latest-assessment' and text='Latest assessment.']

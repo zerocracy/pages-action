@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-name: markdown-lint
+name: stylelint
 'on':
   push:
     branches:
@@ -11,9 +11,13 @@ name: markdown-lint
     branches:
       - master
 jobs:
-  markdown-lint:
+  stylelint:
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
-      - uses: DavidAnson/markdownlint-cli2-action@v23.2.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - run: npm install --global stylelint stylelint-config-standard
+      - run: stylelint sass/*.scss

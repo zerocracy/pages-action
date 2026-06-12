@@ -10,13 +10,8 @@ input:
     where: github
   -
     what: award
-    repository: 12345
-    where: github
-  -
-    what: award
-    repository: 67890
+    repository: 404123
     where: github
 expected:
   - /fb/f[what='repo-details' and repository='12345']
-  - /fb/f[what='repo-details' and repository='67890']
-  - /fb/f[what='repo-details' and repository_name='yegor256/test']
+  - /fb[count(f[what='repo-details' and repository='404123'])=0]

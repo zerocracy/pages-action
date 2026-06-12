@@ -1,0 +1,73 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+-
+  xpaths: |
+    /html
+    //div[@class="qo-section"]
+-
+  _id: 1
+  what: pmp
+  area: hr
+-
+  _id: 2
+  who: 6305016
+  what: who-has-name
+  name: torvalds
+  where: github
+  when: 2024-06-26T22:22:22Z
+-
+  # Week 2024-W01: 3 facts in SAME week, document order = newest
+  # first. With sort-by-when-asc + position()=last(): picks
+  # _id:10 (2024-01-03, composite=100) as chronologically latest.
+  _id: 10
+  when: 2024-01-03T10:00:00Z
+  what: quality-of-service
+  composite: 100
+  average_issue_lifetime: 100
+  average_pull_lifetime: 200
+-
+  _id: 11
+  when: 2024-01-02T15:00:00Z
+  what: quality-of-service
+  composite: 150
+  average_issue_lifetime: 120
+  average_pull_lifetime: 210
+-
+  _id: 12
+  when: 2024-01-01T08:00:00Z
+  what: quality-of-service
+  composite: 200
+  average_issue_lifetime: 130
+  average_pull_lifetime: 220
+-
+  # Week 2023-W52: one fact before new year
+  _id: 13
+  when: 2023-12-25T10:00:00Z
+  what: quality-of-service
+  composite: 80
+  average_issue_lifetime: 90
+  average_pull_lifetime: 180
+-
+  # Week 2024-W05: one fact mid-january
+  _id: 14
+  when: 2024-01-29T14:00:00Z
+  what: quality-of-service
+  composite: 300
+  average_issue_lifetime: 200
+  average_pull_lifetime: 350
+-
+  # Dec 31 2023 (Sun) = ISO 2023-W52, same week as _id:13 (Dec 25)
+  # This is the latest fact in 2023-W52, so it becomes the week representative
+  _id: 15
+  when: 2023-12-31T22:00:00Z
+  what: quality-of-service
+  composite: 70
+  average_issue_lifetime: 60
+  average_pull_lifetime: 150
+-
+  _id: 20
+  when: 2024-01-15T10:00:00Z
+  what: quantity-of-deliverables
+  composite: 10
+  total_commits_pushed: 20
