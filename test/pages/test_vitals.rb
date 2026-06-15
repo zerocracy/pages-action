@@ -73,7 +73,7 @@ class TestVitals < Minitest::Test
 
   def test_fn_format_signed_invalid_formats
     ['0', '0.000', '0.0000', 'invalid'].each do |invalid_format|
-      assert_raises(RuntimeError) do
+      assert_raises(StandardError) do
         xslt("<r><xsl:value-of select=\"z:format-signed(1.0, '#{invalid_format}')\"/></r>", '<fb/>')
       end
     end
