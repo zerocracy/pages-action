@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: something
+    where: github
+expected:
+  - /fb[count(f)=1]
+  - /fb[count(f[what='bylaws'])=0]

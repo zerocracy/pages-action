@@ -7,8 +7,6 @@ require 'fbe/award'
 require 'fbe/fb'
 require 'redcarpet'
 
-return unless Fbe.fb.query('(eq what "bylaws")').each.to_a.empty?
-
 f = Fbe.fb.query('(and (eq what "pmp") (eq area "hr"))').each.to_a.first
 htmls = []
 par = 1
@@ -20,6 +18,8 @@ f&.all_properties&.each do |prop|
   htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(md)
   par += 1
 end
+Fbe.fb.query('(eq what "bylaws")').delete!
+return if htmls.empty?
 s = Fbe.fb.insert
 s.what = 'bylaws'
-s.html = htmls.join unless htmls.empty?
+s.html = htmls.join
