@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: bylaws
+  -
+    what: pmp
+    area: hr
+    abc: '(award (let x 25) (give x "when you deserve it"))'
+expected:
+  - /fb[count(f)=2]
+  - /fb/f[what='bylaws' and html]
