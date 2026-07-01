@@ -18,6 +18,7 @@
   <xsl:param name="fbe" as="xs:string"/>
   <xsl:param name="adless" as="xs:string"/>
   <xsl:param name="css-links" as="xs:string"/>
+  <xsl:param name="js-links" as="xs:string"/>
   <xsl:import href="awards.xsl"/>
   <xsl:import href="assessment.xsl"/>
   <xsl:import href="repositories.xsl"/>
@@ -94,7 +95,8 @@
   </xsl:function>
   <xsl:template name="javascript">
     <xsl:param name="url"/>
-    <script src="{$url}">
+    <xsl:param name="integrity"/>
+    <script src="{$url}" integrity="sha384-{$integrity}" crossorigin="anonymous">
       <xsl:text> </xsl:text>
     </script>
   </xsl:template>
@@ -111,6 +113,20 @@
       <xsl:variable name="integrity" select="replace(., '^.*\|', '')"/>
       <xsl:if test="$url != . and normalize-space($integrity) != ''">
         <xsl:call-template name="css">
+          <xsl:with-param name="url" select="normalize-space($url)"/>
+          <xsl:with-param name="integrity" select="normalize-space($integrity)"/>
+        </xsl:call-template>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:template>
+  <xsl:template name="js-links">
+    <xsl:param name="links"/>
+    <xsl:variable name="lines" select="tokenize($links, '\n')"/>
+    <xsl:for-each select="$lines[normalize-space(.) != '']">
+      <xsl:variable name="url" select="replace(., '\|[^|]*$', '')"/>
+      <xsl:variable name="integrity" select="replace(., '^.*\|', '')"/>
+      <xsl:if test="$url != . and normalize-space($integrity) != ''">
+        <xsl:call-template name="javascript">
           <xsl:with-param name="url" select="normalize-space($url)"/>
           <xsl:with-param name="integrity" select="normalize-space($integrity)"/>
         </xsl:call-template>
@@ -170,18 +186,9 @@
         <xsl:call-template name="css-links">
           <xsl:with-param name="links" select="$css-links"/>
         </xsl:call-template>
-        <xsl:for-each select="(
-          'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js',
-          'https://cdn.jsdelivr.net/npm/chart.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js'
-          )">
-          <xsl:call-template name="javascript">
-            <xsl:with-param name="url">
-              <xsl:value-of select="."/>
-            </xsl:with-param>
-          </xsl:call-template>
-        </xsl:for-each>
+        <xsl:call-template name="js-links">
+          <xsl:with-param name="links" select="$js-links"/>
+        </xsl:call-template>
         <xsl:call-template name="script-with-cdata">
           <xsl:with-param name="content" select="$js"/>
         </xsl:call-template>
