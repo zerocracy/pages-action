@@ -5,7 +5,7 @@ input:
   -
     what: pmp
     area: hr
-    abc: '(award (explain "Reward for <script>alert(1)</script>") (give 10 "test"))'
+    abc: '(award (explain "<script>alert(1)</script>") (give 10 "test"))'
 expected:
   - /fb[count(f)=2]
   - /fb/f[what='bylaws' and contains(html, '&lt;script&gt;')]
