@@ -174,4 +174,28 @@ class TestAwards < Minitest::Test
       assert_equal(v[1], xml.xpath('/span/text()').to_s, xml)
     end
   end
+
+  def test_programmer_rejects_non_github_href
+    now = Time.now.utc.iso8601
+    xml = xslt(
+      "<xsl:call-template name=\"programmer\">
+        <xsl:with-param name=\"id\" select=\"'x'\"/>
+        <xsl:with-param name=\"name\" select=\"'dude'\"/>
+      </xsl:call-template>",
+      "
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <when>#{now}</when>
+          <who_name>dude</who_name>
+          <award>25</award>
+          <why>evil</why>
+          <href>javascript:alert(1)</href>
+        </f>
+      </fb>
+      ",
+      'today' => now
+    )
+    assert_empty(xml.xpath("//a[starts-with(@href, 'javascript:')]"), xml)
+  end
 end

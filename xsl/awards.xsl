@@ -401,7 +401,7 @@
             <xsl:choose>
               <xsl:when test="z:in-week($fact/when, $week)">
                 <xsl:choose>
-                  <xsl:when test="$fact/href">
+                  <xsl:when test="$fact/href and starts-with($fact/href, 'https://github.com/')">
                     <a>
                       <xsl:attribute name="href">
                         <xsl:value-of select="$fact/href"/>
