@@ -15,7 +15,7 @@ f&.all_properties&.each do |prop|
   next unless q.is_a?(String)
   next unless q.start_with?('(award')
   md = Fbe::Award.new(q).bylaw.markdown
-  htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(md)
+  htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(escape_html: true)).render(md)
   par += 1
 end
 Fbe.fb.query('(eq what "bylaws")').delete!
