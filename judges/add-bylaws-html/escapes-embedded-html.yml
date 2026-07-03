@@ -1,0 +1,12 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: pmp
+    area: hr
+    abc: '(award (explain "<script>alert(1)</script>") (give 10 "test"))'
+expected:
+  - /fb[count(f)=2]
+  - /fb/f[what='bylaws' and contains(html, '&lt;script&gt;')]
+  - /fb/f[what='bylaws' and not(contains(html, '<script>'))]
