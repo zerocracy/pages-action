@@ -69,7 +69,7 @@
       </g>
       <xsl:variable name="n">
         <xsl:choose>
-          <xsl:when test="$avg &gt; 0">
+          <xsl:when test="$avg &gt;= 0">
             <xsl:text>+</xsl:text>
           </xsl:when>
           <xsl:otherwise>
