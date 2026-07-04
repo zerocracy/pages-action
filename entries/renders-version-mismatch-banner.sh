@@ -19,6 +19,8 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_LOGO=' \
   'INPUT_ADLESS=true' \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
+  'PAGES_ACTION_VERSION=0.0.1' \
+  'LATEST_VERSION=0.0.2' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
 grep "rendered by the pages-action" output/test-vitals.html
