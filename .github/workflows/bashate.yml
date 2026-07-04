@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: 3.14
-      - run: pip install bashate
+      - run: pip install bashate==2.1.1
       - run: |
           readarray -t files < <(find . -name '*.sh')
           bashate -i E006,E003 "${files[@]}"
