@@ -198,6 +198,7 @@ else
 fi
 
 url=${INPUT_URL}
+url="${url%/}"
 if [ -z "${url}" ]; then
     url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
     echo "The URL of the pages to publish is this one (change it using the 'url' parameter): ${url}"
