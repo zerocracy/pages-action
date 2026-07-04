@@ -216,15 +216,10 @@ fi
 css_links=""
 for css in "${css_urls[@]}"; do
     echo "Calculating hash for: ${css}"
-    content=$(curl -sSf --max-time 30 "$css") || {
+    hash=$(curl -sSf --max-time 30 "$css" | openssl dgst -sha384 -binary | openssl base64 -A) || {
         echo "ERROR: Failed to fetch CSS from: ${css}" >&2
         exit 1
     }
-    hash=$(printf "%s" "$content" | openssl dgst -sha384 -binary | openssl base64 -A)
-    if [ -z "$hash" ]; then
-        echo "ERROR: Failed to calculate hash for: ${css}" >&2
-        exit 1
-    fi
     echo "Hash: ${hash}"
     css_links="${css_links}${css}|${hash}"$'\n'
 done
