@@ -18,11 +18,11 @@ if [ -z "${LATEST_VERSION}" ]; then
         LATEST_VERSION=$(curl "${curl_args[@]}" https://api.github.com/repos/zerocracy/pages-action/releases/latest | grep '"tag_name"' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/' || echo "")
         if [ -z "${LATEST_VERSION}" ]; then
             echo "Could not fetch latest version from GitHub API"
-            LATEST_VERSION="unknown"
+            LATEST_VERSION=""
         fi
     else
         echo "curl not available, skipping version check"
-        LATEST_VERSION="unknown"
+        LATEST_VERSION=""
     fi
 fi
 
