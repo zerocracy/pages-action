@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" exclude-result-prefixes="xs z">
-  <xsl:template match="f[what='earned-value' and ac and ev and pv]" priority="2">
+  <xsl:template match="f[what='earned-value' and ac and ev and pv and xs:double(ac) != 0 and xs:double(pv) != 0]" priority="2">
     <xsl:text>AC: </xsl:text>
     <xsl:value-of select="format-number(ac, '0')"/>
     <xsl:text>, EV: </xsl:text>
