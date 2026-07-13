@@ -33,7 +33,7 @@ end
     f.all_properties.each do |prop|
       next unless fits?(prop)
       next if start[prop].zero?
-      v = f[prop].first
+      v = f[prop].first.to_f
       s = start[prop]
       diff = (v - s).to_f / start[prop]
       n = "n_#{prop}"
