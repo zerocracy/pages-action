@@ -6,7 +6,8 @@ name: css validation
 'on':
   push:
   pull_request:
-
+permissions:
+  contents: read
 jobs:
   validate-css:
     timeout-minutes: 15
