@@ -9,7 +9,11 @@ $(() => {
       text = $this.attr('data-text');
     if (navigator.clipboard) {
       if (window.isSecureContext) {
-        navigator.clipboard.writeText(text).catch(() => {
+        navigator.clipboard.writeText(text).then(() => {
+          const $check = $('<span class="darkgreen"> ✓</span>');
+          $this.after($check);
+          $check.delay(1000).fadeOut();
+        }).catch(() => {
           alert('Failed to copy to clipboard!');
         });
       } else {
@@ -20,9 +24,6 @@ $(() => {
       alert('The clipboard is inaccessible!');
       return false;
     }
-    const $check = $('<span class="darkgreen"> ✓</span>');
-    $this.after($check);
-    $check.delay(1000).fadeOut();
     return false;
   });
 });
