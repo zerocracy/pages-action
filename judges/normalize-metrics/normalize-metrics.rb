@@ -13,7 +13,7 @@ def fits?(name)
 end
 
 %w[quantity-of-deliverables quality-of-service].each do |qo|
-  facts = Fbe.fb.query("(eq what '#{qo}')").each.to_a
+  facts = Fbe.fb.query("(and (eq what '#{qo}') (exists when))").each.to_a
   facts.sort_by!(&:when)
   next if facts.empty?
   start = {}

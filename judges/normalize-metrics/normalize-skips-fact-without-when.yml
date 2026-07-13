@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+options:
+  testing: true
+input:
+  -
+    what: quality-of-service
+    average_issue_lifetime: 433.54
+  -
+    when: 2024-05-18T22:22:22.8492Z
+    what: quality-of-service
+    average_issue_lifetime: 654.32
+expected:
+  - /fb[count(f)=2]
