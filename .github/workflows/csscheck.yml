@@ -33,4 +33,5 @@ jobs:
         run: |
           wget -O css-validator.jar \
             https://github.com/w3c/css-validator/releases/download/cssval-20250226/css-validator.jar
+          sha256sum -c <<< '5f764d63be946cce3940deb154759bdc4413b898f766ae48f5f0e5c2212c8afd  css-validator.jar'
           java -jar css-validator.jar file:target/css/main.css
