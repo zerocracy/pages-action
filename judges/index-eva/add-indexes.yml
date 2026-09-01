@@ -31,7 +31,16 @@ input:
     ac: 433
     ev: 437
     pv: 0
+  -
+    start: 2024-04-17T22:22:22.8492Z
+    when: 2024-05-17T22:22:22.8492Z
+    what: earned-value
+    ac: 444
+    ev: 555
+    pv: 666
 expected:
-  - /fb[count(f)=4]
+  - /fb[count(f)=5]
   - /fb/f[n_spi]
   - /fb/f[n_cpi]
+  - /fb/f[ac=444 and n_cpi > 1.2 and n_cpi < 1.3]
+  - /fb/f[ac=444 and n_spi > 0.8 and n_spi < 0.9]
