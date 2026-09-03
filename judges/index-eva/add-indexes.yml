@@ -46,3 +46,6 @@ expected:
   - /fb/f[ev='0.0' and n_cpi='0.0' and n_spi='0.0']
   - /fb/f[pv='0' and n_cpi and not(n_spi)]
   - /fb/f[ac='0' and n_spi and not(n_cpi)]
+  - /fb/f[ev='0.0' and n_cpi='0.0' and n_spi='0.0']
+  - /fb/f[pv='0' and n_cpi and not(n_spi)]
+  - /fb/f[ac='0' and n_spi and not(n_cpi)]
