@@ -319,4 +319,27 @@ class TestAwards < Minitest::Test
     )
     assert_equal('25', xml.xpath('/r/td').text.strip, xml)
   end
+
+  def test_leaderboard_sorts_by_the_total
+    now = Time.now.utc
+    xml = xslt(
+      '<xsl:apply-templates select="/" mode="awards"/>',
+      "
+      <fb>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+        <f><is_human>1</is_human><who>2</who><who_name>bob</who_name><award>3</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+      </fb>
+      ",
+      'today' => now.iso8601
+    )
+    assert_equal(%w[@alice @bob], xml.xpath('//td/span/a/text()').map(&:to_s), xml)
+  end
 end
