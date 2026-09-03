@@ -114,7 +114,7 @@
               </xsl:if>
               <xsl:variable name="cell" select="*[name()=$n]/text()"/>
               <xsl:choose>
-                <xsl:when test="$cell = ''">
+                <xsl:when test="empty($cell) or $cell = ''">
                   <xsl:text>null</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
