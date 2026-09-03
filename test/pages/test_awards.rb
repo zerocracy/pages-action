@@ -228,7 +228,7 @@ class TestAwards < Minitest::Test
   def test_leaderboard_sorts_by_the_total
     now = Time.now.utc
     xml = xslt(
-      '<xsl:apply-templates select="/" mode="awards"/>',
+      '<r><xsl:apply-templates select="/" mode="awards"/></r>',
       "
       <fb>
         <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
