@@ -34,13 +34,33 @@
     <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
     <xsl:value-of select="$when &gt; $monday and $when &lt; $sunday"/>
   </xsl:function>
+  <xsl:function name="z:when-of" as="xs:dateTime">
+    <!--
+    Takes a fact and returns the moment it happened, or the epoch when
+    the fact carries no "when" property.
+    -->
+    <xsl:param name="f" as="element()"/>
+    <xsl:sequence select="if ($f/when) then xs:dateTime($f/when) else xs:dateTime('1970-01-01T00:00:00Z')"/>
+  </xsl:function>
+  <xsl:function name="z:latest" as="element()?">
+    <!--
+    Takes a few facts and returns the one that happened last.
+    -->
+    <xsl:param name="facts" as="element()*"/>
+    <xsl:for-each select="$facts">
+      <xsl:sort select="z:when-of(.)" order="descending"/>
+      <xsl:if test="position() = 1">
+        <xsl:sequence select="."/>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:function>
   <xsl:function name="z:payables">
     <!--
     Calculates the amount to be paid to a user, according to the information
     in current awards and previously posted "reconciliation" facts.
     -->
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name][last()]"/>
+    <xsl:variable name="rec" select="z:latest($fb/f[what='reconciliation' and who_name=$name])"/>
     <xsl:choose>
       <xsl:when test="$rec">
         <xsl:for-each select="'awarded', 'since', 'balance', 'payout', 'when'">
