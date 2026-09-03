@@ -96,6 +96,19 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <xsl:template name="release">
+    <xsl:param name="v"/>
+    <xsl:choose>
+      <xsl:when test="$adless = 'false'">
+        <a href="https://github.com/zerocracy/pages-action/releases/tag/{$v}">
+          <xsl:value-of select="$v"/>
+        </a>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$v"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
   <xsl:template name="javascript">
     <xsl:param name="url"/>
     <xsl:param name="integrity"/>
@@ -263,13 +276,13 @@
               <p class="red">
                 <span>
                   <xsl:text>The page was rendered by the pages-action </xsl:text>
-                  <a href="https://github.com/zerocracy/pages-action/releases/tag/{$version}">
-                    <xsl:value-of select="$version"/>
-                  </a>
+                  <xsl:call-template name="release">
+                    <xsl:with-param name="v" select="$version"/>
+                  </xsl:call-template>
                   <xsl:text>, while the latest version is </xsl:text>
-                  <a href="https://github.com/zerocracy/pages-action/releases/tag/{$latest-version}">
-                    <xsl:value-of select="$latest-version"/>
-                  </a>
+                  <xsl:call-template name="release">
+                    <xsl:with-param name="v" select="$latest-version"/>
+                  </xsl:call-template>
                 </span>
               </p>
             </xsl:if>
