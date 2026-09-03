@@ -35,7 +35,9 @@ expected:
   - /fb[count(f)=4]
   - /fb[count(f[n_cpi])=2]
   - /fb[count(f[n_spi])=2]
-  - /fb/f[ac='433' and ev='4342.42' and starts-with(n_cpi,'10.02') and starts-with(n_spi,'0.66')]
+  - >
+    /fb/f[ac='433' and ev='4342.42' and starts-with(n_cpi,'10.02')
+    and starts-with(n_spi,'0.66')]
   - /fb/f[ev='0.0' and n_cpi='0.0' and n_spi='0.0']
   - /fb/f[not(ac) and not(n_cpi) and not(n_spi)]
   - /fb/f[pv='0' and not(n_cpi) and not(n_spi)]
