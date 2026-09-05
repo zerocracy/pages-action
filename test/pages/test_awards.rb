@@ -227,7 +227,7 @@ class TestAwards < Minitest::Test
 
   def test_week_columns_add_up_to_the_run
     xml = xslt(
-      '<xsl:apply-templates select="/" mode="awards"/>',
+      '<r><xsl:apply-templates select="/" mode="awards"/></r>',
       '
       <fb>
         <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>100</award>
