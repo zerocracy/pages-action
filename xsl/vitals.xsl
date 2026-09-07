@@ -47,14 +47,16 @@
   </xsl:function>
   <xsl:function name="z:index">
     <!--
-    Converts a number to a "span" with a properly formatted index value.
-    The span will have a "class" with the HTML color, according to the value.
+    Converts a performance index to a "span" with a properly formatted value.
+    An index is a ratio of two amounts, so its neutral point is one, not zero,
+    and it carries no sign. The span will have a "class" with the HTML color,
+    according to the value.
     -->
     <xsl:param name="i" as="xs:double"/>
     <span>
       <xsl:attribute name="class">
         <xsl:choose>
-          <xsl:when test="$i &gt;= 0">
+          <xsl:when test="$i &gt;= 1">
             <xsl:text>darkgreen</xsl:text>
           </xsl:when>
           <xsl:otherwise>
@@ -62,7 +64,7 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
-      <xsl:value-of select="z:format-signed($i, '0.00')"/>
+      <xsl:value-of select="format-number($i, '0.00')"/>
     </span>
   </xsl:function>
   <xsl:function name="z:pmp">
