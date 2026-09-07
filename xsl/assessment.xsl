@@ -20,9 +20,9 @@
             <xsl:value-of select="when"/>
           </xsl:attribute>
           <xsl:attribute name="title">
-            <xsl:value-of select="xs:date(z:when(when))"/>
+            <xsl:value-of select="z:day(xs:date(z:when(when)))"/>
           </xsl:attribute>
-          <xsl:value-of select="xs:date(z:when(when))"/>
+          <xsl:value-of select="z:day(xs:date(z:when(when)))"/>
         </time>
       </pre>
       <xsl:if test="total &gt; 1">
