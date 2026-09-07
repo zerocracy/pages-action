@@ -142,6 +142,12 @@ class TestVitals < Minitest::Test
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
   end
 
+  def test_adless_page_carries_no_update_banner
+    html = generate_vitals_html(adless: 'true')
+    refute_match(%r{github\.com/zerocracy/pages-action/releases}, html, html)
+    assert_match(%r{github\.com/zerocracy/pages-action/releases}, generate_vitals_html)
+  end
+
   private
 
   def generate_vitals_html(adless: 'false')
