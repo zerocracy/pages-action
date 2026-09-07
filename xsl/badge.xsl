@@ -3,12 +3,13 @@
 * SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/2000/svg" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" exclude-result-prefixes="xs">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/2000/svg" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
+  <xsl:include href="when.xsl"/>
   <xsl:output method="xml" omit-xml-declaration="yes"/>
   <xsl:param name="today" as="xs:string"/>
   <xsl:template match="/fb">
     <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration('P256D')" as="xs:dateTime"/>
-    <xsl:variable name="facts" select=".//f[xs:dateTime(when) &gt; $since and award]"/>
+    <xsl:variable name="facts" select=".//f[z:when(when) &gt; $since and award]"/>
     <xsl:variable name="sum" select="sum($facts/award)" as="xs:double"/>
     <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
     <xsl:variable name="avg">

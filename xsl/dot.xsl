@@ -4,7 +4,7 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
-  <xsl:variable name="dot_facts" select="/fb/f[what='dimensions-of-terrain' and xs:dateTime(when) &gt; $since]"/>
+  <xsl:variable name="dot_facts" select="/fb/f[what='dimensions-of-terrain' and z:when(when) &gt; $since]"/>
   <xsl:template match="/" mode="dot">
     <xsl:choose>
       <xsl:when test="empty($dot_facts)">
@@ -64,7 +64,7 @@
             </td>
             <xsl:for-each select="1 to $weeks">
               <xsl:variable name="week" select="xs:integer(.)"/>
-              <xsl:variable name="f" select="$dot_facts[z:in-week(when, $week)][last()]"/>
+              <xsl:variable name="f" select="$dot_facts[z:in-week(z:when(when), $week)][last()]"/>
               <td class="ff right">
                 <xsl:choose>
                   <xsl:when test="$f">

@@ -38,6 +38,37 @@ class TestVitals < Minitest::Test
     end
   end
 
+  def test_renders_a_fact_that_has_two_moments
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>7</days_of_running_balance>
+        </f>
+        <f>
+          <what>something</what>
+          <who>5</who>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>
+            <v t="T">2024-07-02T00:00:00Z</v>
+            <v t="T">2024-07-03T00:00:00Z</v>
+          </when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_equal(1, xml.xpath('//tbody/tr[not(@class)]').size, xml)
+  end
+
   def test_fn_pmp
     xml = xslt(
       '<r><xsl:value-of select="z:pmp(\'hr\', \'foo\', \'bar\')"/></r>',

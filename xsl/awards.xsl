@@ -8,7 +8,7 @@
   <xsl:variable name="days" select="z:pmp('hr', 'days_of_running_balance', '28')"/>
   <xsl:variable name="weeks" select="xs:integer(ceiling(xs:float($days) div 7))"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
-  <xsl:variable name="facts" select="$fb/f[award and xs:dateTime(when) &gt; $since and is_human = 1]"/>
+  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt; $since and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
     <!--
     Takes week number (e.g. 4) and returns ISO-8601 date of the
@@ -28,11 +28,11 @@
     Takes date and week number (e.g. 4) and returns 'true' if the date is
     inside the week. Weeks counting starts from the n-th week before today.
     -->
-    <xsl:param name="when" as="xs:string"/>
+    <xsl:param name="when" as="xs:dateTime?"/>
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="monday" select="xs:dateTime(z:monday($week))"/>
     <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
-    <xsl:value-of select="xs:dateTime($when) &gt; $monday and xs:dateTime($when) &lt; $sunday"/>
+    <xsl:value-of select="$when &gt; $monday and $when &lt; $sunday"/>
   </xsl:function>
   <xsl:function name="z:payables">
     <!--
@@ -54,7 +54,7 @@
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and xs:dateTime(when) &gt; xs:dateTime($rec/since)]/award))"/>
+          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime($rec/since)]/award))"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer($rec/awarded)"/>
           <xsl:variable name="payable" select="$accumulated - xs:integer($rec/awarded) + xs:integer($rec/balance)"/>
           <xsl:attribute name="title">
@@ -279,7 +279,7 @@
           </td>
           <xsl:for-each select="1 to $weeks">
             <xsl:variable name="week" select="."/>
-            <xsl:copy-of select="z:td-award(xs:integer(sum($facts[z:in-week(when, $week)]/award)))"/>
+            <xsl:copy-of select="z:td-award(xs:integer(sum($facts[z:in-week(z:when(when), $week)]/award)))"/>
           </xsl:for-each>
           <xsl:copy-of select="z:td-award(xs:integer(sum($facts/award)))"/>
           <xsl:if test="$fb/f[what='reconciliation']">
@@ -325,7 +325,7 @@
       </td>
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
-        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name and z:in-week(when, $week)]/award)))"/>
+        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name and z:in-week(z:when(when), $week)]/award)))"/>
       </xsl:for-each>
       <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name]/award)))"/>
       <xsl:if test="$fb/f[what='reconciliation']">
@@ -346,8 +346,8 @@
           <xsl:variable name="week" select="."/>
           <td class="right">
             <xsl:choose>
-              <xsl:when test="$fb/f[what='reconciliation' and who=$id and z:in-week(when, $week)]">
-                <xsl:for-each select="$fb/f[what='reconciliation' and who=$id and z:in-week(when, $week)]">
+              <xsl:when test="$fb/f[what='reconciliation' and who=$id and z:in-week(z:when(when), $week)]">
+                <xsl:for-each select="$fb/f[what='reconciliation' and who=$id and z:in-week(z:when(when), $week)]">
                   <xsl:if test="position() &gt; 1">
                     <br/>
                   </xsl:if>
@@ -360,7 +360,7 @@
                       <xsl:text> points, a payout of </xsl:text>
                       <xsl:value-of select="xs:integer(payout)"/>
                       <xsl:text> points has been made on </xsl:text>
-                      <xsl:value-of select="xs:date(xs:dateTime(when))"/>
+                      <xsl:value-of select="xs:date(z:when(when))"/>
                       <xsl:text>, making the amount payable equal to </xsl:text>
                       <xsl:value-of select="balance"/>
                     </xsl:attribute>
@@ -399,7 +399,7 @@
           <xsl:variable name="week" select="."/>
           <td class="ff right">
             <xsl:choose>
-              <xsl:when test="z:in-week($fact/when, $week)">
+              <xsl:when test="z:in-week(z:when($fact/when), $week)">
                 <xsl:choose>
                   <xsl:when test="$fact/href and starts-with($fact/href, 'https://github.com/')">
                     <a>

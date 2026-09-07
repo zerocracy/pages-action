@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2.0" exclude-result-prefixes="xs">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
   <xsl:template match="/" mode="assessment">
     <xsl:apply-templates select="/fb/f[what='latest-assessment']"/>
   </xsl:template>
@@ -20,9 +20,9 @@
             <xsl:value-of select="when"/>
           </xsl:attribute>
           <xsl:attribute name="title">
-            <xsl:value-of select="xs:date(xs:dateTime(when))"/>
+            <xsl:value-of select="xs:date(z:when(when))"/>
           </xsl:attribute>
-          <xsl:value-of select="xs:date(xs:dateTime(when))"/>
+          <xsl:value-of select="xs:date(z:when(when))"/>
         </time>
       </pre>
       <xsl:if test="total &gt; 1">

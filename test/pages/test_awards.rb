@@ -148,7 +148,7 @@ class TestAwards < Minitest::Test
 
   def test_fn_in_week
     xml = xslt(
-      '<r><xsl:value-of select="z:in-week(\'2024-09-20T04:04:04Z\', 1)"/></r>',
+      '<r><xsl:value-of select="z:in-week(xs:dateTime(\'2024-09-20T04:04:04Z\'), 1)"/></r>',
       '
       <fb>
         <f>

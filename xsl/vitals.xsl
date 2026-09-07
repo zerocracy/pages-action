@@ -5,6 +5,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
   <xsl:include href="script-with-cdata.xsl"/>
+  <xsl:include href="when.xsl"/>
   <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
   <xsl:param name="today" as="xs:string"/>
   <xsl:param name="css" as="xs:string"/>
@@ -143,7 +144,7 @@
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <xsl:variable name="description">
-          <xsl:variable name="facts" select="$fb/f[xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
+          <xsl:variable name="facts" select="$fb/f[z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
           <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
           <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
           <xsl:text>The "</xsl:text>
