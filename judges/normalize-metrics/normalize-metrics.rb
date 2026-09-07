@@ -9,6 +9,7 @@ def fits?(name)
   return true if name == 'composite'
   return false unless name.match?(/^[a-z]+_[a-z]+.*$/)
   return false if name.start_with?('n_')
+  return false if name.start_with?('some_')
   true
 end
 
