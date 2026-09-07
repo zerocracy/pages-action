@@ -224,4 +224,24 @@ class TestAwards < Minitest::Test
     )
     assert_empty(xml.xpath("//a[starts-with(@href, 'javascript:')]"), xml)
   end
+
+  def test_week_columns_add_up_to_the_run
+    xml = xslt(
+      '<xsl:apply-templates select="/" mode="awards"/>',
+      '
+      <fb>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>100</award>
+          <when>2024-06-08T10:00:00Z</when></f>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>7</award>
+          <when>2024-07-01T00:00:00Z</when></f>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>5</award>
+          <when>2024-07-03T10:00:00Z</when></f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    values = xml.xpath('//tbody/tr[1]/td[@data-value]').map { |t| t['data-value'].to_i }
+    assert_equal(values.last, values[0..-2].sum, xml)
+    assert_equal(12, values.last, xml)
+  end
 end
