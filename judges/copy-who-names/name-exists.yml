@@ -13,4 +13,5 @@ input:
     where: github
 expected:
   - /fb[count(f)=2]
-  - /fb/f[who_name='travolta']
+  - /fb/f[what='something' and who_name='travolta']
+  - /fb/f[what='who-has-name' and not(who_name)]
