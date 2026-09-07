@@ -86,6 +86,33 @@ class TestVitals < Minitest::Test
     assert_equal('bar', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_dot_shows_the_latest_fact_of_the_week
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>7</days_of_running_balance>
+        </f>
+        <f>
+          <what>dimensions-of-terrain</what>
+          <when>2024-07-04T00:00:00Z</when>
+          <total_repositories>99</total_repositories>
+        </f>
+        <f>
+          <what>dimensions-of-terrain</what>
+          <when>2024-07-02T00:00:00Z</when>
+          <total_repositories>3</total_repositories>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_equal('99', xml.xpath('//td[@class="ff right"]/text()').to_s.strip, xml)
+  end
+
   def test_fn_format_signed
     {
       3.3 => ['0.0', '+3.3'],
