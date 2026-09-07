@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 require 'fbe/fb'
+require 'fbe/overwrite'
 
 def fits?(name)
   return true if name == 'composite'
@@ -30,15 +31,15 @@ end
     end
   end
   facts.each do |f|
+    fresh = {}
     f.all_properties.each do |prop|
       next unless fits?(prop)
       next if start[prop].zero?
       v = f[prop].first.to_f
       s = start[prop]
-      diff = (v - s).to_f / start[prop]
-      n = "n_#{prop}"
-      next if f[n]
-      f.send(:"#{n}=", diff)
+      fresh["n_#{prop}"] = (v - s).to_f / s
     end
+    next if fresh.empty?
+    Fbe.overwrite(f, fresh)
   end
 end
