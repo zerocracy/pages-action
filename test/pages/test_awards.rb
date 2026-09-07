@@ -189,6 +189,23 @@ class TestAwards < Minitest::Test
     assert_includes(th['title'], 'Week #1 in 2026', xml)
   end
 
+  def test_fn_in_week_takes_midnight_of_monday
+    xml = xslt(
+      '<r><xsl:value-of select="z:in-week(xs:dateTime(\'2024-09-23T00:00:00Z\'), 2)"/></r>',
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>14</days_of_running_balance>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    assert_equal('true', xml.xpath('/r/text()').to_s, xml)
+  end
+
   def test_fn_award
     {
       42 => ['darkgreen', '+42'],
