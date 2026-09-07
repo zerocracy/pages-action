@@ -25,11 +25,11 @@
     <xsl:param name="title" as="xs:string"/>
     <xsl:param name="colors" as="xs:string" select="'n_composite:orange'"/>
     <xsl:param name="before"/>
-    <xsl:variable name="raw" select="/fb/f[what=$what and xs:dateTime(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
+    <xsl:variable name="raw" select="/fb/f[what=$what and z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
     <xsl:variable name="facts">
-      <xsl:for-each-group select="$raw" group-by="z:iso-week(xs:dateTime(when))">
+      <xsl:for-each-group select="$raw" group-by="z:iso-week(z:when(when))">
         <xsl:for-each select="current-group()">
-          <xsl:sort select="xs:dateTime(when)" order="ascending"/>
+          <xsl:sort select="z:when(when)" order="ascending"/>
           <xsl:if test="position() = last()">
             <xsl:copy-of select="."/>
           </xsl:if>
@@ -66,7 +66,7 @@
               <xsl:text>,</xsl:text>
             </xsl:if>
             <xsl:text>'</xsl:text>
-            <xsl:value-of select="format-date(xs:date(xs:dateTime(when)), '[M1]/[D1]')"/>
+            <xsl:value-of select="format-date(xs:date(z:when(when)), '[M1]/[D1]')"/>
             <xsl:text>'</xsl:text>
           </xsl:for-each>
           <xsl:text>],fullDates:[</xsl:text>
@@ -76,7 +76,7 @@
               <xsl:text>,</xsl:text>
             </xsl:if>
             <xsl:text>'</xsl:text>
-            <xsl:value-of select="format-date(xs:date(xs:dateTime(when)), '[D1] [MN,*-3] [Y]')"/>
+            <xsl:value-of select="format-date(xs:date(z:when(when)), '[D1] [MN,*-3] [Y]')"/>
             <xsl:text>'</xsl:text>
           </xsl:for-each>
           <xsl:text>],</xsl:text>
