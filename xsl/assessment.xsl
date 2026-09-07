@@ -14,7 +14,7 @@
       </h2>
       <pre>
         <xsl:value-of select="text"/>
-        <xsl:text>Last assessed on </xsl:text>
+        <xsl:text>&#10;Last assessed on </xsl:text>
         <time class="relative-time">
           <xsl:attribute name="datetime">
             <xsl:value-of select="when"/>
