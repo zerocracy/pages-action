@@ -188,7 +188,7 @@
           <xsl:value-of select="$name"/>
         </title>
         <xsl:if test="$logo != ''">
-          <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
+          <link rel="icon" href="{$logo}" type="image/svg"/>
         </xsl:if>
         <xsl:call-template name="css-links">
           <xsl:with-param name="links" select="$css-links"/>
