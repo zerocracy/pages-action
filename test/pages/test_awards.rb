@@ -163,6 +163,32 @@ class TestAwards < Minitest::Test
     assert_equal('true', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_names_the_week_across_new_year
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>28</days_of_running_balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2026-01-15T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2026-01-19T00:00:00Z'
+    )
+    th = xml.xpath('//thead/tr/th[3]').first
+    assert_equal('w1', th.text.strip, xml)
+    assert_includes(th['title'], 'Week #1 in 2026', xml)
+  end
+
   def test_fn_award
     {
       42 => ['darkgreen', '+42'],
