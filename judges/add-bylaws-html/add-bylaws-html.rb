@@ -18,8 +18,8 @@ f&.all_properties&.each do |prop|
   htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(escape_html: true)).render(md)
   par += 1
 end
-Fbe.fb.query('(eq what "bylaws")').delete!
 return if htmls.empty?
+Fbe.fb.query('(eq what "bylaws")').delete!
 s = Fbe.fb.insert
 s.what = 'bylaws'
 s.html = htmls.join
