@@ -28,9 +28,10 @@ class TestVitals < Minitest::Test
 
   def test_fn_index
     {
-      3.3 => ['darkgreen', '+3.30'],
-      0 => ['darkgreen', '+0.00'],
-      -1 => ['darkred', '-1.00']
+      3.3 => ['darkgreen', '3.30'],
+      1 => ['darkgreen', '1.00'],
+      0.2 => ['darkred', '0.20'],
+      0 => ['darkred', '0.00']
     }.each do |k, v|
       xml = xslt("<xsl:copy-of select='z:index(#{k})'/>", '<fb/>')
       assert_equal(v[0], xml.xpath('/span/@class').to_s, xml)
