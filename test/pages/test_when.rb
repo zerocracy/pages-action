@@ -9,7 +9,7 @@ require_relative '../test__helper'
 class TestWhen < Minitest::Test
   def test_prints_a_date_without_a_timezone
     xml = xslt(
-      "<r><xsl:value-of select=\"z:day(xs:date(z:when(/fb/f/when)))\"/></r>",
+      '<r><xsl:value-of select="z:day(xs:date(z:when(/fb/f/when)))"/></r>',
       '<fb><f><when>2026-07-20T00:00:00Z</when></f></fb>'
     )
     assert_equal('2026-07-20', xml.xpath('/r').text, xml)
