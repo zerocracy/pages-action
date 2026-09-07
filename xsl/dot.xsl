@@ -47,7 +47,7 @@
                 <xsl:text> in </xsl:text>
                 <xsl:value-of select="substring($iso, 1, 4)"/>
                 <xsl:text>, starting on Monday </xsl:text>
-                <xsl:value-of select="z:monday($week)"/>
+                <xsl:value-of select="z:day(z:monday($week))"/>
               </xsl:attribute>
               <xsl:text>w</xsl:text>
               <xsl:value-of select="$w"/>

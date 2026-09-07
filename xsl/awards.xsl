@@ -61,11 +61,11 @@
             <xsl:text>The last payout of </xsl:text>
             <xsl:value-of select="xs:integer($rec/payout)"/>
             <xsl:text> points has been made on </xsl:text>
-            <xsl:value-of select="xs:date(xs:dateTime($rec/when))"/>
+            <xsl:value-of select="z:day(xs:date(xs:dateTime($rec/when)))"/>
             <xsl:text>, making the amount payable equal to </xsl:text>
             <xsl:value-of select="$rec/balance"/>
             <xsl:text>; since </xsl:text>
-            <xsl:value-of select="xs:date(xs:dateTime($rec/since))"/>
+            <xsl:value-of select="z:day(xs:date(xs:dateTime($rec/since)))"/>
             <xsl:text> you've accumulated </xsl:text>
             <xsl:value-of select="$delta"/>
             <xsl:text> points (</xsl:text>
@@ -222,7 +222,7 @@
                 <xsl:text> in </xsl:text>
                 <xsl:value-of select="substring($iso, 1, 4)"/>
                 <xsl:text>, starting on Monday </xsl:text>
-                <xsl:value-of select="z:monday($week)"/>
+                <xsl:value-of select="z:day(z:monday($week))"/>
               </xsl:attribute>
               <xsl:text>w</xsl:text>
               <xsl:value-of select="$w"/>
@@ -355,13 +355,13 @@
                   <span>
                     <xsl:attribute name="title">
                       <xsl:text>Since </xsl:text>
-                      <xsl:value-of select="xs:date(xs:dateTime(since))"/>
+                      <xsl:value-of select="z:day(xs:date(xs:dateTime(since)))"/>
                       <xsl:text> you've accumulated </xsl:text>
                       <xsl:value-of select="xs:integer(awarded)"/>
                       <xsl:text> points, a payout of </xsl:text>
                       <xsl:value-of select="xs:integer(payout)"/>
                       <xsl:text> points has been made on </xsl:text>
-                      <xsl:value-of select="xs:date(z:when(when))"/>
+                      <xsl:value-of select="z:day(xs:date(z:when(when)))"/>
                       <xsl:text>, making the amount payable equal to </xsl:text>
                       <xsl:value-of select="balance"/>
                     </xsl:attribute>
