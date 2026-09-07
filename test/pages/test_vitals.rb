@@ -105,9 +105,14 @@ class TestVitals < Minitest::Test
     assert_equal('sha384-abc123', link['integrity'])
   end
 
+  def test_adless_page_does_not_name_zerocracy_in_its_description
+    html = generate_vitals_html(adless: 'true')
+    refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
+  end
+
   private
 
-  def generate_vitals_html
+  def generate_vitals_html(adless: 'false')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -155,12 +160,11 @@ class TestVitals < Minitest::Test
           version=0.0.1
           latest-version=0.0.2
           fbe=0.0.50
-          adless=false
           css-links=
           js-links=
           css=body{}
           js=
-        ].map { |p| Shellwords.escape(p) },
+        ].push("adless=#{adless}").map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
       File.read(output)

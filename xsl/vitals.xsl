@@ -148,7 +148,11 @@
           <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
           <xsl:text>The "</xsl:text>
           <xsl:value-of select="$name"/>
-          <xsl:text>" product is supervised by Zerocracy: </xsl:text>
+          <xsl:text>" product</xsl:text>
+          <xsl:if test="$adless = 'false'">
+            <xsl:text> is supervised by Zerocracy</xsl:text>
+          </xsl:if>
+          <xsl:text>: </xsl:text>
           <xsl:value-of select="z:format-signed($avg, '0.0')"/>
           <xsl:text> average points per task, </xsl:text>
           <xsl:value-of select="format-number(sum($facts/award), '0')"/>
