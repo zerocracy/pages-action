@@ -214,12 +214,13 @@
             <th class="right sorter">
               <xsl:variable name="week" select="xs:integer(.)"/>
               <xsl:variable name="d" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', ($weeks - $week) * 7, 'D'))"/>
-              <xsl:variable name="w" select="xs:integer(format-date(xs:date($d), '[W]'))"/>
+              <xsl:variable name="iso" select="z:iso-week($d)"/>
+              <xsl:variable name="w" select="xs:integer(substring($iso, 7))"/>
               <xsl:attribute name="title">
                 <xsl:text>Week #</xsl:text>
                 <xsl:value-of select="$w"/>
                 <xsl:text> in </xsl:text>
-                <xsl:value-of select="substring(xs:string(xs:date($d)), 1, 4)"/>
+                <xsl:value-of select="substring($iso, 1, 4)"/>
                 <xsl:text>, starting on Monday </xsl:text>
                 <xsl:value-of select="z:monday($week)"/>
               </xsl:attribute>
