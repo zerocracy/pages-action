@@ -40,7 +40,9 @@
     in current awards and previously posted "reconciliation" facts.
     -->
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name][last()]"/>
+    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name]"/>
+    <xsl:variable name="latest" select="max(for $reconciliation in $recs return xs:dateTime($reconciliation/when))"/>
+    <xsl:variable name="rec" select="$recs[xs:dateTime(when) = $latest][1]"/>
     <xsl:choose>
       <xsl:when test="$rec">
         <xsl:for-each select="'awarded', 'since', 'balance', 'payout', 'when'">
