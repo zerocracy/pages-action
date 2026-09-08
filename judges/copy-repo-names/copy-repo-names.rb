@@ -6,7 +6,8 @@
 require 'fbe/fb'
 require 'fbe/octo'
 
-ids = Fbe.fb.query('(exists repository)').each.map(&:repository).uniq
+known = Fbe.fb.query('(eq what "repo-details")').each.filter_map(&:repository).to_a
+ids = Fbe.fb.query('(exists repository)').each.map(&:repository).uniq - known
 return if ids.empty?
 
 repos =
@@ -17,7 +18,6 @@ repos =
   end
 
 repos.each do |id, json|
-  Fbe.fb.query("(and (eq what \"repo-details\") (eq repository #{id.inspect}))").delete!
   d = Fbe.fb.insert
   d.what = 'repo-details'
   d.where = 'github'
