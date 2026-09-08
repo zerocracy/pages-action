@@ -136,7 +136,10 @@ class TestAwards < Minitest::Test
       <fb>
         <f>
           <what>reconciliation</what>
-          <when>2024-09-20T00:00:00Z</when>
+          <when>
+            <v>2024-09-20T00:00:00Z</v>
+            <v>2024-09-20T00:00:00Z</v>
+          </when>
           <since>2024-09-19T00:00:00Z</since>
           <who_name>dude</who_name>
           <awarded>0</awarded>

@@ -41,8 +41,8 @@
     -->
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name]"/>
-    <xsl:variable name="latest" select="max(for $reconciliation in $recs return xs:dateTime($reconciliation/when))"/>
-    <xsl:variable name="rec" select="$recs[xs:dateTime(when) = $latest][1]"/>
+    <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
+    <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
     <xsl:choose>
       <xsl:when test="$rec">
         <xsl:for-each select="'awarded', 'since', 'balance', 'payout', 'when'">
@@ -63,7 +63,7 @@
             <xsl:text>The last payout of </xsl:text>
             <xsl:value-of select="xs:integer($rec/payout)"/>
             <xsl:text> points has been made on </xsl:text>
-            <xsl:value-of select="xs:date(xs:dateTime($rec/when))"/>
+            <xsl:value-of select="xs:date(z:when($rec/when))"/>
             <xsl:text>, making the amount payable equal to </xsl:text>
             <xsl:value-of select="$rec/balance"/>
             <xsl:text>; since </xsl:text>
