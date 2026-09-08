@@ -48,6 +48,54 @@ class TestAwards < Minitest::Test
     assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
 
+  def test_fn_payables_picks_latest_reconciliation_not_last_in_xml
+    xml = xslt(
+      "<xsl:copy-of select=\"z:payables('dude')\"/>",
+      "
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>#{(Time.now - (60 * 60)).utc.iso8601}</when>
+          <since>#{(Time.now - (50 * 60 * 60)).utc.iso8601}</since>
+          <who_name>dude</who_name>
+          <awarded>100</awarded>
+          <payout>70</payout>
+          <balance>30</balance>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <when>#{(Time.now - (100 * 60 * 60)).utc.iso8601}</when>
+          <since>#{(Time.now - (1000 * 60 * 60)).utc.iso8601}</since>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>999</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>#{(Time.now - (10 * 60 * 60)).utc.iso8601}</when>
+          <who_name>dude</who_name>
+          <award>40</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>#{(Time.now - (10 * 60 * 60)).utc.iso8601}</when>
+          <who_name>dude</who_name>
+          <award>60</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>#{Time.now.utc.iso8601}</when>
+          <who_name>dude</who_name>
+          <award>25</award>
+        </f>
+      </fb>
+      ",
+      'today' => (Time.now - (10 * 60 * 60)).utc.iso8601
+    )
+    assert_equal('55', xml.xpath('/td/text()').to_s, xml)
+  end
+
   def test_fn_payables_out_of_window
     xml = xslt(
       "<xsl:copy-of select=\"z:payables('dude')\"/>",

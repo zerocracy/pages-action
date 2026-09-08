@@ -40,7 +40,21 @@
     in current awards and previously posted "reconciliation" facts.
     -->
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="rec" select="$fb/f[what='reconciliation' and who_name=$name][last()]"/>
+    <xsl:variable name="rec" as="element()?">
+      <!--
+      The latest reconciliation is the one with the greatest "when", not the
+      one that happens to sit last in the XML: facts may be imported or merged
+      out of chronological order. Read the moment through z:when, the same way
+      the awards below do, because a "when" written twice arrives as several
+      "v" children and casting it directly would fail.
+      -->
+      <xsl:for-each select="$fb/f[what='reconciliation' and who_name=$name]">
+        <xsl:sort select="z:when(when)" order="descending"/>
+        <xsl:if test="position() = 1">
+          <xsl:sequence select="."/>
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:variable>
     <xsl:choose>
       <xsl:when test="$rec">
         <xsl:for-each select="'awarded', 'since', 'balance', 'payout', 'when'">
