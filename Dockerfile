@@ -39,6 +39,7 @@ COPY Makefile /home
 COPY makes /home/makes
 COPY .stylelintrc.json /home
 COPY Gemfile /home
+COPY Gemfile.lock /home
 COPY html-minifier-config.json /home
 COPY judges /home/judges
 COPY sass /home/sass
