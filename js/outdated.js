@@ -58,22 +58,18 @@ function formatRelativeTime(diffInMs, startDate) {
  * Displays a warning message if the page is outdated
  */
 function displayOutdatedWarning() {
-  const time = Date.parse($("#generated-time").attr("datetime"));
-  if (isNaN(time)) {
-    console.error("Could not parse the generated time");
-    return;
-  }
-  const hours = Math.floor((Date.now() - time) / TIME_UNITS.HOUR);
-  const warning = $("#page-outdated-warning");
-  if (hours > OUTDATED_THRESHOLD_HOURS) {
-    const message = `This page was generated ${hours} ${hours === 1 ? 'hour' : 'hours'} ago. The information is most probably outdated.`;
-    if (warning.length === 0) {
-      $('footer').prepend(`<p id="page-outdated-warning" class='red'>${message}</p>`);
-    } else {
-      warning.text(message);
+  if ($("#page-outdated-warning").length === 0) {
+    const time = Date.parse($("#generated-time").attr("datetime"));
+    if (isNaN(time)) {
+      console.error("Could not parse the generated time");
+      return;
     }
-  } else if (warning.length > 0) {
-    warning.remove();
+    const hours = Math.floor((Date.now() - time) / TIME_UNITS.HOUR);
+    if (hours > OUTDATED_THRESHOLD_HOURS) {
+      $('footer').prepend(
+        `<p id="page-outdated-warning" class='red'>This page was generated ${hours} ${hours === 1 ? 'hour' : 'hours'} ago. The information is most probably outdated.</p>`
+      );
+    }
   }
 }
 
