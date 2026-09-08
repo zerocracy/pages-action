@@ -19,7 +19,7 @@
     //div[@class="repositories"]/h2[starts-with(., "Repositories where")]
     //div[@class="repositories"]//a[.="yegor256/test"]
     //div[@class="repositories"]//time[@class="relative-time"]
-//div[@class="repositories"]//time[string-length(@title) > 0]
+    //div[@class="repositories"]//time[string-length(@title) > 0]
 -
   _id: 1
   what: pmp
