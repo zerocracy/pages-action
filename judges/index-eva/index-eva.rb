@@ -5,21 +5,34 @@
 
 require 'fbe/fb'
 
+common =
+  "
+  (eq what 'earned-value')
+  (exists when)
+  (exists start)
+  (exists ev)
+  "
+
 Fbe.fb.query(
   "
   (and
-    (eq what 'earned-value')
-    (exists when)
-    (exists start)
+    #{common}
     (exists ac)
     (not (eq ac 0))
-    (exists pv)
-    (not (eq pv 0))
-    (exists ev)
-    (absent n_cpi)
-    (absent n_spi))
+    (absent n_cpi))
   "
 ).each do |f|
   f.n_cpi = f.ev / f.ac
+end
+
+Fbe.fb.query(
+  "
+  (and
+    #{common}
+    (exists pv)
+    (not (eq pv 0))
+    (absent n_spi))
+  "
+).each do |f|
   f.n_spi = f.ev / f.pv
 end
