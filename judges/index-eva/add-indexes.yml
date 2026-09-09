@@ -31,7 +31,14 @@ input:
     ac: 433
     ev: 437
     pv: 0
+  -
+    when: 2024-05-17T22:22:22.8492Z
+    what: earned-value
+    ac: 433
+    ev: 4342.42
+    pv: 6540.56
 expected:
-  - /fb[count(f)=4]
+  - /fb[count(f)=5]
+  - /fb[count(f[n_cpi and n_spi])=3]
   - /fb/f[n_spi]
   - /fb/f[n_cpi]

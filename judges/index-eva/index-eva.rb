@@ -10,7 +10,6 @@ Fbe.fb.query(
   (and
     (eq what 'earned-value')
     (exists when)
-    (exists start)
     (exists ac)
     (not (eq ac 0))
     (exists pv)
