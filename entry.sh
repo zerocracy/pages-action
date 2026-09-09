@@ -157,6 +157,16 @@ if [ "${github_token_found}" == "false" ]; then
     fi
 fi
 
+if [ -z "${INPUT_TODAY}" ]; then
+    INPUT_TODAY=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+else
+    if ! [[ "${INPUT_TODAY}" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?(Z|[+-][0-9]{2}:[0-9]{2})?$ ]]; then
+        echo "ERROR: The 'today' input must be an ISO-8601 date-time, like 2026-09-07T12:00:00Z, but it is: '${INPUT_TODAY}'" >&2
+        exit 1
+    fi
+    echo "The 'today' is set to: '${INPUT_TODAY}'"
+fi
+
 timeout=${INPUT_TIMEOUT}
 if [ -z "${timeout}" ]; then
     timeout=3
@@ -184,12 +194,6 @@ ${JUDGES} "${gopts[@]}" print \
     --format xml \
     "${INPUT_FACTBASE}" \
     "${INPUT_OUTPUT}/${name}.rich.xml"
-
-if [ -z "${INPUT_TODAY}" ]; then
-    INPUT_TODAY=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-else
-    echo "The 'today' is set to: '${INPUT_TODAY}'"
-fi
 
 logo=${INPUT_LOGO}
 if [ -z "${logo}" ] && [ "${INPUT_ADLESS}" != 'true' ]; then
