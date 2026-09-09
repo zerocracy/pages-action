@@ -146,7 +146,7 @@
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <xsl:variable name="description">
-          <xsl:variable name="facts" select="$fb/f[z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
+          <xsl:variable name="facts" select="$fb/f[z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award and is_human = 1]"/>
           <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
           <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
           <xsl:text>The "</xsl:text>

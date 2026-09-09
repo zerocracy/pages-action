@@ -33,6 +33,18 @@ class TestBadge < Minitest::Test
     assert_includes(texts, '+0', xml)
   end
 
+  def test_ignores_bot_awards
+    xml = badge_svg(
+      '
+      <fb>
+        <f><when>2023-12-01T00:00:00Z</when><award>10</award><is_human>1</is_human></f>
+        <f><when>2023-12-01T00:00:00Z</when><award>1000</award><is_human>0</is_human></f>
+      </fb>
+      '
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+10', xml)
+  end
+
   private
 
   def badge_svg(xml)
