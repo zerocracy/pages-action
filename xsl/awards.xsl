@@ -6,8 +6,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
   <xsl:variable name="days" select="z:pmp('hr', 'days_of_running_balance', '28')"/>
   <xsl:variable name="weeks" select="xs:integer(ceiling(xs:float($days) div 7))"/>
-  <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
-  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt; $since and is_human = 1]"/>
+  <xsl:variable name="since" select="xs:dateTime(z:monday(1))"/>
+  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt;= $since and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
     <!--
     Takes week number (e.g. 4) and returns ISO-8601 date of the
@@ -31,7 +31,7 @@
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="monday" select="xs:dateTime(z:monday($week))"/>
     <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
-    <xsl:value-of select="$when &gt; $monday and $when &lt; $sunday"/>
+    <xsl:value-of select="$when &gt;= $monday and $when &lt; $sunday"/>
   </xsl:function>
   <xsl:function name="z:payables">
     <!--
