@@ -79,10 +79,10 @@
         </xsl:choose>
         <xsl:choose>
           <xsl:when test="abs($avg) &gt; 999">
-            <xsl:text>999</xsl:text>
+            <xsl:text>999.0</xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:value-of select="abs($avg)"/>
+            <xsl:value-of select="format-number(abs($avg), '0.0')"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:variable>

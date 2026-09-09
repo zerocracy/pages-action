@@ -30,7 +30,20 @@ class TestBadge < Minitest::Test
     xml = badge_svg('<fb/>')
     texts = xml.xpath("//*[local-name()='text']").map(&:text)
     refute_includes(texts, '-0', "Badge with a zero average must not show a negative sign:\n#{xml}")
-    assert_includes(texts, '+0', xml)
+    assert_includes(texts, '+0.0', xml)
+  end
+
+  def test_shows_one_decimal_for_a_whole_average
+    xml = badge_svg(
+      "
+      <fb>
+        <f><award>4</award><when>2023-12-01T00:00:00Z</when></f>
+        <f><award>4</award><when>2023-12-02T00:00:00Z</when></f>
+      </fb>
+      "
+    )
+    texts = xml.xpath("//*[local-name()='text']").map(&:text)
+    assert_includes(texts, '+4.0', xml)
   end
 
   private
