@@ -60,7 +60,7 @@
           <xsl:value-of select="$what"/>
           <xsl:text>',{labels:[</xsl:text>
           <xsl:for-each select="$facts/f">
-            <xsl:sort select="when" data-type="text" order="ascending"/>
+            <xsl:sort select="z:when(when)" order="ascending"/>
             <xsl:if test="position() &gt; 1">
               <xsl:text>,</xsl:text>
             </xsl:if>
@@ -70,7 +70,7 @@
           </xsl:for-each>
           <xsl:text>],fullDates:[</xsl:text>
           <xsl:for-each select="$facts/f">
-            <xsl:sort select="when" data-type="text" order="ascending"/>
+            <xsl:sort select="z:when(when)" order="ascending"/>
             <xsl:if test="position() &gt; 1">
               <xsl:text>,</xsl:text>
             </xsl:if>
@@ -107,7 +107,7 @@
             </xsl:if>
             <xsl:text>,data:[</xsl:text>
             <xsl:for-each select="$facts/f">
-              <xsl:sort select="when" data-type="text" order="ascending"/>
+              <xsl:sort select="z:when(when)" order="ascending"/>
               <xsl:if test="position() &gt; 1">
                 <xsl:text>,</xsl:text>
               </xsl:if>

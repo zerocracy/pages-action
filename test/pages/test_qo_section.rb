@@ -58,6 +58,33 @@ class TestQoSection < Minitest::Test
     assert_equal('2024-W52', xml.xpath('//r/text()').to_s.strip)
   end
 
+  def test_chart_arrays_follow_timestamp_instants
+    facts = [
+      '<f><what>metric</what><when>2024-06-03T00:30:00+03:00</when>' \
+      '<n_value>10</n_value><n_other>100</n_other></f>',
+      '<f><what>metric</what><when>2024-06-02T23:00:00Z</when>' \
+      '<n_value>20</n_value><n_other>200</n_other></f>'
+    ]
+    series = { 'Value' => %w[10 20], 'Other' => %w[100 200] }
+    [facts, facts.reverse].each do |ordered|
+      xml = xslt(
+        "<r><xsl:call-template name='qo-section'>" \
+        "<xsl:with-param name='what' select=\"'metric'\"/>" \
+        "<xsl:with-param name='title' select=\"'Metric'\"/>" \
+        '</xsl:call-template></r>',
+        "<fb>#{ordered.join}</fb>",
+        'today' => '2024-06-04T00:00:00Z'
+      )
+      js = xml.xpath('//script').map(&:content).join
+      assert_equal(['6/3', '6/2'], js.match(/labels:\s*\[([^\]]+)\]/)[1].scan(/'([^']+)'/).flatten)
+      assert_equal(['3 JUN 2024', '2 JUN 2024'], js.match(/fullDates:\s*\[([^\]]+)\]/)[1].scan(/'([^']+)'/).flatten)
+      series.each do |label, expected|
+        data = js.match(/label:\s*'#{label}'.*?data:\s*\[([^\]]+)\]/m)[1]
+        assert_equal(expected, data.split(',').map(&:strip))
+      end
+    end
+  end
+
   def test_inline_js_syntax_in_generated_html
     xml = xslt(
       "<r><xsl:call-template name='qo-section'>" \
