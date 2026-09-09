@@ -4,7 +4,6 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
-  <xsl:include href="script-with-cdata.xsl"/>
   <xsl:function name="z:iso-week" as="xs:string">
     <xsl:param name="dt" as="xs:dateTime"/>
     <xsl:variable name="d" select="xs:date($dt)"/>
