@@ -237,17 +237,19 @@ declare -a css_urls=(
     "https://cdn.jsdelivr.net/npm/tacit-css@1.9.5/dist/tacit-css.min.css"
     "https://cdn.jsdelivr.net/npm/drops@0.3.2/dist/drops-0.3.2.min.css"
 )
+declare -a css_hashes=(
+    "QF+7u3GMRHdbU5nzxyNvTNkV0xQtQXEbAraWZcussxwNUsY3zrmDeAKc8jZ5jfTb"
+    "p1uPBv+9Vp2mQmUJHUrsDnDVbg88Upi66Gf8uTcVy0I2ZIHbSUIEj3q+S6D7B1Lz"
+)
 if [ "${INPUT_ADLESS}" != 'true' ]; then
     css_urls+=("https://www.zerocracy.com/css/palette.css")
+    css_hashes+=("qHLQECQpsl5ded8ztb55ayHqxsGIT9cLHxPH1jOszgf/0HsckECmdIgvAp/PgwZ0")
 fi
 css_links=""
-for css in "${css_urls[@]}"; do
-    echo "Calculating hash for: ${css}"
-    hash=$(curl -sSf --max-time 30 "$css" | openssl dgst -sha384 -binary | openssl base64 -A) || {
-        echo "ERROR: Failed to fetch CSS from: ${css}" >&2
-        exit 1
-    }
-    echo "Hash: ${hash}"
+for i in "${!css_urls[@]}"; do
+    css="${css_urls[$i]}"
+    hash="${css_hashes[$i]}"
+    echo "Using pinned hash for: ${css}"
     css_links="${css_links}${css}|${hash}"$'\n'
 done
 css_links="${css_links%$'\n'}"
@@ -259,18 +261,17 @@ declare -a js_urls=(
     "https://cdn.jsdelivr.net/npm/chart.js@4.5.1"
     "https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"
 )
+declare -a js_hashes=(
+    "vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK"
+    "+PEWXCk8F17zxsQsEjkuHjUN4yFMHv03eKxKLrqwDql8FJQM0NeSvHRZFVLfXyn7"
+    "jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ"
+    "VRhlkYEqoAXsWzoORIQL0gHdX0BvQoQG89GxEj7I4xlffttgMvoMsQr7E/IWGK9T"
+)
 js_links=""
-for js in "${js_urls[@]}"; do
-    echo "Calculating hash for: ${js}"
-    hash=$(curl -sSf --max-time 30 "$js" | openssl dgst -sha384 -binary | openssl base64 -A) || {
-        echo "ERROR: Failed to fetch JS from: ${js}" >&2
-        exit 1
-    }
-    if [ -z "$hash" ]; then
-        echo "ERROR: Failed to calculate hash for: ${js}" >&2
-        exit 1
-    fi
-    echo "Hash: ${hash}"
+for i in "${!js_urls[@]}"; do
+    js="${js_urls[$i]}"
+    hash="${js_hashes[$i]}"
+    echo "Using pinned hash for: ${js}"
     js_links="${js_links}${js}|${hash}"$'\n'
 done
 js_links="${js_links%$'\n'}"
