@@ -129,6 +129,45 @@ class TestAwards < Minitest::Test
     assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
 
+  def test_fn_payables_uses_latest_reconciliation_when_facts_are_out_of_order
+    xml = xslt(
+      "<xsl:copy-of select=\"z:payables('dude')\"/>",
+      "
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>
+            <v>2024-09-20T00:00:00Z</v>
+            <v>2024-09-20T00:00:00Z</v>
+          </when>
+          <since>2024-09-19T00:00:00Z</since>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>30</balance>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-09-10T00:00:00Z</when>
+          <since>2024-09-01T00:00:00Z</since>
+          <who_name>dude</who_name>
+          <awarded>100</awarded>
+          <payout>70</payout>
+          <balance>0</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>2024-09-21T00:00:00Z</when>
+          <who_name>dude</who_name>
+          <award>25</award>
+        </f>
+      </fb>
+      ",
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    assert_equal('55', xml.xpath('/td/text()').to_s, xml)
+  end
+
   def test_fn_monday
     xml = xslt(
       '<r><xsl:value-of select="z:monday(1)"/></r>',
