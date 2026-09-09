@@ -172,11 +172,7 @@
           </xsl:attribute>
         </meta>
         <meta property="og:type" content="website"/>
-        <meta property="og:url">
-          <xsl:attribute name="content">
-            <xsl:value-of select="$url"/>
-          </xsl:attribute>
-        </meta>
+        <meta property="og:url" content="{$url}/{$name}-vitals.html"/>
         <xsl:if test="$adless = 'false'">
           <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
           <meta property="og:image:type" content="image/png"/>
