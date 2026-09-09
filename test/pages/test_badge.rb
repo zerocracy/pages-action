@@ -46,6 +46,12 @@ class TestBadge < Minitest::Test
     assert_includes(texts, '+4.0', xml)
   end
 
+  def test_labels_the_fixed_reporting_period
+    xml = badge_svg('<fb/>')
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), 'avg/256d')
+    assert_includes(xml.xpath("//*[local-name()='title']").text, '256 days')
+  end
+
   private
 
   def badge_svg(xml)

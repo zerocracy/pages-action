@@ -137,6 +137,9 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template match="/">
+    <xsl:variable name="summary-facts" select="$fb/f[z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
+    <xsl:variable name="summary-count" select="count($summary-facts)" as="xs:integer"/>
+    <xsl:variable name="summary-average" as="xs:double" select="if ($summary-count = 0) then xs:double('0') else sum($summary-facts/award) div $summary-count"/>
     <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
     <html lang="en">
       <xsl:attribute name="class">
@@ -146,9 +149,6 @@
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <xsl:variable name="description">
-          <xsl:variable name="facts" select="$fb/f[z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and award]"/>
-          <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
-          <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
           <xsl:text>The "</xsl:text>
           <xsl:value-of select="$name"/>
           <xsl:text>" product</xsl:text>
@@ -156,12 +156,12 @@
             <xsl:text> is supervised by Zerocracy</xsl:text>
           </xsl:if>
           <xsl:text>: </xsl:text>
-          <xsl:value-of select="z:format-signed($avg, '0.0')"/>
+          <xsl:value-of select="z:format-signed($summary-average, '0.0')"/>
           <xsl:text> average points per task, </xsl:text>
-          <xsl:value-of select="format-number(sum($facts/award), '0')"/>
+          <xsl:value-of select="format-number(sum($summary-facts/award), '0')"/>
           <xsl:text> total points earned, </xsl:text>
-          <xsl:value-of select="count(distinct-values($facts/who_name))"/>
-          <xsl:text> contributors.</xsl:text>
+          <xsl:value-of select="count(distinct-values($summary-facts/who_name))"/>
+          <xsl:text> contributors. Reporting period: 256 days.</xsl:text>
         </xsl:variable>
         <meta name="description" content="{$description}"/>
         <meta property="og:title">
@@ -236,6 +236,17 @@
             </xsl:if>
           </header>
           <article>
+            <p id="award-windows" class="smaller">
+              <xsl:text>Badge and summary — 256 days, all recorded awards: </xsl:text>
+              <xsl:value-of select="z:format-signed(sum($summary-facts/award), '0.0')"/>
+              <xsl:text> points total, </xsl:text>
+              <xsl:value-of select="z:format-signed($summary-average, '0.0')"/>
+              <xsl:text> per award. Running table — </xsl:text>
+              <xsl:value-of select="$days"/>
+              <xsl:text> days, human awards: </xsl:text>
+              <xsl:value-of select="z:format-signed(sum($facts/award), '0.0')"/>
+              <xsl:text> points total.</xsl:text>
+            </p>
             <xsl:apply-templates select="/" mode="awards"/>
             <xsl:apply-templates select="/" mode="assessment"/>
             <xsl:apply-templates select="/" mode="repositories"/>
@@ -380,7 +391,7 @@
               <xsl:text>You can use this badge in the </xsl:text>
               <code>README.md</code>
               <xsl:text> file of your GitHub repositories. </xsl:text>
-              <xsl:text>It shows the average reward amount. </xsl:text>
+              <xsl:text>It shows the average reward amount over 256 days, independently of the running table period. </xsl:text>
               <br/>
               <xsl:text>The higher the number, the better the discipline you maintain. </xsl:text>
               <xsl:text>Click </xsl:text>

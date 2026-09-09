@@ -142,14 +142,37 @@ class TestVitals < Minitest::Test
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
   end
 
+  def test_explains_both_award_windows
+    facts = <<~XML
+      <fb>
+        <f><what>pmp</what><area>hr</area><days_of_running_balance>28</days_of_running_balance></f>
+        <f>
+          <when>2024-09-20T00:00:00Z</when><award>10</award>
+          <who>1</who><who_name>recent</who_name><is_human>1</is_human>
+        </f>
+        <f>
+          <when>2024-06-18T00:00:00Z</when><award>90</award>
+          <who>2</who><who_name>older</who_name><is_human>1</is_human>
+        </f>
+      </fb>
+    XML
+    html = Nokogiri::HTML(generate_vitals_html(xml: facts))
+    refute_nil(html.at_css('#award-windows'), 'Both reporting windows must be visible')
+    summary = html.at_css('#award-windows').text.gsub(/\s+/, ' ').strip
+    assert_includes(summary, '256 days, all recorded awards: +100.0 points total, +50.0 per award')
+    assert_includes(summary, '28 days, human awards: +10.0 points total')
+    assert_includes(html.at_css('meta[name="description"]')['content'], 'Reporting period: 256 days.')
+    assert_includes(html.at_css('meta[property="og:description"]')['content'], 'Reporting period: 256 days.')
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false')
+  def generate_vitals_html(adless: 'false', xml: nil)
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
       input = File.join(dir, 'input.xml')
-      File.write(input, <<~XML)
+      File.write(input, xml || <<~XML)
         <?xml version="1.0" encoding="UTF-8"?>
         <fb>
           <f>

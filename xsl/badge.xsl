@@ -25,7 +25,7 @@
     <xsl:variable name="badgeHeight" select="20"/>
     <xsl:variable name="logoWidth" select="20"/>
     <xsl:variable name="fontSize" select="11"/>
-    <xsl:variable name="leftWidth" select="50"/>
+    <xsl:variable name="leftWidth" select="88"/>
     <xsl:variable name="rightWidth">
       <xsl:choose>
         <xsl:when test="abs($avg) &gt; 99">
@@ -41,6 +41,8 @@
     </xsl:variable>
     <xsl:variable name="width" select="$leftWidth + $rightWidth"/>
     <svg width="{$width}" height="{$badgeHeight}">
+      <title>Average award over 256 days</title>
+      <desc>The fixed badge period is independent of the configured running balance period.</desc>
       <linearGradient id="b" x2="0" y2="100%">
         <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
         <stop offset="1" stop-opacity=".1"/>
@@ -87,8 +89,8 @@
         </xsl:choose>
       </xsl:variable>
       <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="{$fontSize}">
-        <text x="{$logoWidth + ($leftWidth - $logoWidth) div 2}" y="{$badgeHeight - $fontSize div 2}" fill="#010101" fill-opacity=".3" text-anchor="middle">avg</text>
-        <text x="{$logoWidth + ($leftWidth - $logoWidth) div 2}" y="{$badgeHeight - $fontSize div 2 - 1}" text-anchor="middle">avg</text>
+        <text x="{$logoWidth + ($leftWidth - $logoWidth) div 2}" y="{$badgeHeight - $fontSize div 2}" fill="#010101" fill-opacity=".3" text-anchor="middle">avg/256d</text>
+        <text x="{$logoWidth + ($leftWidth - $logoWidth) div 2}" y="{$badgeHeight - $fontSize div 2 - 1}" text-anchor="middle">avg/256d</text>
         <text x="{$leftWidth + $rightWidth div 2}" y="{$badgeHeight - $fontSize div 2}" fill="#010101" fill-opacity=".3" text-anchor="middle">
           <xsl:value-of select="$n"/>
         </text>
