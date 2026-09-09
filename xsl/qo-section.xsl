@@ -81,6 +81,7 @@
           <xsl:text>],</xsl:text>
           <xsl:text>datasets:[</xsl:text>
           <xsl:for-each select="distinct-values($facts/f/*[starts-with(name(), 'n_')]/name())">
+            <xsl:sort select="."/>
             <xsl:variable name="n" select="."/>
             <xsl:if test="position() &gt; 1">
               <xsl:text>,</xsl:text>
