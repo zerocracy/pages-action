@@ -13,7 +13,12 @@ names =
       (exists name))'
   ).each.to_a.to_h { |f| [f.who, f.name] }
 
-Fbe.fb.query('(and (exists who) (not (exists who_name)))').each do |f|
+Fbe.fb.query(
+  '(and
+    (not (eq what "who-has-name"))
+    (exists who)
+    (not (exists who_name)))'
+).each do |f|
   n = names[f.who]
   next if n.nil?
   f.who_name = n
