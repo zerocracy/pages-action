@@ -58,6 +58,25 @@ class TestQoSection < Minitest::Test
     assert_equal('2024-W52', xml.xpath('//r/text()').to_s.strip)
   end
 
+  def test_keeps_the_before_block_out_of_a_paragraph
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      "<xsl:with-param name='before'><p class='darkred'>Nope.</p></xsl:with-param>" \
+      '</xsl:call-template></r>',
+      '<fb>
+        <f>
+          <when>2024-07-03T22:22:22Z</when>
+          <what>quality-of-service</what>
+          <n_composite>0.5</n_composite>
+        </f>
+      </fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    assert_empty(xml.xpath('//p//p'), xml)
+  end
+
   def test_inline_js_syntax_in_generated_html
     xml = xslt(
       "<r><xsl:call-template name='qo-section'>" \
