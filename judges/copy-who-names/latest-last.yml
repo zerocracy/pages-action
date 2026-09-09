@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  - what: something
+    who: 444
+  - what: something
+    who: 555
+  - what: who-has-name
+    who: 555
+    name: independent
+  - what: something
+    who: 444
+    who_name: preserved
+  - what: who-has-name
+    who: 444
+    name: oldname
+    when: 2024-01-01T00:00:00Z
+  - what: who-has-name
+    who: 444
+    name: newname
+    when: 2024-02-01T00:00:00Z
+expected:
+  - /fb/f[what='something' and who=444 and who_name='newname']
+  - /fb/f[what='something' and who=555 and who_name='independent']
+  - /fb/f[who_name='preserved']
+  - /fb[not(f[what='who-has-name' and who_name])]
