@@ -28,6 +28,11 @@ fi
 
 echo "The 'pages-action' ${VERSION} is running"
 
+github_token=$(printenv "INPUT_GITHUB-TOKEN" || true)
+if [ -n "${github_token}" ]; then
+    echo "::add-mask::${github_token}"
+fi
+
 if [ "${INPUT_VERBOSE}" == 'true' ]; then
     set -x
 fi
@@ -118,6 +123,15 @@ while IFS= read -r o; do
     v="${v%"${v##*[![:space:]]}"}"
     if [ "${v}" = "" ]; then
         continue
+    fi
+    if [[ "${v}" == "github_token="* ]]; then
+        if [ "${INPUT_VERBOSE}" == 'true' ]; then
+            set +x
+        fi
+        echo "::add-mask::${v#github_token=}"
+        if [ "${INPUT_VERBOSE}" == 'true' ]; then
+            set -x
+        fi
     fi
     options+=("--option=${v}")
 done <<< "${INPUT_OPTIONS}"
