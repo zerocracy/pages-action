@@ -142,9 +142,13 @@ class TestVitals < Minitest::Test
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
   end
 
+  def test_adless_page_does_not_name_zerocracy
+    refute_match(/zerocracy/i, generate_vitals_html(adless: 'true', logo: ''))
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false')
+  def generate_vitals_html(adless: 'false', logo: 'x')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -183,20 +187,21 @@ class TestVitals < Minitest::Test
           "-s:#{Shellwords.escape(input)}",
           "-xsl:#{Shellwords.escape(File.join(__dir__, '../../xsl/vitals.xsl'))}",
           "-o:#{Shellwords.escape(output)}"
-        ] + %w[
-          today=2024-09-26T04:04:04Z
-          name=test
-          logo=x
-          palette=classic
-          url=https://example.com
-          version=0.0.1
-          latest-version=0.0.2
-          fbe=0.0.50
-          css-links=
-          js-links=
-          css=body{}
-          js=
-        ].push("adless=#{adless}").map { |p| Shellwords.escape(p) },
+        ] + [
+          'today=2024-09-26T04:04:04Z',
+          'name=test',
+          "logo=#{logo}",
+          'palette=classic',
+          'url=https://example.com',
+          'version=0.0.1',
+          'latest-version=0.0.2',
+          'fbe=0.0.50',
+          "adless=#{adless}",
+          'css-links=',
+          'js-links=',
+          'css=body{}',
+          'js='
+        ].map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
       File.read(output)
