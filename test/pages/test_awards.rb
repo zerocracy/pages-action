@@ -263,4 +263,27 @@ class TestAwards < Minitest::Test
     )
     assert_empty(xml.xpath("//a[starts-with(@href, 'javascript:')]"), xml)
   end
+
+  def test_leaderboard_sorts_by_the_total
+    now = Time.now.utc
+    xml = xslt(
+      '<r><xsl:apply-templates select="/" mode="awards"/></r>',
+      "
+      <fb>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+        <f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>1</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+        <f><is_human>1</is_human><who>2</who><who_name>bob</who_name><award>3</award>
+          <when>#{(now - (60 * 60)).iso8601}</when></f>
+      </fb>
+      ",
+      'today' => now.iso8601
+    )
+    assert_equal(%w[@alice @bob], xml.xpath('//td/span/a/text()').map(&:to_s), xml)
+  end
 end
