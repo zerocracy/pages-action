@@ -387,7 +387,7 @@
       </tr>
     </xsl:if>
     <xsl:for-each select="$facts[who_name=$name]">
-      <xsl:sort select="when" data-type="text"/>
+      <xsl:sort select="z:when(when)"/>
       <xsl:variable name="fact" select="."/>
       <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
         <td>

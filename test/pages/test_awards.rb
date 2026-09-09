@@ -228,6 +228,35 @@ class TestAwards < Minitest::Test
     assert_includes(th['title'], 'Week #1 in 2026', xml)
   end
 
+  def test_sorts_award_details_by_instant
+    facts = [
+      ['utc', '2024-06-01T00:00:00Z'],
+      ['positive offset', '2024-06-01T00:30:00+03:00'],
+      ['negative offset', '2024-05-31T23:00:00-02:00']
+    ].map do |reason, timestamp|
+      "
+      <f>
+        <is_human>1</is_human>
+        <who>1</who>
+        <who_name>dude</who_name>
+        <award>10</award>
+        <why>#{reason}</why>
+        <when>#{timestamp}</when>
+      </f>
+      "
+    end.join
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      "<fb>#{facts}</fb>",
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    assert_equal(
+      ['positive offset', 'utc', 'negative offset'],
+      xml.xpath('//tr[contains(@class, "p_dude")]/td[2]').map(&:text),
+      xml
+    )
+  end
+
   def test_fn_award
     {
       42 => ['darkgreen', '+42'],
