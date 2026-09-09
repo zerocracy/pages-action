@@ -94,4 +94,32 @@ class TestQoSection < Minitest::Test
       end
     end
   end
+
+  def test_missing_data_point_is_null
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb>
+        <f>
+          <when>2024-06-23T22:22:22Z</when>
+          <what>quality-of-service</what>
+          <n_composite>0.2</n_composite>
+        </f>
+        <f>
+          <when>2024-06-30T22:22:22Z</when>
+          <what>quality-of-service</what>
+        </f>
+        <f>
+          <when>2024-07-03T22:22:22Z</when>
+          <what>quality-of-service</what>
+          <n_composite>0.5</n_composite>
+        </f>
+      </fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    js = xml.xpath('//script[not(@src)]').map(&:content).join
+    assert_includes(js, 'data:[0.2,null,0.5]', js)
+  end
 end
