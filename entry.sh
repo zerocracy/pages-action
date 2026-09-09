@@ -107,16 +107,6 @@ name=$(basename "${INPUT_FACTBASE}")
 name="${name%.*}"
 echo "The factbase name is: '${name}'"
 
-for f in yaml xml json html; do
-    ${JUDGES} "${gopts[@]}" print \
-        --format "${f}" \
-        --columns "${INPUT_COLUMNS}" \
-        --highlighted "${INPUT_HIGHLIGHTED}"\
-        --hidden "${INPUT_HIDDEN}" \
-        "${INPUT_FACTBASE}" \
-        "${INPUT_OUTPUT}/${name}.${f}"
-done
-
 declare -a options=()
 while IFS= read -r o; do
     v="${o#"${o%%[![:space:]]*}"}"
@@ -198,6 +188,17 @@ ${JUDGES} "${gopts[@]}" update \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
+
+for f in yaml xml json html; do
+    ${JUDGES} "${gopts[@]}" print \
+        --format "${f}" \
+        --columns "${INPUT_COLUMNS}" \
+        --highlighted "${INPUT_HIGHLIGHTED}"\
+        --hidden "${INPUT_HIDDEN}" \
+        "${INPUT_FACTBASE}" \
+        "${INPUT_OUTPUT}/${name}.${f}"
+done
+
 ${JUDGES} "${gopts[@]}" print \
     --format xml \
     "${INPUT_FACTBASE}" \
