@@ -78,10 +78,10 @@
     <xsl:param name="area" as="xs:string"/>
     <xsl:param name="param" as="xs:string"/>
     <xsl:param name="default" as="xs:string"/>
-    <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area]"/>
+    <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area][1]"/>
     <xsl:choose>
       <xsl:when test="$a">
-        <xsl:variable name="v" select="$a/*[name()=$param]/text()"/>
+        <xsl:variable name="v" select="$a/*[name()=$param][1]/text()"/>
         <xsl:choose>
           <xsl:when test="$v">
             <xsl:value-of select="$v"/>
