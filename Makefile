@@ -45,7 +45,7 @@ target/output/%: target/fb/%.fb entry.sh Makefile $(XSLS) $(CSS) $(JS_TEST) $(SA
 	export INPUT_OUTPUT=target/output/$${fb}
 	./entry.sh
 
-target/html/%.html: target/output/%
+target/html/%.html: target/output/% tests/%.yml
 	n=$$(basename "$@")
 	n=$${n%.*}
 	cp "$$(dirname "$<")/$${n}/$${n}.html" "$$(dirname "$@")/$${n}.html"
