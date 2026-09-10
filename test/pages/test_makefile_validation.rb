@@ -19,6 +19,7 @@ class TestMakefileValidation < Minitest::Test
       ].each do |file|
         File.write(File.join(dir, file), '')
       end
+      File.write("#{dir}/html-minifier-config.json", '{}')
       File.write("#{dir}/tests/sample.yml", "- xpaths: /html/body/p\n")
       File.write("#{dir}/judges-probe", "#!/usr/bin/env bash\ntouch \"${@: -1}\"\n")
       File.write(
