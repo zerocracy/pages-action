@@ -55,6 +55,6 @@ inputs:
     required: false
     default: 5
   url:
-    description: 'The URL where the static files will be visible'
+    description: 'The URL where the static files will be visible, without a query or fragment'
     required: false
     default: ''
