@@ -103,6 +103,16 @@ fi
 mkdir -p "${INPUT_OUTPUT}"
 echo "The output directory is: ${INPUT_OUTPUT}"
 
+# Render into a temporary directory first. If a judge or a transform fails,
+# the previously published files remain untouched. The generated files are
+# moved into the requested directory only after the complete render succeeds.
+staging=$(mktemp -d "${INPUT_OUTPUT}/.pages-action.XXXXXX")
+cleanup() {
+    rm -rf "${staging}"
+}
+trap cleanup EXIT
+echo "The staging directory is: ${staging}"
+
 name=$(basename "${INPUT_FACTBASE}")
 name="${name%.*}"
 echo "The factbase name is: '${name}'"
@@ -114,7 +124,7 @@ for f in yaml xml json html; do
         --highlighted "${INPUT_HIGHLIGHTED}"\
         --hidden "${INPUT_HIDDEN}" \
         "${INPUT_FACTBASE}" \
-        "${INPUT_OUTPUT}/${name}.${f}"
+        "${staging}/${name}.${f}"
 done
 
 declare -a options=()
@@ -201,7 +211,7 @@ ${JUDGES} "${gopts[@]}" update \
 ${JUDGES} "${gopts[@]}" print \
     --format xml \
     "${INPUT_FACTBASE}" \
-    "${INPUT_OUTPUT}/${name}.rich.xml"
+    "${staging}/${name}.rich.xml"
 
 logo=${INPUT_LOGO}
 if [ -z "${logo}" ] && [ "${INPUT_ADLESS}" != 'true' ]; then
@@ -230,7 +240,7 @@ if [ -z "${url}" ]; then
     echo "The URL of the pages to publish is this one (change it using the 'url' parameter): ${url}"
 fi
 
-html=${INPUT_OUTPUT}/${name}-vitals.html
+html=${staging}/${name}-vitals.html
 
 echo "Calculating integrity hashes for CSS files..."
 declare -a css_urls=(
@@ -276,7 +286,7 @@ done
 js_links="${js_links%$'\n'}"
 
 java -jar "${SELF}/target/saxon.jar" \
-    "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
+    "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/vitals.xsl" \
     "-o:${html}" \
     "today=${INPUT_TODAY}" \
@@ -295,12 +305,19 @@ java -jar "${SELF}/target/saxon.jar" \
 html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
 echo "HTML generated at: ${html}"
 
-svg=${INPUT_OUTPUT}/${name}-badge.svg
+svg=${staging}/${name}-badge.svg
 java -jar "${SELF}/target/saxon.jar" \
-    "-s:${INPUT_OUTPUT}/${name}.rich.xml" \
+    "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/badge.xsl" \
     "-o:${svg}" \
     "today=${INPUT_TODAY}"
 echo "SVG badge generated at: ${svg}"
 
-rm "${INPUT_OUTPUT}/${name}.rich.xml"
+rm "${staging}/${name}.rich.xml"
+
+echo "Publishing generated files to: ${INPUT_OUTPUT}"
+for file in "${staging}"/*; do
+    if [ -f "${file}" ]; then
+        mv -- "${file}" "${INPUT_OUTPUT}/"
+    fi
+done
