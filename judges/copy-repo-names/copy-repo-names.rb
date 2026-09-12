@@ -12,6 +12,8 @@ return if ids.empty?
 repos =
   ids.each_with_object({}) do |id, h|
     h[id] = Fbe.octo.repository(id)
+  rescue Fbe::OffQuota
+    break h
   rescue Octokit::Error, Faraday::Error
     next
   end
