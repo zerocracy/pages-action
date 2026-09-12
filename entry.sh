@@ -125,6 +125,10 @@ while IFS= read -r o; do
         continue
     fi
     if [[ "${v}" == "github_token="* ]]; then
+        if [ "${v}" = "github_token=" ]; then
+            echo "The 'github_token' option is empty, ignoring it"
+            continue
+        fi
         if [ "${INPUT_VERBOSE}" == 'true' ]; then
             set +x
         fi
