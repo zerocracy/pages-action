@@ -55,24 +55,24 @@
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime($rec/since)]/award))"/>
-          <xsl:variable name="delta" select="$accumulated - xs:integer($rec/awarded)"/>
-          <xsl:variable name="payable" select="$accumulated - xs:integer($rec/awarded) + xs:integer($rec/balance)"/>
+          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
+          <xsl:variable name="delta" select="$accumulated - xs:integer(z:value($rec/awarded))"/>
+          <xsl:variable name="payable" select="$accumulated - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance))"/>
           <xsl:attribute name="title">
             <xsl:text>The last payout of </xsl:text>
-            <xsl:value-of select="xs:integer($rec/payout)"/>
+            <xsl:value-of select="xs:integer(z:value($rec/payout))"/>
             <xsl:text> points has been made on </xsl:text>
             <xsl:value-of select="xs:date(z:when($rec/when))"/>
             <xsl:text>, making the amount payable equal to </xsl:text>
-            <xsl:value-of select="$rec/balance"/>
+            <xsl:value-of select="z:value($rec/balance)"/>
             <xsl:text>; since </xsl:text>
-            <xsl:value-of select="xs:date(xs:dateTime($rec/since))"/>
+            <xsl:value-of select="xs:date(xs:dateTime(z:value($rec/since)))"/>
             <xsl:text> you've accumulated </xsl:text>
             <xsl:value-of select="$delta"/>
             <xsl:text> points (</xsl:text>
             <xsl:value-of select="$accumulated"/>
             <xsl:text> - </xsl:text>
-            <xsl:value-of select="xs:integer($rec/awarded)"/>
+            <xsl:value-of select="xs:integer(z:value($rec/awarded))"/>
             <xsl:text>), that's why the amount payable now is </xsl:text>
             <xsl:value-of select="$payable"/>
           </xsl:attribute>
@@ -122,6 +122,11 @@
         </xsl:otherwise>
       </xsl:choose>
     </span>
+  </xsl:function>
+  <xsl:function name="z:value" as="xs:string?">
+    <xsl:param name="property" as="element()*"/>
+    <xsl:variable name="value" select="($property/v, $property[not(v)])[1]"/>
+    <xsl:sequence select="if (empty($value)) then () else string($value)"/>
   </xsl:function>
   <xsl:function name="z:td-award">
     <xsl:param name="a" as="xs:integer"/>
@@ -356,17 +361,17 @@
                   <span>
                     <xsl:attribute name="title">
                       <xsl:text>Since </xsl:text>
-                      <xsl:value-of select="xs:date(xs:dateTime(since))"/>
+                      <xsl:value-of select="xs:date(xs:dateTime(z:value(since)))"/>
                       <xsl:text> you've accumulated </xsl:text>
-                      <xsl:value-of select="xs:integer(awarded)"/>
+                      <xsl:value-of select="xs:integer(z:value(awarded))"/>
                       <xsl:text> points, a payout of </xsl:text>
-                      <xsl:value-of select="xs:integer(payout)"/>
+                      <xsl:value-of select="xs:integer(z:value(payout))"/>
                       <xsl:text> points has been made on </xsl:text>
                       <xsl:value-of select="xs:date(z:when(when))"/>
                       <xsl:text>, making the amount payable equal to </xsl:text>
                       <xsl:value-of select="balance"/>
                     </xsl:attribute>
-                    <xsl:value-of select="xs:integer(payout)"/>
+                    <xsl:value-of select="xs:integer(z:value(payout))"/>
                   </span>
                 </xsl:for-each>
               </xsl:when>
