@@ -35,8 +35,7 @@
       <xsl:value-of select="error((), concat('Format must be &quot;0.0&quot; or &quot;0.00&quot;, but got: ', $format))"/>
     </xsl:if>
     <xsl:variable name="factor" as="xs:integer" select="if ($format = '0.0') then 10 else 100"/>
-    <xsl:variable name="rounded" as="xs:double"
-      select="if ($value lt 0) then -(round(-$value * $factor) div $factor) else round($value * $factor) div $factor"/>
+    <xsl:variable name="rounded" as="xs:double" select="if ($value lt 0) then -(round(-$value * $factor) div $factor) else round($value * $factor) div $factor"/>
     <xsl:variable name="formatted" select="format-number($rounded, $format)"/>
     <xsl:choose>
       <xsl:when test="$value &gt;= 0 and not($formatted = '-0.0' or $formatted = '-0.00')">
