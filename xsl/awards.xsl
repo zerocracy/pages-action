@@ -33,6 +33,18 @@
     <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
     <xsl:value-of select="$when &gt; $monday and $when &lt; $sunday"/>
   </xsl:function>
+  <xsl:function name="z:latest" as="element()?">
+    <!--
+    Takes a few facts and returns the one that happened last.
+    -->
+    <xsl:param name="facts" as="element()*"/>
+    <xsl:for-each select="$facts">
+      <xsl:sort select="(z:when(when), xs:dateTime('1970-01-01T00:00:00Z'))[1]" order="descending"/>
+      <xsl:if test="position() = 1">
+        <xsl:sequence select="."/>
+      </xsl:if>
+    </xsl:for-each>
+  </xsl:function>
   <xsl:function name="z:payables">
     <!--
     Calculates the amount to be paid to a user, according to the information
