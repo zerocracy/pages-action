@@ -5,7 +5,6 @@
 
 require_relative 'test__helper'
 
-# Test that the rich XML is printed the same way as the published dumps.
 class TestEntryRich < Minitest::Test
   def test_prints_the_rich_xml_with_the_same_options
     block = File.read(File.join(__dir__, '..', 'entry.sh'))[
