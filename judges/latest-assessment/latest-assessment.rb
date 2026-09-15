@@ -10,10 +10,11 @@ return if assessments.empty?
 
 latest = assessments.max_by(&:when)
 
-Fbe.fb.query('(eq what "latest-assessment")').delete!
-
-f = Fbe.fb.insert
-f.what = 'latest-assessment'
-f.text = latest.text
-f.when = latest.when
-f.total = assessments.size
+Fbe.fb.txn do |fbt|
+  fbt.query('(eq what "latest-assessment")').delete!
+  f = fbt.insert
+  f.what = 'latest-assessment'
+  f.text = latest.text
+  f.when = latest.when
+  f.total = assessments.size
+end
