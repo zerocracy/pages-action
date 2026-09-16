@@ -177,12 +177,21 @@
             <xsl:value-of select="$url"/>
           </xsl:attribute>
         </meta>
-        <xsl:if test="$adless = 'false'">
-          <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
-          <meta property="og:image:type" content="image/png"/>
-          <meta property="og:image:width" content="1200"/>
-          <meta property="og:image:height" content="630"/>
-        </xsl:if>
+        <xsl:choose>
+          <xsl:when test="$adless = 'false'">
+            <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
+            <meta property="og:image:type" content="image/png"/>
+            <meta property="og:image:width" content="1200"/>
+            <meta property="og:image:height" content="630"/>
+          </xsl:when>
+          <xsl:when test="$logo != ''">
+            <meta property="og:image">
+              <xsl:attribute name="content">
+                <xsl:value-of select="$logo"/>
+              </xsl:attribute>
+            </meta>
+          </xsl:when>
+        </xsl:choose>
         <meta property="og:description" content="{$description}"/>
         <title>
           <xsl:value-of select="$name"/>

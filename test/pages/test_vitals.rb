@@ -137,6 +137,13 @@ class TestVitals < Minitest::Test
     assert_equal('sha384-abc123', link['integrity'])
   end
 
+  def test_adless_page_previews_with_the_logo
+    html = generate_vitals_html(adless: 'true')
+    meta = Nokogiri::HTML.parse(html).xpath('//meta[@property="og:image"]').first
+    refute_nil(meta, html)
+    assert_equal('x', meta['content'], html)
+  end
+
   def test_adless_page_does_not_name_zerocracy_in_its_description
     html = generate_vitals_html(adless: 'true')
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
