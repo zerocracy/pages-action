@@ -303,4 +303,16 @@ java -jar "${SELF}/target/saxon.jar" \
     "today=${INPUT_TODAY}"
 echo "SVG badge generated at: ${svg}"
 
+if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+    {
+        echo "### ${name}"
+        sed -n 's/.*<meta name="description" content="\([^"]*\)".*/\1/p' "${html}" | head -1
+        if [ -n "${url}" ]; then
+            echo
+            echo "[Vitals page](${url}/${name}-vitals.html) · [Badge](${url}/${name}-badge.svg)"
+        fi
+    } >> "${GITHUB_STEP_SUMMARY}"
+    echo "Run summary written to: ${GITHUB_STEP_SUMMARY}"
+fi
+
 rm "${INPUT_OUTPUT}/${name}.rich.xml"
