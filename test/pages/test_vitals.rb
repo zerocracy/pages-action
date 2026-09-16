@@ -137,6 +137,13 @@ class TestVitals < Minitest::Test
     assert_equal('sha384-abc123', link['integrity'])
   end
 
+  def test_page_points_at_itself_with_a_canonical_link
+    html = generate_vitals_html
+    link = Nokogiri::HTML.parse(html).xpath('//link[@rel="canonical"]').first
+    refute_nil(link, html)
+    assert_equal('https://example.com', link['href'], html)
+  end
+
   def test_adless_page_does_not_name_zerocracy_in_its_description
     html = generate_vitals_html(adless: 'true')
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)

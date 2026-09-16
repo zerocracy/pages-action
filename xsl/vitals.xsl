@@ -177,6 +177,13 @@
             <xsl:value-of select="$url"/>
           </xsl:attribute>
         </meta>
+        <xsl:if test="$url != ''">
+          <link rel="canonical">
+            <xsl:attribute name="href">
+              <xsl:value-of select="$url"/>
+            </xsl:attribute>
+          </link>
+        </xsl:if>
         <xsl:if test="$adless = 'false'">
           <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
           <meta property="og:image:type" content="image/png"/>
