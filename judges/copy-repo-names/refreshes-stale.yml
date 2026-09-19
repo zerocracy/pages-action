@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+options:
+  testing: true
+input:
+  -
+    what: award
+    repository: 12345
+    where: github
+  -
+    what: repo-details
+    where: github
+    repository: 12345
+    repository_name: stale/name
+    description: stale description
+    stars: 999
+    forks: 999
+    language: Stale
+    open_issues: 999
+    updated_at: 2020-01-01T00:00:00Z
+expected:
+  - /fb/count(f[what='repo-details' and repository='12345'])=1
+  - /fb/f[what='repo-details' and repository='12345' and repository_name='yegor256/test']
+  - /fb/f[what='repo-details' and repository='12345' and description='something' and stars=1 and forks=0 and language='Ruby' and open_issues=6]
