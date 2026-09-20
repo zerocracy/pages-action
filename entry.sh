@@ -118,6 +118,9 @@ for f in yaml xml json html; do
 done
 
 declare -a options=()
+if [ "${INPUT_VERBOSE}" == 'true' ]; then
+    set +x
+fi
 while IFS= read -r o; do
     v="${o#"${o%%[![:space:]]*}"}"
     v="${v%"${v##*[![:space:]]}"}"
@@ -135,6 +138,9 @@ while IFS= read -r o; do
     fi
     options+=("--option=${v}")
 done <<< "${INPUT_OPTIONS}"
+if [ "${INPUT_VERBOSE}" == 'true' ]; then
+    set -x
+fi
 github_token_found=false
 for opt in "${options[@]}"; do
     if [[ "${opt}" == "--option=github_token="* ]]; then
