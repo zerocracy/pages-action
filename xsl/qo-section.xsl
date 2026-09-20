@@ -24,7 +24,7 @@
     <xsl:param name="title" as="xs:string"/>
     <xsl:param name="colors" as="xs:string" select="'n_composite:orange'"/>
     <xsl:param name="before"/>
-    <xsl:variable name="raw" select="/fb/f[what=$what and z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D'))]"/>
+    <xsl:variable name="raw" select="/fb/f[what=$what and z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D')) and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="facts">
       <xsl:for-each-group select="$raw" group-by="z:iso-week(z:when(when))">
         <xsl:for-each select="current-group()">
