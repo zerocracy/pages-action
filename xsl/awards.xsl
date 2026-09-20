@@ -7,7 +7,7 @@
   <xsl:variable name="days" select="z:pmp('hr', 'days_of_running_balance', '28')"/>
   <xsl:variable name="weeks" select="xs:integer(ceiling(xs:float($days) div 7))"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
-  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt; $since and is_human = 1]"/>
+  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today) and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
     <!--
     Takes week number (e.g. 4) and returns ISO-8601 date of the
