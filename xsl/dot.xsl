@@ -65,7 +65,12 @@
             </td>
             <xsl:for-each select="1 to $weeks">
               <xsl:variable name="week" select="xs:integer(.)"/>
-              <xsl:variable name="f" select="$dot_facts[z:in-week(z:when(when), $week)][last()]"/>
+              <xsl:variable name="sorted" as="element()*">
+                <xsl:perform-sort select="$dot_facts[z:in-week(z:when(when), $week)]">
+                  <xsl:sort select="z:when(when)" order="ascending"/>
+                </xsl:perform-sort>
+              </xsl:variable>
+              <xsl:variable name="f" select="$sorted[last()]"/>
               <td class="ff right">
                 <xsl:choose>
                   <xsl:when test="$f">
