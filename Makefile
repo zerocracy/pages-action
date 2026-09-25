@@ -8,6 +8,7 @@
 .SHELLFLAGS := -x -e -o pipefail -c
 SHELL := bash
 
+SOURCES = $(foreach dir,$(wildcard judges lib),$(shell find $(dir) -type f -name '*.rb'))
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
@@ -63,7 +64,7 @@ target/html/%.html: target/output/%
 		fi
 	done
 
-target/fb/%.fb: tests/%.yml Makefile | target/fb
+target/fb/%.fb: tests/%.yml Makefile $(SOURCES) | target/fb
 	if [ -e "$@" ]; then $(JUDGES) trim --query='(always)' "$@"; fi
 	$(JUDGES) import "$<" "$@"
 
