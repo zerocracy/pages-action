@@ -263,4 +263,31 @@ class TestAwards < Minitest::Test
     )
     assert_empty(xml.xpath("//a[starts-with(@href, 'javascript:')]"), xml)
   end
+
+  def test_payables_accept_multi_valued_since
+    xml = xslt(
+      "<r><xsl:copy-of select=\"z:payables('dude')\"/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2026-09-18T10:00:00Z</when>
+          <since><v>2026-09-01T00:00:00Z</v><v>2026-09-02T00:00:00Z</v></since>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>0</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>2026-09-10T10:00:00Z</when>
+          <who_name>dude</who_name>
+          <award>25</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2026-09-19T04:04:04Z'
+    )
+    assert_equal('25', xml.xpath('/r/td').text.strip, xml)
+  end
 end
