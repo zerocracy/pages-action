@@ -9,6 +9,36 @@ require 'qbash'
 require_relative '../test__helper'
 
 class TestAwards < Minitest::Test
+  def test_gives_a_row_to_an_award_with_no_name
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>7</days_of_running_balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-07-02T00:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>2</who>
+          <award>25</award>
+          <when>2024-07-03T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_equal(2, xml.xpath('//tbody/tr[not(@class)]').size, xml)
+  end
+
   def test_fn_payables
     xml = xslt(
       "<xsl:copy-of select=\"z:payables('dude')\"/>",
