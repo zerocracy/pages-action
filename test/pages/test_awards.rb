@@ -263,4 +263,49 @@ class TestAwards < Minitest::Test
     )
     assert_empty(xml.xpath("//a[starts-with(@href, 'javascript:')]"), xml)
   end
+
+  def test_detail_rows_follow_the_earliest_moment_in_a_multi_valued_when
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>28</days_of_running_balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>dude</who_name>
+          <award>1</award>
+          <why>FIRST</why>
+          <when>2026-09-08T10:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>dude</who_name>
+          <award>2</award>
+          <why>SECOND</why>
+          <when>
+            <v>2026-09-12T10:00:00Z</v>
+            <v>2026-09-09T10:00:00Z</v>
+          </when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>dude</who_name>
+          <award>3</award>
+          <why>THIRD</why>
+          <when>2026-09-10T10:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2026-09-19T04:04:04Z'
+    )
+    rows = xml.xpath("//tr[contains(@class, 'p_dude')]/td[2]").map { |td| td.text.strip }
+    assert_equal(%w[FIRST SECOND THIRD], rows, xml)
+  end
 end
