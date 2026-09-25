@@ -111,7 +111,7 @@
               <xsl:if test="position() &gt; 1">
                 <xsl:text>,</xsl:text>
               </xsl:if>
-              <xsl:variable name="cell" select="*[name()=$n]/text()"/>
+              <xsl:variable name="cell" select="*[name()=$n][1]/text()"/>
               <xsl:choose>
                 <xsl:when test="$cell = ''">
                   <xsl:text>null</xsl:text>
