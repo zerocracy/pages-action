@@ -55,7 +55,7 @@
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime($rec/since)]/award))"/>
+          <xsl:variable name="accumulated" select="sum(for $f in $fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime($rec/since)] return z:amount($f/award))"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer($rec/awarded)"/>
           <xsl:variable name="payable" select="$accumulated - xs:integer($rec/awarded) + xs:integer($rec/balance)"/>
           <xsl:attribute name="title">
@@ -122,6 +122,11 @@
         </xsl:otherwise>
       </xsl:choose>
     </span>
+  </xsl:function>
+  <xsl:function name="z:amount" as="xs:integer?">
+    <xsl:param name="property" as="element()*"/>
+    <xsl:variable name="value" select="($property/v, $property[not(v)])[1]"/>
+    <xsl:sequence select="if (empty($value)) then () else xs:integer($value)"/>
   </xsl:function>
   <xsl:function name="z:td-award">
     <xsl:param name="a" as="xs:integer"/>
@@ -281,9 +286,9 @@
           </td>
           <xsl:for-each select="1 to $weeks">
             <xsl:variable name="week" select="."/>
-            <xsl:copy-of select="z:td-award(xs:integer(sum($facts[z:in-week(z:when(when), $week)]/award)))"/>
+            <xsl:copy-of select="z:td-award(xs:integer(sum(for $f in $facts[z:in-week(z:when(when), $week)] return z:amount($f/award))))"/>
           </xsl:for-each>
-          <xsl:copy-of select="z:td-award(xs:integer(sum($facts/award)))"/>
+          <xsl:copy-of select="z:td-award(xs:integer(sum(for $f in $facts return z:amount($f/award))))"/>
           <xsl:if test="$fb/f[what='reconciliation']">
             <td class="right ff">
               <!-- Pay -->
@@ -327,9 +332,9 @@
       </td>
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
-        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name and z:in-week(z:when(when), $week)]/award)))"/>
+        <xsl:copy-of select="z:td-award(xs:integer(sum(for $f in $facts[who_name=$name and z:in-week(z:when(when), $week)] return z:amount($f/award))))"/>
       </xsl:for-each>
-      <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name]/award)))"/>
+      <xsl:copy-of select="z:td-award(xs:integer(sum(for $f in $facts[who_name=$name] return z:amount($f/award))))"/>
       <xsl:if test="$fb/f[what='reconciliation']">
         <xsl:copy-of select="z:payables($name)"/>
       </xsl:if>
@@ -408,12 +413,12 @@
                       <xsl:attribute name="href">
                         <xsl:value-of select="$fact/href"/>
                       </xsl:attribute>
-                      <xsl:copy-of select="z:award($fact/award)"/>
+                      <xsl:copy-of select="z:award(z:amount($fact/award))"/>
                     </a>
                   </xsl:when>
                   <xsl:otherwise>
                     <span title="The award hasn't been published yet">
-                      <xsl:copy-of select="z:award($fact/award)"/>
+                      <xsl:copy-of select="z:award(z:amount($fact/award))"/>
                     </span>
                   </xsl:otherwise>
                 </xsl:choose>
