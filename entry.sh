@@ -62,8 +62,13 @@ echo "The workspace directory is: $(pwd)"
 
 if [ -z "${INPUT_FACTBASE}" ]; then
     echo "No factbase parameter provided, looking for *.fb files in current directory..."
-    fb_files=(*.fb)
-    if [ "${fb_files[0]}" = "*.fb" ]; then
+    fb_files=()
+    for candidate in *.fb; do
+        if [ -f "${candidate}" ]; then
+            fb_files+=("${candidate}")
+        fi
+    done
+    if [ ${#fb_files[@]} -eq 0 ]; then
         echo "ERROR: No .fb files found in the current directory."
         echo "Please provide a factbase parameter or ensure there is exactly one .fb file in the directory."
         exit 1
@@ -81,7 +86,7 @@ if [ -z "${INPUT_FACTBASE}" ]; then
 else
     echo "Using provided factbase: ${INPUT_FACTBASE}"
     if [ ! -f "${INPUT_FACTBASE}" ]; then
-        echo "ERROR: The factbase file '${INPUT_FACTBASE}' does not exist."
+        echo "ERROR: The factbase '${INPUT_FACTBASE}' is not a file."
         exit 1
     fi
 fi
