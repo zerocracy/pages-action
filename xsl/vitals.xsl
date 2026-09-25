@@ -259,7 +259,7 @@
             <xsl:apply-templates select="/" mode="dot"/>
           </article>
           <footer>
-            <xsl:if test="$latest-version != '' and $version != $latest-version">
+            <xsl:if test="$adless = 'false' and $latest-version != '' and $version != $latest-version">
               <p class="red">
                 <span>
                   <xsl:text>The page was rendered by the pages-action </xsl:text>
