@@ -204,8 +204,17 @@ ${JUDGES} "${gopts[@]}" update \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
+# @todo #799:30min Hide the properties named in "hidden" from the dumps too.
+#  The "hidden" option only reaches the HTML stylesheet of "judges print", so a
+#  property named there still stands in the XML, the JSON and the YAML, and the
+#  HTML keeps its value in a title attribute. Until "judges" drops such a
+#  property from every format, passing the option here only keeps the page and
+#  the badge reading the same view of the factbase, it does not hide anything.
 ${JUDGES} "${gopts[@]}" print \
     --format xml \
+    --columns "${INPUT_COLUMNS}" \
+    --highlighted "${INPUT_HIGHLIGHTED}" \
+    --hidden "${INPUT_HIDDEN}" \
     "${INPUT_FACTBASE}" \
     "${INPUT_OUTPUT}/${name}.rich.xml"
 
