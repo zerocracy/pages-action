@@ -6,6 +6,7 @@ set -e -o pipefail
 
 OS_NAME=$(uname -s | tr '[:upper:]' '[:lower:]')
 
+bundle config set --local frozen true
 bundle install
 if [ "${OS_NAME}" = "darwin" ]; then
     brew install tidy-html5
