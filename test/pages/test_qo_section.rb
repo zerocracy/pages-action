@@ -7,6 +7,31 @@ require 'English'
 require_relative '../test__helper'
 
 class TestQoSection < Minitest::Test
+  def test_metric_colors_do_not_depend_on_fact_order
+    facts = [
+      '<f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
+      '<n_alpha>0.1</n_alpha><n_beta>0.2</n_beta><n_composite>0.5</n_composite></f>',
+      '<f><when>2024-06-23T22:22:22Z</when><what>quality-of-service</what>' \
+      '<n_beta>0.3</n_beta><n_alpha>0.4</n_alpha><n_composite>0.8</n_composite></f>'
+    ]
+    colors =
+      [facts, facts.reverse].map do |order|
+        xml = xslt(
+          "<r><xsl:call-template name='qo-section'>" \
+          "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+          "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+          '</xsl:call-template></r>',
+          "<fb>#{order.join}</fb>",
+          'today' => '2024-09-26T04:04:04Z'
+        )
+        script = xml.xpath('//script').map(&:content).join
+        script.scan(/label:'([^']+)',borderColor:([^,]+)/).to_h
+      end
+    assert_equal(%w[Alpha Beta Composite], colors.first.keys.sort)
+    assert_equal("'orange'", colors.first['Composite'])
+    assert_equal(colors.first, colors.last, 'Import order must not change metric colors')
+  end
+
   def test_snake_case_to_title
     xml = xslt(
       '<r><xsl:value-of select="z:snake-case-to-title(\'average_issue_lifetime\')"/></r>',
