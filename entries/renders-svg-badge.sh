@@ -19,4 +19,11 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
-grep  '' output/test-badge.svg
+badge=output/test-badge.svg
+
+grep -q "<svg" "${badge}"
+grep -q 'width="93"' "${badge}"
+grep -q 'height="20"' "${badge}"
+grep -q 'fill="#e05d44"' "${badge}"
+grep -q ">avg<" "${badge}"
+grep -qE ">[+]0(\.0)?<" "${badge}"
