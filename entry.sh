@@ -58,6 +58,13 @@ if [ -z "${GITHUB_WORKSPACE}" ]; then
     exit 1
 fi
 cd "${GITHUB_WORKSPACE}"
+
+case "${INPUT_URL}" in
+    *\?*|*\#*)
+        echo 'INPUT_URL must not contain a query or fragment' >&2
+        exit 1
+        ;;
+esac
 echo "The workspace directory is: $(pwd)"
 
 if [ -z "${INPUT_FACTBASE}" ]; then
