@@ -15,17 +15,19 @@
     <xsl:variable name="pv" select="z:num(pv)"/>
     <xsl:choose>
       <xsl:when test="exists($ac) and exists($ev) and exists($pv) and $ac != 0 and $pv != 0">
-        <xsl:text>AC: </xsl:text>
-        <xsl:value-of select="format-number($ac, '0')"/>
-        <xsl:text>, EV: </xsl:text>
-        <xsl:value-of select="format-number($ev, '0')"/>
-        <xsl:text>, PV: </xsl:text>
-        <xsl:value-of select="format-number($pv, '0')"/>
-        <xsl:text>, CPI: </xsl:text>
-        <xsl:copy-of select="z:index($ev div $ac)"/>
-        <xsl:text>, SPI: </xsl:text>
-        <xsl:copy-of select="z:index($ev div $pv)"/>
-        <xsl:text>.</xsl:text>
+        <p>
+          <xsl:text>AC: </xsl:text>
+          <xsl:value-of select="format-number($ac, '0')"/>
+          <xsl:text>, EV: </xsl:text>
+          <xsl:value-of select="format-number($ev, '0')"/>
+          <xsl:text>, PV: </xsl:text>
+          <xsl:value-of select="format-number($pv, '0')"/>
+          <xsl:text>, CPI: </xsl:text>
+          <xsl:copy-of select="z:index($ev div $ac)"/>
+          <xsl:text>, SPI: </xsl:text>
+          <xsl:copy-of select="z:index($ev div $pv)"/>
+          <xsl:text>.</xsl:text>
+        </p>
       </xsl:when>
       <xsl:otherwise>
         <xsl:next-match/>
