@@ -31,7 +31,7 @@
     <xsl:param name="week" as="xs:integer"/>
     <xsl:variable name="monday" select="xs:dateTime(z:monday($week))"/>
     <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
-    <xsl:value-of select="$when &gt; $monday and $when &lt; $sunday"/>
+    <xsl:value-of select="$when &gt;= $monday and $when &lt; $sunday"/>
   </xsl:function>
   <xsl:function name="z:payables">
     <!--
