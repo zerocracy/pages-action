@@ -133,7 +133,7 @@ for f in yaml xml json html; do
     ${JUDGES} "${gopts[@]}" print \
         --format "${f}" \
         --columns "${INPUT_COLUMNS}" \
-        --highlighted "${INPUT_HIGHLIGHTED}"\
+        --highlighted "${INPUT_HIGHLIGHTED}" \
         --hidden "${INPUT_HIDDEN}" \
         "${INPUT_FACTBASE}" \
         "${staging}/${name}.${f}"
