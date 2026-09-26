@@ -37,8 +37,8 @@ class TestBadge < Minitest::Test
     xml = badge_svg(
       "
       <fb>
-        <f><award>4</award><when>2023-12-01T00:00:00Z</when></f>
-        <f><award>4</award><when>2023-12-02T00:00:00Z</when></f>
+        <f><award>4</award><when>2023-12-01T00:00:00Z</when><is_human>1</is_human></f>
+        <f><award>4</award><when>2023-12-02T00:00:00Z</when><is_human>1</is_human></f>
       </fb>
       "
     )
@@ -55,7 +55,7 @@ class TestBadge < Minitest::Test
       </fb>
       '
     )
-    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+10', xml)
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+10.0', xml)
   end
 
   private
