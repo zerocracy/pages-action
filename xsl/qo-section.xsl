@@ -46,9 +46,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:if test="$before != ''">
-          <p>
-            <xsl:copy-of select="$before"/>
-          </p>
+          <xsl:copy-of select="$before"/>
         </xsl:if>
         <div class="qo-section">
           <canvas id="{$what}">
