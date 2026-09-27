@@ -21,7 +21,7 @@ Fbe.fb.query(
     (absent n_cpi))
   "
 ).each do |f|
-  f.n_cpi = f.ev / f.ac
+  f.n_cpi = f.ev.to_f / f.ac
 end
 
 Fbe.fb.query(
@@ -33,5 +33,5 @@ Fbe.fb.query(
     (absent n_spi))
   "
 ).each do |f|
-  f.n_spi = f.ev / f.pv
+  f.n_spi = f.ev.to_f / f.pv
 end
