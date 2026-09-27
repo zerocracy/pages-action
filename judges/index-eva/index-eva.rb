@@ -9,7 +9,6 @@ common =
   "
   (eq what 'earned-value')
   (exists when)
-  (exists start)
   (exists ev)
   "
 
