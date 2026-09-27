@@ -16,12 +16,14 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_FACTBASE=test.fb' \
   'INPUT_OUTPUT=output' \
   'INPUT_VERBOSE=false' \
-  'INPUT_LOGO=' \
+  'INPUT_LOGO=https://example.com/mylogo.svg' \
   'INPUT_ADLESS=true' \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   'LATEST_VERSION=0.0.0' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
 grep "The output will have no mention of Zerocracy" 'log.txt'
+
+grep 'rel="icon"' -A 1 'output/test-vitals.html' | grep 'https://example.com/mylogo.svg'
 
 grep -v zerocracy 'output/test-vitals.html'

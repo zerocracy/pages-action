@@ -199,6 +199,10 @@ class TestVitals < Minitest::Test
     assert_match(%r{github\.com/zerocracy/pages-action/releases}, generate_vitals_html)
   end
 
+  def test_favicon_points_to_the_logo
+    assert_equal('x', Nokogiri::HTML(generate_vitals_html).xpath('//link[@rel="icon"]/@href').to_s)
+  end
+
   private
 
   def generate_vitals_html(adless: 'false')
