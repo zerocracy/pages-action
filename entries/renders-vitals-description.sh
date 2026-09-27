@@ -16,16 +16,19 @@ bundle exec judges eval test.fb "
   f.award = 10
   f.who = 12345
   f.who_name = 'user1'
+  f.is_human = 1
   f = \$fb.insert
   f.when = '2024-06-26T00:00:00Z'
   f.award = 20
   f.who = 12345
   f.who_name = 'user1'
+  f.is_human = 1
   f = \$fb.insert
   f.when = '2023-10-22T00:00:00Z'
   f.award = 100
   f.who = 67890
   f.who_name = 'user2'
+  f.is_human = 1
 " > /dev/null
 
 env "GITHUB_WORKSPACE=$(pwd)" \
