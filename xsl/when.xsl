@@ -16,4 +16,14 @@
     <xsl:param name="w" as="element()*"/>
     <xsl:sequence select="min(for $v in ($w/v, $w[not(v)]) return xs:dateTime($v))"/>
   </xsl:function>
+  <xsl:function name="z:day" as="xs:string">
+    <!--
+    Prints a date the way a reader expects to see it. An xs:date keeps the
+    timezone of the xs:dateTime it came from, and a UTC one serialises with a
+    "Z" on the end, which is right for a machine and wrong on a page. The
+    picture never emits a timezone, so what comes out is just the day.
+    -->
+    <xsl:param name="d" as="xs:date"/>
+    <xsl:sequence select="format-date($d, '[Y0001]-[M01]-[D01]')"/>
+  </xsl:function>
 </xsl:stylesheet>

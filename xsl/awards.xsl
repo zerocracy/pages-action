@@ -62,11 +62,11 @@
             <xsl:text>The last payout of </xsl:text>
             <xsl:value-of select="xs:integer(z:value($rec/payout))"/>
             <xsl:text> points has been made on </xsl:text>
-            <xsl:value-of select="xs:date(z:when($rec/when))"/>
+            <xsl:value-of select="z:day(xs:date(z:when($rec/when)))"/>
             <xsl:text>, making the amount payable equal to </xsl:text>
             <xsl:value-of select="z:value($rec/balance)"/>
             <xsl:text>; since </xsl:text>
-            <xsl:value-of select="xs:date(xs:dateTime(z:value($rec/since)))"/>
+            <xsl:value-of select="z:day(xs:date(xs:dateTime(z:value($rec/since))))"/>
             <xsl:text> you've accumulated </xsl:text>
             <xsl:value-of select="$delta"/>
             <xsl:text> points (</xsl:text>
@@ -228,7 +228,7 @@
                 <xsl:text> in </xsl:text>
                 <xsl:value-of select="substring($iso, 1, 4)"/>
                 <xsl:text>, starting on Monday </xsl:text>
-                <xsl:value-of select="z:monday($week)"/>
+                <xsl:value-of select="z:day(z:monday($week))"/>
               </xsl:attribute>
               <xsl:text>w</xsl:text>
               <xsl:value-of select="$w"/>
@@ -367,7 +367,7 @@
                       <xsl:text> points, a payout of </xsl:text>
                       <xsl:value-of select="xs:integer(z:value(payout))"/>
                       <xsl:text> points has been made on </xsl:text>
-                      <xsl:value-of select="xs:date(z:when(when))"/>
+                      <xsl:value-of select="z:day(xs:date(z:when(when)))"/>
                       <xsl:text>, making the amount payable equal to </xsl:text>
                       <xsl:value-of select="balance"/>
                     </xsl:attribute>
