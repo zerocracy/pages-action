@@ -20,6 +20,7 @@
     //div[@class="repositories"]//a[.="yegor256/test"]
     //div[@class="repositories"]//time[@class="relative-time"]
     //div[@class="repositories"]//time[string-length(@title) > 0]
+    //div[@class="repositories"][contains(., "0 open issues and pull requests")]
 -
   _id: 1
   what: pmp
