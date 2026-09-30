@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
-.PHONY: clean all assets install rake stylelint entries entry rmi verify
+.PHONY: clean all assets install rake stylelint test entries entry rmi verify
 .SILENT:
 .SECONDARY:
 .SHELLFLAGS := -x -e -o pipefail -c
@@ -26,6 +26,8 @@ export
 all: assets rake entry rmi verify entries
 
 assets: $(XSLS) $(JS) $(CSS)
+
+test: rake entries
 
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp "$<" "$@"
