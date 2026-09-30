@@ -323,11 +323,11 @@
               <span title="{fb/@size} bytes">
                 <xsl:choose>
                   <xsl:when test="fb/@size &gt; 10000000">
-                    <xsl:value-of select="xs:integer(fb/@size div (1024 * 1024))"/>
+                    <xsl:value-of select="xs:integer(round(fb/@size div 1000000))"/>
                     <xsl:text>MB</xsl:text>
                   </xsl:when>
                   <xsl:when test="fb/@size &gt; 10000">
-                    <xsl:value-of select="xs:integer(fb/@size div 1024)"/>
+                    <xsl:value-of select="xs:integer(round(fb/@size div 1000))"/>
                     <xsl:text>kB</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
