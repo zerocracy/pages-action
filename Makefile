@@ -31,7 +31,7 @@ target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp "$<" "$@"
 
 target/output/%: target/fb/%.fb entry.sh html-minifier-config.json Makefile $(XSLS) $(CSS) $(JS_TEST) $(SAXON) | target/html
-	export INPUT_VERBOSE=yes
+	export INPUT_VERBOSE=true
 	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
