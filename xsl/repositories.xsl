@@ -32,7 +32,7 @@
               </xsl:if>
               <xsl:text> · </xsl:text>
               <xsl:value-of select="open_issues"/>
-              <xsl:text> open issues</xsl:text>
+              <xsl:text> open issues and pull requests</xsl:text>
               <xsl:if test="updated_at != ''">
                 <xsl:text> · updated </xsl:text>
                 <time class="relative-time">
