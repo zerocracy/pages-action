@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
-.PHONY: clean all assets install rake stylelint test entries
+.PHONY: clean all assets install rake stylelint entries entry rmi verify
 .SILENT:
 .SECONDARY:
 .SHELLFLAGS := -x -e -o pipefail -c
