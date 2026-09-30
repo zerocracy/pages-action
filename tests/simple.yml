@@ -11,7 +11,7 @@
     //span[.="129"]
     //div[@class="assessment"]/h2[.="Assessment"]
     //div[@class="assessment"]/pre
-    //div[@class="assessment"]/pre[contains(., "Last assessed on 2024-09-15")]
+    //div[@class="assessment"]/pre[contains(., "Last assessed 2024-09-15")]
     //div[@class="assessment"]/pre/time[@class="relative-time"]
     //div[@class="assessment"]/pre/time[contains(@title, "2024-09-15")]
     //div[@class="assessment"]/p[@class="darkred"]
