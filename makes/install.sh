@@ -11,7 +11,7 @@ bundle install
 if [ "${OS_NAME}" = "darwin" ]; then
     brew install tidy-html5
 else
-    command -v tidy >/dev/null || apt-get install -y tidy
+    command -v tidy >/dev/null || sudo apt-get install -y tidy
 fi
 npm --no-color install --no-save @eslint/js@9.22.0
 npm --no-color install -g eslint@9.22.0
