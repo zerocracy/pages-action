@@ -45,8 +45,10 @@ to print in the HTML;
 * `hidden` (optional) is a comma-separated list of columns to hide;
 * `today` (optional) is ISO-8601 date-time of today;
 * `timeout` (default: `3`) is the maximum number of minutes each judge may run;
+  it must be a positive decimal integer no greater than `153722867280912930`;
 * `lifetime` (default: `5`) is the maximum number of minutes for the entire
-`judges update` run;
+`judges update` run; it must be a positive decimal integer no greater than
+`153722867280912930`;
 * `url` (optional) is where the static files will be visible. If omitted, it is
 derived from `GITHUB_REPOSITORY_OWNER` and `GITHUB_REPOSITORY` as a GitHub Pages
 URL;
