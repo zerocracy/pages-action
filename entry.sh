@@ -199,12 +199,19 @@ else
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
 
+# Keep minute-to-second conversion within signed 64-bit range: floor((2^63-1)/60).
+max_minutes=153722867280912930
+
 timeout=${INPUT_TIMEOUT}
 if [ -z "${timeout}" ]; then
     timeout=3
 fi
 if ! [[ "${timeout}" =~ ^[1-9][0-9]*$ ]]; then
     echo "INPUT_TIMEOUT must be a positive integer, got: ${timeout}" >&2
+    exit 1
+fi
+if [ "${#timeout}" -gt "${#max_minutes}" ] || [ "${timeout}" -gt "${max_minutes}" ]; then
+    echo "INPUT_TIMEOUT must not exceed ${max_minutes} minutes, got: ${timeout}" >&2
     exit 1
 fi
 timeout=$((timeout * 60))
@@ -216,6 +223,10 @@ if [ -z "${lifetime}" ]; then
 fi
 if ! [[ "${lifetime}" =~ ^[1-9][0-9]*$ ]]; then
     echo "INPUT_LIFETIME must be a positive integer, got: ${lifetime}" >&2
+    exit 1
+fi
+if [ "${#lifetime}" -gt "${#max_minutes}" ] || [ "${lifetime}" -gt "${max_minutes}" ]; then
+    echo "INPUT_LIFETIME must not exceed ${max_minutes} minutes, got: ${lifetime}" >&2
     exit 1
 fi
 lifetime=$((lifetime * 60))
