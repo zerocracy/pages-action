@@ -32,7 +32,8 @@ class TestLatestAssessment < Minitest::Test
     later_first = fb.insert
     later_first.what = 'assessment'
     later_first.text = 'Earlier effective date'
-    later_first['when'] = [Time.utc(2025, 1, 1), Time.utc(2024, 1, 1)]
+    later_first.when = Time.utc(2025, 1, 1)
+    later_first.when = Time.utc(2024, 1, 1)
     actually_latest = fb.insert
     actually_latest.what = 'assessment'
     actually_latest.text = 'Latest effective date'
