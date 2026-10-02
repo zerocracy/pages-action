@@ -257,6 +257,57 @@ class TestAwards < Minitest::Test
     )
   end
 
+  def test_groups_awards_by_user_id_and_shows_latest_login
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>who-has-name</what>
+          <who>42</who>
+          <name>old-login</name>
+          <when>2024-05-01T00:00:00Z</when>
+        </f>
+        <f>
+          <what>who-has-name</what>
+          <who>42</who>
+          <name>new-login</name>
+          <when>2024-05-30T00:00:00Z</when>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <who>42</who>
+          <who_name>old-login</who_name>
+          <when>2024-05-29T00:00:00Z</when>
+          <since>2024-05-01T00:00:00Z</since>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>10</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>old-login</who_name>
+          <when>2024-05-30T00:00:00Z</when>
+          <award>40</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>new-login</who_name>
+          <when>2024-06-01T00:00:00Z</when>
+          <award>60</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
+    assert_equal(1, rows.size, xml)
+    assert_equal('@new-login', rows.first.at_xpath('./td[2]/span/a').text, xml)
+    assert_equal('110', rows.first.at_xpath('./td[last()]').text.strip, xml)
+  end
+
   def test_fn_in_week_takes_midnight_of_monday
     xml = xslt(
       '<r><xsl:value-of select="z:in-week(xs:dateTime(\'2024-09-23T00:00:00Z\'), 2)"/></r>',
