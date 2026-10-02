@@ -125,7 +125,7 @@ cleanup() {
 trap cleanup EXIT
 echo "The staging directory is: ${staging}"
 
-name=$(basename "${INPUT_FACTBASE}")
+name=$(basename -- "${INPUT_FACTBASE}")
 name="${name%.*}"
 echo "The factbase name is: '${name}'"
 
