@@ -27,6 +27,24 @@ class TestLatestAssessment < Minitest::Test
     assert_equal(1, latest.first.total)
   end
 
+  def test_uses_earliest_value_when_comparing_multi_valued_dates
+    fb = Factbase.new
+    later_first = fb.insert
+    later_first.what = 'assessment'
+    later_first.text = 'Earlier effective date'
+    later_first['when'] = [Time.utc(2025, 1, 1), Time.utc(2024, 1, 1)]
+    actually_latest = fb.insert
+    actually_latest.what = 'assessment'
+    actually_latest.text = 'Latest effective date'
+    actually_latest.when = Time.utc(2024, 6, 1)
+
+    load_it('latest-assessment', fb)
+
+    latest = fb.query('(eq what "latest-assessment")').each.to_a.fetch(0)
+    assert_equal('Latest effective date', latest.text)
+    assert_equal(Time.utc(2024, 6, 1), latest.when)
+  end
+
   def test_keeps_factbase_without_source_assessments
     fb = assessment_factbase
     fb.query('(eq what "assessment")').delete!
