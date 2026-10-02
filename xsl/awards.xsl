@@ -246,7 +246,7 @@
       </thead>
       <tbody>
         <xsl:for-each-group select="$facts" group-by="who_name">
-          <xsl:sort select="sum(award)" data-type="number" order="descending"/>
+          <xsl:sort select="sum(current-group()/award)" data-type="number" order="descending"/>
           <xsl:variable name="id" select="who/text()"/>
           <xsl:variable name="name" select="who_name/text()"/>
           <xsl:if test="count($facts[who_name = $name]) &gt; 0">
