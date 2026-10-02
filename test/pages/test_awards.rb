@@ -302,7 +302,6 @@ class TestAwards < Minitest::Test
       ',
       'today' => '2024-06-02T00:00:00Z'
     )
-
     rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
     assert_equal(1, rows.size, xml)
     assert_equal('@new-login', rows.first.at_xpath('./td[2]/span/a').text, xml)
