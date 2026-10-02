@@ -55,7 +55,7 @@
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
+          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since)) and z:when(when) &lt;= xs:dateTime($today)]/award))"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer(z:value($rec/awarded))"/>
           <xsl:variable name="payable" select="$accumulated - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance))"/>
           <xsl:attribute name="title">
