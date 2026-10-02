@@ -43,7 +43,7 @@ class TestAwards < Minitest::Test
         </f>
       </fb>
       ",
-      'today' => (Time.now - (10 * 60 * 60)).utc.iso8601
+      'today' => Time.now.utc.iso8601
     )
     assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
@@ -160,7 +160,7 @@ class TestAwards < Minitest::Test
         </f>
       </fb>
       ",
-      'today' => (Time.now - (10 * 60 * 60)).utc.iso8601
+      'today' => Time.now.utc.iso8601
     )
     assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
