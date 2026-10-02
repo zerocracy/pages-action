@@ -264,7 +264,7 @@ class TestAwards < Minitest::Test
       ['beta', '50', '2024-05-30T00:00:00Z']
     ].map do |name, amount, timestamp|
       "<f><is_human>1</is_human><who>1</who><who_name>#{name}</who_name>" \
-      "<award>#{amount}</award><when>#{timestamp}</when></f>"
+        "<award>#{amount}</award><when>#{timestamp}</when></f>"
     end.join
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='awards'/></r>",
