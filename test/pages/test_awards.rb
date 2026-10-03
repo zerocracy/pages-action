@@ -271,7 +271,6 @@ class TestAwards < Minitest::Test
       "<fb>#{facts}</fb>",
       'today' => '2024-06-02T00:00:00Z'
     )
-
     rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
     assert_equal(%w[alpha beta], rows.map { |row| row.at_xpath('./td[2]/span/a').text.delete_prefix('@') })
   end
