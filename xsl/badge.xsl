@@ -10,9 +10,7 @@
   <xsl:param name="today" as="xs:string"/>
   <xsl:template match="/fb">
     <xsl:variable name="days" select="z:pmp('hr', 'days_of_running_balance', '28')"/>
-    <xsl:variable name="since"
-      select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"
-      as="xs:dateTime"/>
+    <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))" as="xs:dateTime"/>
     <xsl:variable name="facts" select="f[z:when(when) &gt; $since and award and is_human = 1]"/>
     <xsl:variable name="sum" select="sum($facts/award)" as="xs:double"/>
     <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
