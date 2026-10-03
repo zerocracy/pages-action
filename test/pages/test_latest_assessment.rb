@@ -40,9 +40,7 @@ class TestLatestAssessment < Minitest::Test
     second.what = 'assessment'
     second.text = 'Latest effective date'
     second.when = Time.utc(2024, 6, 1)
-
     load_it('latest-assessment', fb)
-
     latest = fb.query('(eq what "latest-assessment")').each.to_a.fetch(0)
     assert_equal('Latest effective date', latest.text)
     assert_equal(Time.utc(2024, 6, 1), latest.when)
