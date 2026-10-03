@@ -8,11 +8,11 @@ require 'fbe/fb'
 Fbe.fb.txn do |fb|
   assessments = fb.query('(and (eq what "assessment") (exists text) (exists when))').each.to_a
   next if assessments.empty?
-  latest = assessments.max_by(&:when)
+  latest = assessments.max_by { |assessment| assessment['when'].min }
   fb.query('(eq what "latest-assessment")').delete!
   f = fb.insert
   f.what = 'latest-assessment'
   f.text = latest.text
-  f.when = latest.when
+  f.when = latest['when'].min
   f.total = assessments.size
 end
