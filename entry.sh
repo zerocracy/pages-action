@@ -129,8 +129,8 @@ trap cleanup EXIT
 # INT from a cancelled job reaches "judges" at once, and the script waits for
 # it to stop before cleaning up and exiting with the status of that signal.
 child=''
-attached() {
-    "$@" &
+judges() {
+    ${JUDGES} "$@" &
     child=$!
     wait "${child}"
     child=''
@@ -151,7 +151,7 @@ name="${name%.*}"
 echo "The factbase name is: '${name}'"
 
 for f in yaml xml json html; do
-    attached ${JUDGES} "${gopts[@]}" print \
+    judges "${gopts[@]}" print \
         --format "${f}" \
         --columns "${INPUT_COLUMNS}" \
         --highlighted "${INPUT_HIGHLIGHTED}"\
@@ -253,7 +253,7 @@ fi
 lifetime=$((lifetime * 60))
 echo "The update will run for up to ${lifetime} seconds"
 
-attached ${JUDGES} "${gopts[@]}" update \
+judges "${gopts[@]}" update \
     --shuffle= \
     --no-log \
     --summary=off \
@@ -268,7 +268,7 @@ attached ${JUDGES} "${gopts[@]}" update \
 #  HTML keeps its value in a title attribute. Until "judges" drops such a
 #  property from every format, passing the option here only keeps the page and
 #  the badge reading the same view of the factbase, it does not hide anything.
-attached ${JUDGES} "${gopts[@]}" print \
+judges "${gopts[@]}" print \
     --format xml \
     --columns "${INPUT_COLUMNS}" \
     --highlighted "${INPUT_HIGHLIGHTED}" \
