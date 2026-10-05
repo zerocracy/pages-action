@@ -54,5 +54,7 @@ expected:
   - /fb[count(f)=7]
   - /fb[count(f[n_cpi])=5]
   - /fb[count(f[n_spi])=6]
-  - /fb/f[what='earned-value' and ev='1' and ac='2' and n_cpi='0.5' and n_spi='0.25']
+  - >-
+    /fb/f[what='earned-value' and ev='1' and ac='2' and
+    n_cpi='0.5' and n_spi='0.25']
   - /fb/f[not(start) and n_cpi and n_spi]
