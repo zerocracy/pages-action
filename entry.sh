@@ -123,6 +123,27 @@ cleanup() {
     rm -rf "${staging}"
 }
 trap cleanup EXIT
+
+# Each run of "judges" goes to the background and the script waits for it,
+# because Bash runs no trap until a foreground child exits. So a TERM or an
+# INT from a cancelled job reaches "judges" at once, and the script waits for
+# it to stop before cleaning up and exiting with the status of that signal.
+child=''
+attached() {
+    "$@" &
+    child=$!
+    wait "${child}"
+    child=''
+}
+stop() {
+    if [ -n "${child}" ]; then
+        kill -TERM "${child}" 2>/dev/null || true
+        wait "${child}" || true
+    fi
+    exit "$1"
+}
+trap 'stop 143' TERM
+trap 'stop 130' INT
 echo "The staging directory is: ${staging}"
 
 name=$(basename "${INPUT_FACTBASE}")
@@ -130,7 +151,7 @@ name="${name%.*}"
 echo "The factbase name is: '${name}'"
 
 for f in yaml xml json html; do
-    ${JUDGES} "${gopts[@]}" print \
+    attached ${JUDGES} "${gopts[@]}" print \
         --format "${f}" \
         --columns "${INPUT_COLUMNS}" \
         --highlighted "${INPUT_HIGHLIGHTED}"\
@@ -232,7 +253,7 @@ fi
 lifetime=$((lifetime * 60))
 echo "The update will run for up to ${lifetime} seconds"
 
-${JUDGES} "${gopts[@]}" update \
+attached ${JUDGES} "${gopts[@]}" update \
     --shuffle= \
     --no-log \
     --summary=off \
@@ -247,7 +268,7 @@ ${JUDGES} "${gopts[@]}" update \
 #  HTML keeps its value in a title attribute. Until "judges" drops such a
 #  property from every format, passing the option here only keeps the page and
 #  the badge reading the same view of the factbase, it does not hide anything.
-${JUDGES} "${gopts[@]}" print \
+attached ${JUDGES} "${gopts[@]}" print \
     --format xml \
     --columns "${INPUT_COLUMNS}" \
     --highlighted "${INPUT_HIGHLIGHTED}" \
