@@ -215,14 +215,7 @@
                 </img>
               </xsl:if>
               <span>
-                <xsl:choose>
-                  <xsl:when test="$name = 'true'">
-                    <xsl:text>noname</xsl:text>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="$name"/>
-                  </xsl:otherwise>
-                </xsl:choose>
+                <xsl:value-of select="$name"/>
               </span>
             </p>
             <xsl:if test="$adless = 'false'">
