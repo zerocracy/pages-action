@@ -27,12 +27,11 @@ class TestLatestAssessment < Minitest::Test
     assert_equal(1, latest.first.total)
   end
 
-  def test_keeps_factbase_without_source_assessments
+  def test_drops_summary_without_source_assessments
     fb = assessment_factbase
     fb.query('(eq what "assessment")').delete!
-    before = fb.export
     load_it('latest-assessment', fb)
-    assert_equal(before, fb.export)
+    assert_equal(0, fb.size, fb.to_json)
   end
 
   private
