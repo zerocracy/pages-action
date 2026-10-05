@@ -279,6 +279,11 @@ url=${INPUT_URL}
 url="${url%/}"
 if [ -z "${url}" ]; then
     url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
+    repo=${GITHUB_REPOSITORY#*/}
+    owner=${GITHUB_REPOSITORY_OWNER}
+    if [ "${repo,,}" = "${owner,,}.github.io" ]; then
+        url=https://${GITHUB_REPOSITORY_OWNER}.github.io
+    fi
     echo "The URL of the pages to publish is this one (change it using the 'url' parameter): ${url}"
 fi
 
