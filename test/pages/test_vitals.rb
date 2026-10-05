@@ -214,16 +214,24 @@ class TestVitals < Minitest::Test
     assert_match(%r{github\.com/zerocracy/pages-action/releases}, generate_vitals_html)
   end
 
+  def test_shows_the_size_of_the_factbase_rounded_in_its_units
+    {
+      10_000_001 => '10MB', 25_600_000 => '26MB', 10_001 => '10kB', 12_499 => '12kB', 10_000 => '10000 bytes'
+    }.each do |size, text|
+      assert_includes(generate_vitals_html(size:), "#{text}</span>", "#{size} bytes must be shown as #{text}")
+    end
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false', xml: nil)
+  def generate_vitals_html(adless: 'false', xml: nil, size: 0)
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
       input = File.join(dir, 'input.xml')
       File.write(input, xml || <<~XML)
         <?xml version="1.0" encoding="UTF-8"?>
-        <fb>
+        <fb size="#{size}">
           <f>
             <when>2024-07-03T22:22:22Z</when>
             <what>quality-of-service</what>
