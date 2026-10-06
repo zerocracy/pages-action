@@ -12,7 +12,7 @@ $(() => {
         navigator.clipboard.writeText(text).then(() => {
           const $check = $('<span class="darkgreen"> ✓</span>');
           $this.after($check);
-          $check.delay(1000).fadeOut();
+          $check.delay(1000).fadeOut(() => $check.remove());
         }).catch(() => {
           alert('Failed to copy to clipboard!');
         });
