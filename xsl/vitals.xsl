@@ -6,6 +6,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
   <xsl:include href="script-with-cdata.xsl"/>
   <xsl:include href="when.xsl"/>
+  <xsl:include href="pmp.xsl"/>
   <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
   <xsl:param name="today" as="xs:string"/>
   <xsl:param name="css" as="xs:string"/>
@@ -27,7 +28,6 @@
   <xsl:import href="qo-section.xsl"/>
   <xsl:import href="dot.xsl"/>
   <xsl:import href="eva-summary.xsl"/>
-  <xsl:variable name="fb" select="/fb"/>
   <xsl:function name="z:format-signed">
     <xsl:param name="value" as="xs:double"/>
     <xsl:param name="format" as="xs:string"/>
@@ -71,34 +71,6 @@
       </xsl:attribute>
       <xsl:value-of select="format-number($i, '0.00')"/>
     </span>
-  </xsl:function>
-  <xsl:function name="z:pmp">
-    <!--
-    Finds a "pmp" fact with the given "area" and then
-    tries to find a given property inside. If the fact is not
-    found or the property doesn't exist, the default value
-    is returned.
-    -->
-    <xsl:param name="area" as="xs:string"/>
-    <xsl:param name="param" as="xs:string"/>
-    <xsl:param name="default" as="xs:string"/>
-    <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area][1]"/>
-    <xsl:choose>
-      <xsl:when test="$a">
-        <xsl:variable name="v" select="$a/*[name()=$param][1]/text()"/>
-        <xsl:choose>
-          <xsl:when test="$v">
-            <xsl:value-of select="$v"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="$default"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$default"/>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:function>
   <xsl:template name="javascript">
     <xsl:param name="url"/>
@@ -150,7 +122,6 @@
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <xsl:variable name="description">
-          <xsl:variable name="facts" select="$fb/f[z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and z:when(when) &lt;= xs:dateTime($today) and award]"/>
           <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
           <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
           <xsl:text>The "</xsl:text>

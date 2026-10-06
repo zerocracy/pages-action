@@ -193,6 +193,21 @@ class TestVitals < Minitest::Test
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
   end
 
+  def test_description_uses_the_configured_human_award_window
+    facts = <<~XML
+      <fb>
+        <f><what>pmp</what><area>hr</area><days_of_running_balance>7</days_of_running_balance></f>
+        <f><when>2024-09-25T00:00:00Z</when><award>10</award><who_name>recent</who_name><is_human>1</is_human></f>
+        <f><when>2024-09-10T00:00:00Z</when><award>90</award><who_name>old</who_name><is_human>1</is_human></f>
+        <f><when>2024-09-25T00:00:00Z</when><award>100</award><who_name>bot</who_name><is_human>0</is_human></f>
+      </fb>
+    XML
+    html = Nokogiri::HTML(generate_vitals_html(xml: facts))
+    description = html.at_css('meta[name="description"]')['content']
+    assert_includes(description, '+10.0 average points per task, 10 total points earned, 1 contributors.')
+    assert_equal(description, html.at_css('meta[property="og:description"]')['content'])
+  end
+
   def test_adless_page_carries_no_update_banner
     html = generate_vitals_html(adless: 'true')
     refute_match(%r{github\.com/zerocracy/pages-action/releases}, html, html)
@@ -209,12 +224,12 @@ class TestVitals < Minitest::Test
 
   private
 
-  def generate_vitals_html(adless: 'false', size: 0)
+  def generate_vitals_html(adless: 'false', xml: nil, size: 0)
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
       input = File.join(dir, 'input.xml')
-      File.write(input, <<~XML)
+      File.write(input, xml || <<~XML)
         <?xml version="1.0" encoding="UTF-8"?>
         <fb size="#{size}">
           <f>
