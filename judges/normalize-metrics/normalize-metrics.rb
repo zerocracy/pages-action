@@ -16,7 +16,7 @@ end
 
 %w[quantity-of-deliverables quality-of-service].each do |qo|
   facts = Fbe.fb.query("(and (eq what '#{qo}') (exists when))").each.to_a
-  facts.sort_by!(&:when)
+  facts.sort_by! { |f| f['when'].min }
   next if facts.empty?
   start = {}
   first = facts.first
