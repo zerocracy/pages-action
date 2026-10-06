@@ -11,7 +11,7 @@ class TestBadge < Minitest::Test
   def test_validate_svg
     WebMock.enable_net_connect!
     f = File.join(__dir__, '../../target/html/simple-badge.svg')
-    skip unless File.exist?(f)
+    assert_path_exists(f, 'make did not put the badge next to the pages')
     svg = File.read(f)
     xml =
       begin
