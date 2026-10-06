@@ -145,11 +145,16 @@
           <xsl:value-of select="xs:date($since)"/>
           <xsl:text> (</xsl:text>
           <xsl:value-of select="$days"/>
-          <xsl:text> days before today)</xsl:text>
+          <xsl:text> day</xsl:text>
+          <xsl:if test="$days != 1">
+            <xsl:text>s</xsl:text>
+          </xsl:if>
+          <xsl:text> before today)</xsl:text>
           <xsl:if test="/fb/f[award]">
-            <xsl:text>, while there are </xsl:text>
-            <xsl:value-of select="count(/fb/f[award])"/>
-            <xsl:text> awards in total</xsl:text>
+            <xsl:variable name="total" select="count(/fb/f[award])"/>
+            <xsl:text>, while there </xsl:text>
+            <xsl:value-of select="if ($total = 1) then 'is 1 award' else concat('are ', $total, ' awards')"/>
+            <xsl:text> in total</xsl:text>
           </xsl:if>
           <xsl:text>.</xsl:text>
           <xsl:text> Either, you are having no activity in the project or the reporting is not configured correctly.</xsl:text>
