@@ -12,7 +12,7 @@ names =
       (exists who)
       (exists name))'
   ).each.to_a.sort_by do |f|
-    stamp = f['when']&.first
+    stamp = f['when']&.min
     [stamp.nil? ? 0 : 1, stamp || Time.at(0), f.name]
   end.to_h { |f| [f.who, f.name] }
 

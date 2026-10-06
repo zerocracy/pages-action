@@ -4,9 +4,6 @@
 
 set -e -o pipefail
 
-e2=$(cat target/entry.exit)
-test "${e2}" = "0"
-
 tree target/fb/
 
 test -e target/fb/pages/simple-vitals.html

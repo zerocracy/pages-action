@@ -188,7 +188,7 @@
           <xsl:value-of select="$name"/>
         </title>
         <xsl:if test="$logo != ''">
-          <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg"/>
+          <link rel="icon" href="https://www.zerocracy.com/svg/logo.svg" type="image/svg+xml"/>
         </xsl:if>
         <xsl:call-template name="css-links">
           <xsl:with-param name="links" select="$css-links"/>
@@ -215,14 +215,7 @@
                 </img>
               </xsl:if>
               <span>
-                <xsl:choose>
-                  <xsl:when test="$name = 'true'">
-                    <xsl:text>noname</xsl:text>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="$name"/>
-                  </xsl:otherwise>
-                </xsl:choose>
+                <xsl:value-of select="$name"/>
               </span>
             </p>
             <xsl:if test="$adless = 'false'">
@@ -323,11 +316,11 @@
               <span title="{fb/@size} bytes">
                 <xsl:choose>
                   <xsl:when test="fb/@size &gt; 10000000">
-                    <xsl:value-of select="xs:integer(fb/@size div (1024 * 1024))"/>
+                    <xsl:value-of select="xs:integer(round(fb/@size div 1000000))"/>
                     <xsl:text>MB</xsl:text>
                   </xsl:when>
                   <xsl:when test="fb/@size &gt; 10000">
-                    <xsl:value-of select="xs:integer(fb/@size div 1024)"/>
+                    <xsl:value-of select="xs:integer(round(fb/@size div 1000))"/>
                     <xsl:text>kB</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
