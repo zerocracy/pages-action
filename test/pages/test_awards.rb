@@ -257,6 +257,24 @@ class TestAwards < Minitest::Test
     )
   end
 
+  def test_sorts_programmers_by_their_total_awards
+    facts = [
+      ['alpha', '1', '2024-06-01T00:00:00Z'],
+      ['alpha', '100', '2024-05-31T00:00:00Z'],
+      ['beta', '50', '2024-05-30T00:00:00Z']
+    ].map do |name, amount, timestamp|
+      "<f><is_human>1</is_human><who>1</who><who_name>#{name}</who_name>" \
+        "<award>#{amount}</award><when>#{timestamp}</when></f>"
+    end.join
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      "<fb>#{facts}</fb>",
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
+    assert_equal(%w[alpha beta], rows.map { |row| row.at_xpath('./td[2]/span/a').text.delete_prefix('@') })
+  end
+
   def test_fn_in_week_takes_midnight_of_monday
     xml = xslt(
       '<r><xsl:value-of select="z:in-week(xs:dateTime(\'2024-09-23T00:00:00Z\'), 2)"/></r>',
