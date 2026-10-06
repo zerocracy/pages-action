@@ -110,6 +110,21 @@ class TestQoSection < Minitest::Test
     end
   end
 
+  def test_non_numeric_metric_values_are_not_emitted_as_javascript
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
+      '<n_composite>0]}]});alert(document.domain);}); //</n_composite></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    script = xml.xpath('//script').map(&:content).join
+    assert_match(/data:\[null\]/, script)
+    refute_includes(script, 'alert(document.domain)')
+  end
+
   def test_keeps_the_before_block_out_of_a_paragraph
     xml = xslt(
       "<r><xsl:call-template name='qo-section'>" \
