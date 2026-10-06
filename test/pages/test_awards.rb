@@ -336,4 +336,31 @@ class TestAwards < Minitest::Test
     )
     assert_equal('25', xml.xpath('/r/td').text.strip, xml)
   end
+
+  def test_multi_valued_award_does_not_concatenate_digits
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>28</days_of_running_balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>dude</who_name>
+          <award><v>5</v><v>5</v></award>
+          <why>REPEATED</why>
+          <when>2026-09-10T10:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2026-09-19T04:04:04Z'
+    )
+    values = xml.xpath('//td[@data-value]/@data-value').map(&:value)
+    assert_includes(values, '5', xml)
+    refute_includes(values, '55', xml)
+  end
 end
