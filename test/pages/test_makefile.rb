@@ -48,4 +48,21 @@ class TestMakefile < Minitest::Test
       assert_equal('{"collapseWhitespace":true}', File.read("#{output}/used-config.json"))
     end
   end
+
+  def test_leaves_no_saxon_jar_behind_when_the_download_fails
+    Dir.mktmpdir do |dir|
+      FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+      FileUtils.mkdir_p(File.join(dir, 'bin'))
+      File.write(
+        File.join(dir, 'bin/wget'),
+        "#!/usr/bin/env bash\nwhile [ $# -gt 0 ]; do [ \"$1\" = -O ] && : > \"$2\"; shift; done\nexit 4\n"
+      )
+      FileUtils.chmod(0o755, File.join(dir, 'bin/wget'))
+      system(
+        { 'HOME' => dir, 'PATH' => "#{dir}/bin:#{ENV.fetch('PATH')}" },
+        'make', '-C', dir, 'target/saxon.jar', out: File::NULL, err: File::NULL
+      )
+      refute_path_exists(File.join(dir, 'target/saxon.jar'), 'a failed download left saxon.jar behind')
+    end
+  end
 end
