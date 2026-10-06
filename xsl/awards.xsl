@@ -339,7 +339,7 @@
         <xsl:copy-of select="z:payables($name)"/>
       </xsl:if>
     </tr>
-    <xsl:if test="$fb/f[what='reconciliation' and who=$id]">
+    <xsl:if test="$fb/f[what='reconciliation' and who=$id and (some $week in 1 to $weeks satisfies z:in-week(z:when(when), $week))]">
       <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
         <td>
           <!-- Avatar -->
