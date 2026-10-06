@@ -24,8 +24,9 @@ function getMonthsDifference(startDate, endDate) {
   const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
   const monthsDiff = endDate.getMonth() - startDate.getMonth();
   const dateDiff = endDate.getDate() - startDate.getDate();
+  const lastDay = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0).getDate();
   let totalMonths = yearsDiff * 12 + monthsDiff;
-  totalMonths -= dateDiff >= 0 ? 0 : 1;
+  totalMonths -= dateDiff >= 0 || endDate.getDate() === lastDay ? 0 : 1;
   return Math.max(0, totalMonths);
 }
 

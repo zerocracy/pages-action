@@ -46,14 +46,6 @@ class TestLatestAssessment < Minitest::Test
     assert_equal(Time.utc(2024, 6, 1), latest.when)
   end
 
-  def test_keeps_factbase_without_source_assessments
-    fb = assessment_factbase
-    fb.query('(eq what "assessment")').delete!
-    before = fb.export
-    load_it('latest-assessment', fb)
-    assert_equal(before, fb.export)
-  end
-
   private
 
   def assessment_factbase

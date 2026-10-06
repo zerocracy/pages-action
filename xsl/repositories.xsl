@@ -3,7 +3,12 @@
 * SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
+  <xsl:function name="z:counted" as="xs:string">
+    <xsl:param name="n"/>
+    <xsl:param name="noun" as="xs:string"/>
+    <xsl:sequence select="concat($n, ' ', $noun, if (string($n) = '1') then '' else 's')"/>
+  </xsl:function>
   <xsl:template match="/" mode="repositories">
     <xsl:if test="/fb/f[what='repo-details']">
       <div class="repositories">
@@ -22,17 +27,15 @@
                 <xsl:value-of select="description"/>
               </xsl:if>
               <xsl:text> [ </xsl:text>
-              <xsl:value-of select="stars"/>
-              <xsl:text> stars · </xsl:text>
-              <xsl:value-of select="forks"/>
-              <xsl:text> forks</xsl:text>
+              <xsl:value-of select="z:counted(stars, 'star')"/>
+              <xsl:text> · </xsl:text>
+              <xsl:value-of select="z:counted(forks, 'fork')"/>
               <xsl:if test="language != ''">
                 <xsl:text> · </xsl:text>
                 <xsl:value-of select="language"/>
               </xsl:if>
               <xsl:text> · </xsl:text>
-              <xsl:value-of select="open_issues"/>
-              <xsl:text> open issues</xsl:text>
+              <xsl:value-of select="z:counted(open_issues, 'open issue')"/>
               <xsl:if test="updated_at != ''">
                 <xsl:text> · updated </xsl:text>
                 <time class="relative-time">

@@ -14,7 +14,17 @@ class TestAssessment < Minitest::Test
       <when>2026-09-01T00:00:00Z</when><total>1</total></f></fb>"
     )
     pre = xml.xpath("//*[local-name()='pre']").text
-    refute_includes(pre, 'healthy.Last assessed on', pre)
-    assert_includes(pre, "healthy.\nLast assessed on", pre)
+    refute_includes(pre, 'healthy.Last assessed', pre)
+    assert_includes(pre, "healthy.\nLast assessed ", pre)
+  end
+
+  def test_reads_well_once_the_date_becomes_relative
+    xml = xslt(
+      "<xsl:apply-templates select='/' mode='assessment'/>",
+      "<fb><f><what>latest-assessment</what><text>The project is healthy.</text>
+      <when>2026-09-01T00:00:00Z</when><total>1</total></f></fb>"
+    )
+    pre = xml.xpath("//*[local-name()='pre']").text
+    refute_includes(pre, 'assessed on', pre)
   end
 end

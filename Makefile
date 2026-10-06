@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
-.PHONY: clean all assets install rake stylelint test entries
+.PHONY: clean all assets install rake stylelint test entries entry rmi verify
 .SILENT:
 .SECONDARY:
 .SHELLFLAGS := -x -e -o pipefail -c
@@ -27,11 +27,13 @@ all: assets rake entry rmi verify entries
 
 assets: $(XSLS) $(JS) $(CSS)
 
+test: rake entries
+
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp "$<" "$@"
 
 target/output/%: target/fb/%.fb entry.sh html-minifier-config.json Makefile $(XSLS) $(CSS) $(JS_TEST) $(SAXON) | target/html
-	export INPUT_VERBOSE=yes
+	export INPUT_VERBOSE=true
 	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
 	export INPUT_FACTBASE=$<
@@ -104,7 +106,6 @@ install: $(SAXON) | target
 
 entry: target/docker-image.txt target/fb/simple.fb
 	./makes/entry-in-docker.sh "$$(cat target/docker-image.txt)"
-	echo "$$?" > target/entry.exit
 
 rmi: target/docker-image.txt
 	img=$$(cat $<)

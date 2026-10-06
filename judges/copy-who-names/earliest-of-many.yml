@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  - what: something
+    who: 42
+  - what: who-has-name
+    who: 42
+    name: old
+    when:
+      - 2025-01-01T00:00:00Z
+      - 2023-01-01T00:00:00Z
+  - what: who-has-name
+    who: 42
+    name: new
+    when: 2024-01-01T00:00:00Z
+expected:
+  - /fb/f[what='something' and who=42 and who_name='new']
