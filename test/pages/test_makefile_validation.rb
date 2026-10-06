@@ -31,6 +31,7 @@ class TestMakefileValidation < Minitest::Test
           for name in sample sample-vitals; do
               echo '<!DOCTYPE html><html><head><title>Probe</title></head><body><p>ok</p></body></html>' > "${INPUT_OUTPUT}/${name}.html"
           done
+          echo '<svg xmlns="http://www.w3.org/2000/svg"/>' > "${INPUT_OUTPUT}/sample-badge.svg"
         SH
       )
       %w[entry.sh judges-probe].each { |file| FileUtils.chmod(0o755, File.join(dir, file)) }
