@@ -336,4 +336,47 @@ class TestAwards < Minitest::Test
     )
     assert_equal('25', xml.xpath('/r/td').text.strip, xml)
   end
+
+  def test_gives_a_row_to_a_programmer_owed_points_without_recent_awards
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-05-20T00:00:00Z</when>
+          <since>2024-04-01T00:00:00Z</since>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <awarded>100</awarded>
+          <payout>70</payout>
+          <balance>30</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <award>100</award>
+          <when>2024-05-01T00:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <award>45</award>
+          <when>2024-05-25T00:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>8</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-07-02T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
+  end
 end
