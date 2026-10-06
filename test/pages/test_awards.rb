@@ -336,4 +336,33 @@ class TestAwards < Minitest::Test
     )
     assert_equal('25', xml.xpath('/r/td').text.strip, xml)
   end
+
+  def test_adds_no_payouts_row_for_a_payout_before_the_visible_weeks
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-04-01T00:00:00Z</when>
+          <since>2024-03-01T00:00:00Z</since>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <awarded>10</awarded>
+          <payout>10</payout>
+          <balance>0</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <award>10</award>
+          <when>2024-07-02T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_empty(xml.xpath('//td[.="Payouts:"]'), xml)
+  end
 end
