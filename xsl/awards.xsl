@@ -146,7 +146,7 @@
           <xsl:text> (</xsl:text>
           <xsl:value-of select="$days"/>
           <xsl:text> day</xsl:text>
-          <xsl:if test="$days != 1">
+          <xsl:if test="string($days) != '1'">
             <xsl:text>s</xsl:text>
           </xsl:if>
           <xsl:text> before today)</xsl:text>
