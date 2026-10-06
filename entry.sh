@@ -127,6 +127,12 @@ echo "The staging directory is: ${staging}"
 
 name=$(basename "${INPUT_FACTBASE}")
 name="${name%.*}"
+while [[ "${name}" == .* ]]; do
+    name="${name#.}"
+done
+if [ -z "${name}" ]; then
+    name='factbase'
+fi
 echo "The factbase name is: '${name}'"
 
 for f in yaml xml json html; do
