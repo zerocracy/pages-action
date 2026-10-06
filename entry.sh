@@ -129,13 +129,34 @@ name=$(basename "${INPUT_FACTBASE}")
 name="${name%.*}"
 echo "The factbase name is: '${name}'"
 
+make_public_factbase() {
+    local public="${staging}/.public.fb"
+    cp -- "${INPUT_FACTBASE}" "${public}"
+    # shellcheck disable=SC2016 # Ruby handles this literal; input is passed via the environment.
+    HIDDEN_PROPERTIES="${INPUT_HIDDEN}" ${JUDGES} "${gopts[@]}" eval "${public}" '
+hidden = ENV.fetch("HIDDEN_PROPERTIES", "").split(",").map(&:strip).reject(&:empty?)
+source = $fb
+$fb = Factbase.new
+source.query("(always)").each do |fact|
+  public_fact = $fb.insert
+  (fact.all_properties - hidden).each do |property|
+    fact[property].each do |value|
+      public_fact.public_send("#{property}=", value)
+    end
+  end
+end
+'
+}
+
+make_public_factbase
+
 for f in yaml xml json html; do
     ${JUDGES} "${gopts[@]}" print \
         --format "${f}" \
         --columns "${INPUT_COLUMNS}" \
         --highlighted "${INPUT_HIGHLIGHTED}"\
         --hidden "${INPUT_HIDDEN}" \
-        "${INPUT_FACTBASE}" \
+        "${staging}/.public.fb" \
         "${staging}/${name}.${f}"
 done
 
@@ -241,19 +262,15 @@ ${JUDGES} "${gopts[@]}" update \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
-# @todo #799:30min Hide the properties named in "hidden" from the dumps too.
-#  The "hidden" option only reaches the HTML stylesheet of "judges print", so a
-#  property named there still stands in the XML, the JSON and the YAML, and the
-#  HTML keeps its value in a title attribute. Until "judges" drops such a
-#  property from every format, passing the option here only keeps the page and
-#  the badge reading the same view of the factbase, it does not hide anything.
+make_public_factbase
 ${JUDGES} "${gopts[@]}" print \
     --format xml \
     --columns "${INPUT_COLUMNS}" \
     --highlighted "${INPUT_HIGHLIGHTED}" \
     --hidden "${INPUT_HIDDEN}" \
-    "${INPUT_FACTBASE}" \
+    "${staging}/.public.fb" \
     "${staging}/${name}.rich.xml"
+rm -- "${staging}/.public.fb"
 
 logo=${INPUT_LOGO}
 if [ -z "${logo}" ] && [ "${INPUT_ADLESS}" != 'true' ]; then

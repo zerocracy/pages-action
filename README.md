@@ -42,7 +42,8 @@ and .HTML files are supposed to be saved to;
 * `columns` (optional) is a comma-separated list of columns
 to print in the HTML;
 * `highlighted` (optional) is a comma-separated list of columns to highlight;
-* `hidden` (optional) is a comma-separated list of columns to hide;
+* `hidden` (optional) is a comma-separated list of properties excluded from
+published files;
 * `today` (optional) is ISO-8601 date-time of today;
 * `timeout` (default: `3`) is the maximum number of minutes each judge may run;
   it must be a positive decimal integer no greater than `153722867280912930`;
