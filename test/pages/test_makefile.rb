@@ -48,4 +48,19 @@ class TestMakefile < Minitest::Test
       assert_equal('{"collapseWhitespace":true}', File.read("#{output}/used-config.json"))
     end
   end
+
+  def test_runs_stylelint_without_fixing_the_sources
+    Dir.mktmpdir do |dir|
+      FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+      FileUtils.mkdir_p(%w[bin sass].map { |path| File.join(dir, path) })
+      File.write(File.join(dir, 'sass/main.scss'), '')
+      File.write(File.join(dir, 'bin/stylelint'), "#!/usr/bin/env bash\necho \"$@\" > \"$(dirname \"$0\")/args\"\n")
+      FileUtils.chmod(0o755, File.join(dir, 'bin/stylelint'))
+      system(
+        { 'PATH' => "#{dir}/bin:#{ENV.fetch('PATH')}" },
+        'make', '-C', dir, 'stylelint', out: File::NULL, err: File::NULL
+      )
+      refute_includes(File.read(File.join(dir, 'bin/args')), '--fix', 'make lets stylelint rewrite the sources')
+    end
+  end
 end
