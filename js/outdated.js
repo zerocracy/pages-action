@@ -64,9 +64,10 @@ function displayOutdatedWarning() {
     console.error("Could not parse the generated time");
     return;
   }
-  const hours = Math.floor((Date.now() - time) / TIME_UNITS.HOUR);
+  const age = Date.now() - time;
+  const hours = Math.floor(age / TIME_UNITS.HOUR);
   const warning = $("#page-outdated-warning");
-  if (hours > OUTDATED_THRESHOLD_HOURS) {
+  if (age > OUTDATED_THRESHOLD_HOURS * TIME_UNITS.HOUR) {
     const message = `This page was generated ${hours} ${hours === 1 ? 'hour' : 'hours'} ago. The information is most probably outdated.`;
     if (warning.length === 0) {
       $('footer').prepend(`<p id="page-outdated-warning" class='red'>${message}</p>`);
