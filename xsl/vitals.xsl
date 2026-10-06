@@ -246,7 +246,7 @@
               <xsl:with-param name="title" select="'Earned Value Analysis (EVA)'"/>
               <xsl:with-param name="colors" select="'n_spi:darkred,n_cpi:darkblue'"/>
               <xsl:with-param name="before">
-                <xsl:apply-templates select="/fb/f[what='earned-value'][last()]"/>
+                <xsl:apply-templates select="z:latest(/fb/f[what='earned-value'])"/>
               </xsl:with-param>
             </xsl:call-template>
             <xsl:apply-templates select="/" mode="dot"/>
