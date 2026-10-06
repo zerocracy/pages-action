@@ -336,4 +336,30 @@ class TestAwards < Minitest::Test
     )
     assert_equal('25', xml.xpath('/r/td').text.strip, xml)
   end
+
+  def test_says_one_day_and_one_award_without_a_plural
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>1</days_of_running_balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-06-01T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    text = xml.xpath('//p[@class="darkred"]').text
+    assert_includes(text, '(1 day before today)', xml)
+    assert_includes(text, 'there is 1 award in total', xml)
+  end
 end
