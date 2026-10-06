@@ -5,6 +5,7 @@
 .PHONY: clean all assets install rake stylelint test entries entry rmi verify
 .SILENT:
 .SECONDARY:
+.DELETE_ON_ERROR:
 .SHELLFLAGS := -x -e -o pipefail -c
 SHELL := bash
 
@@ -98,7 +99,8 @@ $(SAXON): | target
 	if [ -e "$${m2}" ]; then
 		cp "$${m2}" "$(SAXON)"
 	else
-		wget --no-verbose -O "$(SAXON)" "https://repo.maven.apache.org/maven2/$${p}"
+		wget --no-verbose -O "$(SAXON).tmp" "https://repo.maven.apache.org/maven2/$${p}"
+		mv "$(SAXON).tmp" "$(SAXON)"
 	fi
 
 install: $(SAXON) | target
