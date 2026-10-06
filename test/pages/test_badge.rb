@@ -23,7 +23,7 @@ class TestBadge < Minitest::Test
         raise("#{svg}\n\n#{e}")
       end
     assert_empty(xml.errors, svg)
-    refute_empty(xml.xpath('/svg'), svg)
+    refute_empty(xml.xpath("/*[local-name()='svg']"), svg)
   end
 
   def test_shows_plus_zero_when_average_is_exactly_zero
