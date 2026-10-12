@@ -58,10 +58,11 @@
     according to the value.
     -->
     <xsl:param name="i" as="xs:double"/>
+    <xsl:variable name="shown" select="format-number($i, '0.00')"/>
     <span>
       <xsl:attribute name="class">
         <xsl:choose>
-          <xsl:when test="$i &gt;= 1">
+          <xsl:when test="xs:double($shown) &gt;= 1">
             <xsl:text>darkgreen</xsl:text>
           </xsl:when>
           <xsl:otherwise>
@@ -69,7 +70,7 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:attribute>
-      <xsl:value-of select="format-number($i, '0.00')"/>
+      <xsl:value-of select="$shown"/>
     </span>
   </xsl:function>
   <xsl:function name="z:pmp">
