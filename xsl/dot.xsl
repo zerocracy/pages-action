@@ -66,7 +66,7 @@
             <xsl:for-each select="1 to $weeks">
               <xsl:variable name="week" select="xs:integer(.)"/>
               <xsl:variable name="sorted" as="element()*">
-                <xsl:perform-sort select="$dot_facts[z:in-week(z:when(when), $week)]">
+                <xsl:perform-sort select="$dot_facts[z:in-week(z:when(when), $week) and *[name()=$n]]">
                   <xsl:sort select="z:when(when)" order="ascending"/>
                 </xsl:perform-sort>
               </xsl:variable>
