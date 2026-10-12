@@ -32,3 +32,15 @@ for url in 'https://example.com/reports?theme=dark' 'https://example.com/reports
         exit 1
     fi
 done
+
+for url in 'example.com/reports' 'ftp://example.com/reports'; do
+    if env "GITHUB_WORKSPACE=${PWD}" "JUDGES=${PWD}/judges-probe" \
+        'LATEST_VERSION=test' 'INPUT_FACTBASE=test.fb' \
+        'INPUT_OUTPUT=output' "INPUT_URL=${url}" \
+        "${SELF}/entry.sh" > log.txt 2>&1; then
+        echo "Expected a URL without http:// or https:// to fail: ${url}"
+        exit 1
+    fi
+    grep -F 'INPUT_URL must be an absolute URL' log.txt
+    [ ! -e output ]
+done
