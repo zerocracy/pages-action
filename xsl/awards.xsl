@@ -142,7 +142,7 @@
       <xsl:when test="empty($facts)">
         <p class="darkred">
           <xsl:text>No awards since </xsl:text>
-          <xsl:value-of select="xs:date($since)"/>
+          <xsl:value-of select="z:day(xs:date($since))"/>
           <xsl:text> (</xsl:text>
           <xsl:value-of select="$days"/>
           <xsl:text> day</xsl:text>
@@ -366,7 +366,7 @@
                   <span>
                     <xsl:attribute name="title">
                       <xsl:text>Since </xsl:text>
-                      <xsl:value-of select="xs:date(xs:dateTime(z:value(since)))"/>
+                      <xsl:value-of select="z:day(xs:date(xs:dateTime(z:value(since))))"/>
                       <xsl:text> you've accumulated </xsl:text>
                       <xsl:value-of select="xs:integer(z:value(awarded))"/>
                       <xsl:text> points, a payout of </xsl:text>
