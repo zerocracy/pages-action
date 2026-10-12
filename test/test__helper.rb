@@ -17,6 +17,7 @@ unless SimpleCov.running || ARGV.include?('--no-cov')
   SimpleCov.minimum_coverage(90)
   SimpleCov.minimum_coverage_by_file(90)
   SimpleCov.start do
+    enable_coverage_for_eval
     add_filter 'vendor/'
     add_filter 'target/'
     add_filter 'test/'
@@ -44,7 +45,13 @@ class Minitest::Test
     $judge = judge
     $options = Judges::Options.new({ 'repositories' => 'foo/foo' })
     $loog = Loog::NULL
-    load(File.join(__dir__, "../judges/#{judge}/#{judge}.rb"))
+    $compiled ||= {}
+    $compiled[judge] ||= compiled(File.expand_path("../judges/#{judge}/#{judge}.rb", __dir__))
+    $compiled[judge].call
+  end
+
+  def compiled(file)
+    eval("lambda do\n#{File.read(file)}\nend", TOPLEVEL_BINDING, file, 0) # rubocop:disable Security/Eval, Style/EvalWithLocation
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
