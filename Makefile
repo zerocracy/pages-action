@@ -53,6 +53,7 @@ target/html/%.html: target/output/% tests/%.yml
 	n=$${n%.*}
 	cp "$$(dirname "$<")/$${n}/$${n}.html" "$$(dirname "$@")/$${n}.html"
 	cp "$$(dirname "$<")/$${n}/$${n}-vitals.html" "$$(dirname "$@")/$${n}-vitals.html"
+	cp "$$(dirname "$<")/$${n}/$${n}-badge.svg" "$$(dirname "$@")/$${n}-badge.svg"
 	xpaths=$$( ruby -e 'require "yaml"; YAML.load_file(ARGV[0], permitted_classes: [Time])[0]["xpaths"].split("\n").each { |x| puts x }' "tests/$${n}.yml" )
 	while IFS= read -r xpath; do
 		xmllint --xpath "$${xpath}" "$$(dirname "$<")/$${n}/$${n}-vitals.html" > /dev/null
