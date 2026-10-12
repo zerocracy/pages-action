@@ -176,6 +176,13 @@ while IFS= read -r o; do
     if [ "${v}" = "" ]; then
         continue
     fi
+    if [[ "${v}" == *=* ]]; then
+        k="${v%%=*}"
+        k="${k%"${k##*[![:space:]]}"}"
+        x="${v#*=}"
+        x="${x#"${x%%[![:space:]]*}"}"
+        v="${k}=${x}"
+    fi
     if [[ "${v}" == "github_token="* ]]; then
         if [ "${v}" = "github_token=" ]; then
             echo "The 'github_token' option is empty, ignoring it"
