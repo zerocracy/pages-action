@@ -35,7 +35,9 @@
                 <xsl:value-of select="language"/>
               </xsl:if>
               <xsl:text> · </xsl:text>
-              <xsl:value-of select="z:counted(open_issues, 'open issue')"/>
+              <xsl:value-of select="open_issues"/>
+              <xsl:text> open </xsl:text>
+              <xsl:value-of select="if (string(open_issues) = '1') then 'issue or pull request' else 'issues and pull requests'"/>
               <xsl:if test="updated_at != ''">
                 <xsl:text> · updated </xsl:text>
                 <time class="relative-time">
