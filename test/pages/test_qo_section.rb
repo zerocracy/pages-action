@@ -139,6 +139,19 @@ class TestQoSection < Minitest::Test
     refute_includes(script, 'alert(document.domain)')
   end
 
+  def test_draws_one_value_of_a_multi_valued_metric
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      "<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>
+      <n_composite>\n  <v>0.5</v>\n  <v>0.7</v>\n</n_composite></f></fb>",
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    assert_match(/data:\[0\.5\]/, xml.xpath('//script').map(&:content).join)
+  end
+
   def test_keeps_the_before_block_out_of_a_paragraph
     xml = xslt(
       "<r><xsl:call-template name='qo-section'>" \
