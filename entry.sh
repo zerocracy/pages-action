@@ -156,6 +156,43 @@ if [ -z "${name}" ]; then
 fi
 echo "The factbase name is: '${name}'"
 
+# Keep minute-to-second conversion within signed 64-bit range: floor((2^63-1)/60).
+max_minutes=153722867280912930
+
+timeout=${INPUT_TIMEOUT}
+if [ -z "${timeout}" ]; then
+    timeout=3
+fi
+if ! [[ "${timeout}" =~ ^[1-9][0-9]*$ ]]; then
+    echo "INPUT_TIMEOUT must be a positive integer, got: ${timeout}" >&2
+    exit 1
+fi
+if [ "${#timeout}" -gt "${#max_minutes}" ] || [ "${timeout}" -gt "${max_minutes}" ]; then
+    echo "INPUT_TIMEOUT must not exceed ${max_minutes} minutes, got: ${timeout}" >&2
+    exit 1
+fi
+timeout=$((timeout * 60))
+echo "Each judge will spend up to ${timeout} seconds"
+
+lifetime=${INPUT_LIFETIME}
+if [ -z "${lifetime}" ]; then
+    lifetime=5
+fi
+if ! [[ "${lifetime}" =~ ^[1-9][0-9]*$ ]]; then
+    echo "INPUT_LIFETIME must be a positive integer, got: ${lifetime}" >&2
+    exit 1
+fi
+if [ "${#lifetime}" -gt "${#max_minutes}" ] || [ "${lifetime}" -gt "${max_minutes}" ]; then
+    echo "INPUT_LIFETIME must not exceed ${max_minutes} minutes, got: ${lifetime}" >&2
+    exit 1
+fi
+lifetime=$((lifetime * 60))
+echo "The update will run for up to ${lifetime} seconds"
+if [ $((lifetime - timeout)) -lt $((timeout / 10)) ]; then
+    echo "INPUT_TIMEOUT (${timeout} seconds) must be at least 10 percent smaller than INPUT_LIFETIME (${lifetime} seconds)" >&2
+    exit 1
+fi
+
 for f in yaml xml json html; do
     judges "${gopts[@]}" print \
         --format "${f}" \
@@ -225,39 +262,6 @@ else
     fi
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
-
-# Keep minute-to-second conversion within signed 64-bit range: floor((2^63-1)/60).
-max_minutes=153722867280912930
-
-timeout=${INPUT_TIMEOUT}
-if [ -z "${timeout}" ]; then
-    timeout=3
-fi
-if ! [[ "${timeout}" =~ ^[1-9][0-9]*$ ]]; then
-    echo "INPUT_TIMEOUT must be a positive integer, got: ${timeout}" >&2
-    exit 1
-fi
-if [ "${#timeout}" -gt "${#max_minutes}" ] || [ "${timeout}" -gt "${max_minutes}" ]; then
-    echo "INPUT_TIMEOUT must not exceed ${max_minutes} minutes, got: ${timeout}" >&2
-    exit 1
-fi
-timeout=$((timeout * 60))
-echo "Each judge will spend up to ${timeout} seconds"
-
-lifetime=${INPUT_LIFETIME}
-if [ -z "${lifetime}" ]; then
-    lifetime=5
-fi
-if ! [[ "${lifetime}" =~ ^[1-9][0-9]*$ ]]; then
-    echo "INPUT_LIFETIME must be a positive integer, got: ${lifetime}" >&2
-    exit 1
-fi
-if [ "${#lifetime}" -gt "${#max_minutes}" ] || [ "${lifetime}" -gt "${max_minutes}" ]; then
-    echo "INPUT_LIFETIME must not exceed ${max_minutes} minutes, got: ${lifetime}" >&2
-    exit 1
-fi
-lifetime=$((lifetime * 60))
-echo "The update will run for up to ${lifetime} seconds"
 
 judges "${gopts[@]}" update \
     --shuffle= \

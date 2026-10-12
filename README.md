@@ -48,7 +48,7 @@ to print in the HTML;
   it must be a positive decimal integer no greater than `153722867280912930`;
 * `lifetime` (default: `5`) is the maximum number of minutes for the entire
 `judges update` run; it must be a positive decimal integer no greater than
-`153722867280912930`;
+`153722867280912930`, and at least 10 percent bigger than `timeout`;
 * `url` (optional) is where the static files will be visible. If omitted, it is
 derived from `GITHUB_REPOSITORY_OWNER` and `GITHUB_REPOSITORY` as a GitHub Pages
 URL;
