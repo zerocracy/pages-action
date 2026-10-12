@@ -17,7 +17,7 @@
         </h2>
         <ul>
           <xsl:for-each select="/fb/f[what='repo-details']">
-            <xsl:sort select="repository_name"/>
+            <xsl:sort select="lower-case(repository_name)"/>
             <li>
               <a href="https://github.com/{repository_name}">
                 <xsl:value-of select="repository_name"/>
