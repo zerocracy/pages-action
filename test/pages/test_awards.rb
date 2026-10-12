@@ -416,4 +416,9 @@ class TestAwards < Minitest::Test
     assert_includes(text, '(1 day before today)', xml)
     assert_includes(text, 'there is 1 award in total', xml)
   end
+
+  def test_keeps_the_sort_value_where_tablesorter_reads_it
+    xml = xslt('<xsl:copy-of select="z:td-award(0)"/>', '<fb/>')
+    assert_equal('0', xml.xpath('/td/@data-text').to_s, xml)
+  end
 end
