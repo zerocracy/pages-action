@@ -18,7 +18,7 @@
 Last assessed </xsl:text>
         <time class="relative-time">
           <xsl:attribute name="datetime">
-            <xsl:value-of select="when"/>
+            <xsl:value-of select="z:when(when)"/>
           </xsl:attribute>
           <xsl:attribute name="title">
             <xsl:value-of select="z:day(xs:date(z:when(when)))"/>
