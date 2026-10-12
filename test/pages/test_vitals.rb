@@ -86,6 +86,14 @@ class TestVitals < Minitest::Test
     assert_equal('bar', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_fn_pmp_reads_one_of_many_values
+    xml = xslt(
+      '<r><xsl:value-of select="z:pmp(\'hr\', \'days\', \'28\')"/></r>',
+      "<fb><f><what>pmp</what><area>hr</area><days>\n  <v>56</v>\n  <v>14</v>\n</days></f></fb>"
+    )
+    assert_equal('56', xml.xpath('/r/text()').to_s, xml)
+  end
+
   def test_dot_shows_the_latest_fact_of_the_week
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
