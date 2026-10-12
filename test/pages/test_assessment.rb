@@ -27,4 +27,13 @@ class TestAssessment < Minitest::Test
     pre = xml.xpath("//*[local-name()='pre']").text
     refute_includes(pre, 'assessed on', pre)
   end
+
+  def test_builds_the_datetime_from_one_moment
+    xml = xslt(
+      "<xsl:apply-templates select='/' mode='assessment'/>",
+      "<fb><f><what>latest-assessment</what><text>All good.</text>
+      <when><v>2024-07-01T00:00:00Z</v><v>2024-07-02T00:00:00Z</v></when><total>1</total></f></fb>"
+    )
+    assert_equal('2024-07-01T00:00:00Z', xml.xpath("//*[local-name()='time']/@datetime").to_s, xml)
+  end
 end
