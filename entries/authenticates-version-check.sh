@@ -30,6 +30,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_FACTBASE=test.fb' \
   'INPUT_OUTPUT=output' \
   'INPUT_VERBOSE=false' \
+  'INPUT_ADLESS=false' \
   'INPUT_GITHUB-TOKEN=THETOKEN' \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
@@ -40,7 +41,8 @@ grep "api.github.com/repos/zerocracy/pages-action/releases/latest" curl-args.log
 grep "Authorization: token THETOKEN" curl-args.log
 
 # Verify version was parsed from the mock response
-grep "The 'pages-action' 0.0.0 is running" log.txt
+grep 'while the latest version is' 'output/test-vitals.html'
+grep 'v0.1.0' 'output/test-vitals.html'
 
 # Verify the token also reaches the judges section
 grep "The 'github-token' plugin parameter is set" log.txt
