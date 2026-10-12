@@ -54,7 +54,7 @@
           </canvas>
         </div>
         <xsl:variable name="js-content">
-          <xsl:text>$(function(){const color = chroma('#D3D3D3'); qo_render('</xsl:text>
+          <xsl:text>$(function(){qo_render('</xsl:text>
           <xsl:value-of select="$what"/>
           <xsl:text>',{labels:[</xsl:text>
           <xsl:for-each select="$facts/f">
@@ -95,9 +95,9 @@
                 <xsl:text>'</xsl:text>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:text>color.darken(</xsl:text>
-                <xsl:value-of select="position() * 0.4"/>
-                <xsl:text>).hex()</xsl:text>
+                <xsl:text>chroma.hsl(</xsl:text>
+                <xsl:value-of select="round(position() * 137.508) mod 360"/>
+                <xsl:text>,0.6,0.45).hex()</xsl:text>
                 <xsl:text>,borderWidth:1</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
