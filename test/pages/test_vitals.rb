@@ -113,6 +113,17 @@ class TestVitals < Minitest::Test
     assert_equal('99', xml.xpath('//td[@class="ff right"]/text()').to_s.strip, xml)
   end
 
+  def test_dot_shows_a_dimension_missing_from_the_latest_fact_of_the_week
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2024-07-02T00:00:00Z</when>' \
+      '<total_stars>140</total_stars><total_files>2370</total_files></f>' \
+      '<f><what>dimensions-of-terrain</what><when>2024-07-04T00:00:00Z</when><total_files>2380</total_files></f></fb>',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_includes(xml.xpath('//tr[td[1]="total_stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
+  end
+
   def test_fn_pmp_reads_one_fact
     xml = xslt(
       '<r><xsl:value-of select="z:pmp(\'hr\', \'days_of_running_balance\', \'28\')"/></r>',
