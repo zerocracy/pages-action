@@ -110,7 +110,7 @@
               <xsl:if test="position() &gt; 1">
                 <xsl:text>,</xsl:text>
               </xsl:if>
-              <xsl:variable name="cell" select="*[name()=$n][1]/text()"/>
+              <xsl:variable name="cell" select="z:value(*[name()=$n][1])"/>
               <xsl:choose>
                 <xsl:when test="not(normalize-space($cell) castable as xs:decimal)">
                   <xsl:text>null</xsl:text>
