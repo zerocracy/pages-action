@@ -65,6 +65,14 @@ case "${INPUT_URL}" in
         exit 1
         ;;
 esac
+case "${INPUT_URL}" in
+    ''|http://*|https://*)
+        ;;
+    *)
+        echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2
+        exit 1
+        ;;
+esac
 echo "The workspace directory is: $(pwd)"
 
 if [ -z "${INPUT_FACTBASE}" ]; then
