@@ -133,6 +133,16 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//tr[td[1]="total_stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
   end
 
+  def test_dot_shows_one_of_many_values
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2024-07-02T00:00:00Z</when>' \
+      '<total_stars><v>10</v><v>12</v></total_stars></f></fb>',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_equal('10', xml.xpath('//td[@class="ff right"]/text()').to_s.strip, xml)
+  end
+
   def test_fn_pmp_reads_one_fact
     xml = xslt(
       '<r><xsl:value-of select="z:pmp(\'hr\', \'days_of_running_balance\', \'28\')"/></r>',
