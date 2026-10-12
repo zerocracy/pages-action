@@ -325,11 +325,11 @@ class TestAwards < Minitest::Test
 
   def test_sorts_programmers_by_their_total_awards
     facts = [
-      ['alpha', '1', '2024-06-01T00:00:00Z'],
-      ['alpha', '100', '2024-05-31T00:00:00Z'],
-      ['beta', '50', '2024-05-30T00:00:00Z']
-    ].map do |name, amount, timestamp|
-      "<f><is_human>1</is_human><who>1</who><who_name>#{name}</who_name>" \
+      ['1', 'alpha', '1', '2024-06-01T00:00:00Z'],
+      ['1', 'alpha', '100', '2024-05-31T00:00:00Z'],
+      ['2', 'beta', '50', '2024-05-30T00:00:00Z']
+    ].map do |id, name, amount, timestamp|
+      "<f><is_human>1</is_human><who>#{id}</who><who_name>#{name}</who_name>" \
         "<award>#{amount}</award><when>#{timestamp}</when></f>"
     end.join
     xml = xslt(
