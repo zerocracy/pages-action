@@ -20,6 +20,16 @@ class TestOutdated < Minitest::Test
     assert_equal('27 days ago', relative('2026-01-31T00:00:00Z', '2026-02-27T00:00:00Z'))
   end
 
+  def test_shows_a_future_moment_as_a_future_interval
+    assert_equal('in 2 days', relative('2026-10-06T12:00:00Z', '2026-10-04T12:00:00Z'))
+    assert_equal('in one hour', relative('2026-10-04T13:00:00Z', '2026-10-04T12:00:00Z'))
+    assert_equal('in one month', relative('2026-03-01T00:00:00Z', '2026-02-01T00:00:00Z'))
+  end
+
+  def test_keeps_a_moment_less_than_a_minute_away_as_just_now
+    assert_equal('just now', relative('2026-10-04T12:00:30Z', '2026-10-04T12:00:00Z'))
+  end
+
   private
 
   def relative(start, finish)

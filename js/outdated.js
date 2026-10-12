@@ -37,22 +37,28 @@ function getMonthsDifference(startDate, endDate) {
  * @returns {string} Formatted relative time string
  */
 function formatRelativeTime(diffInMs, startDate) {
+  const future = diffInMs < 0;
   const endDate = new Date(startDate.getTime() + diffInMs);
-  const totalMonths = getMonthsDifference(startDate, endDate);
+  const span = Math.abs(diffInMs);
+  const totalMonths = future ? getMonthsDifference(endDate, startDate) : getMonthsDifference(startDate, endDate);
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
-  const days = Math.floor(diffInMs / TIME_UNITS.DAY);
-  const hours = Math.floor(diffInMs / TIME_UNITS.HOUR);
-  const minutes = Math.floor(diffInMs / TIME_UNITS.MINUTE);
+  const days = Math.floor(span / TIME_UNITS.DAY);
+  const hours = Math.floor(span / TIME_UNITS.HOUR);
+  const minutes = Math.floor(span / TIME_UNITS.MINUTE);
+  const label = (count, unit) => {
+    const amount = count === 1 ? `one ${unit}` : `${count} ${unit}s`;
+    return future ? `in ${amount}` : `${amount} ago`;
+  };
   const timeUnits = [
-    { value: years, singular: 'one year ago', plural: `${years} years ago` },
-    { value: months, singular: 'one month ago', plural: `${months} months ago` },
-    { value: days, singular: 'one day ago', plural: `${days} days ago` },
-    { value: hours, singular: 'one hour ago', plural: `${hours} hours ago` },
-    { value: minutes, singular: 'one minute ago', plural: `${minutes} minutes ago` }
+    { value: years, unit: 'year' },
+    { value: months, unit: 'month' },
+    { value: days, unit: 'day' },
+    { value: hours, unit: 'hour' },
+    { value: minutes, unit: 'minute' }
   ];
   const matchedUnit = timeUnits.find((unit) => unit.value > 0);
-  return matchedUnit ? (matchedUnit.value === 1 ? matchedUnit.singular : matchedUnit.plural) : 'just now';
+  return matchedUnit ? label(matchedUnit.value, matchedUnit.unit) : 'just now';
 }
 
 /**
