@@ -193,6 +193,10 @@ class TestVitals < Minitest::Test
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
   end
 
+  def test_uses_the_supplied_logo_as_the_favicon
+    assert_match(/<link rel="icon"\s+href="x"/, generate_vitals_html(adless: 'true'))
+  end
+
   def test_adless_page_carries_no_update_banner
     html = generate_vitals_html(adless: 'true')
     refute_match(%r{github\.com/zerocracy/pages-action/releases}, html, html)
