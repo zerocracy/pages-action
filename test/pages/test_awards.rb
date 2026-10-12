@@ -433,7 +433,7 @@ class TestAwards < Minitest::Test
     ].each do |fb|
       xml = xslt("<r><xsl:apply-templates select='/' mode='awards'/></r>", fb, 'today' => '2024-07-05T00:00:00Z')
       assert_match(/(No awards since|Since) \d{4}-\d{2}-\d{2}[ (]/, xml.to_s, xml)
-      refute_match(/\d{4}-\d{2}-\d{2}Z/, xml.xpath('//text()').join, xml)
+      refute_match(/\d{4}-\d{2}-\d{2}Z/, xml.xpath('//text()').text, xml)
     end
   end
 end
