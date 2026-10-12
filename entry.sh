@@ -38,7 +38,7 @@ if [ "${INPUT_VERBOSE}" == 'true' ]; then
 fi
 
 if [ -z "$1" ]; then
-    SELF=$(dirname "$0")
+    SELF=$(cd "$(dirname "$0")" && pwd)
 else
     SELF=$1
 fi
