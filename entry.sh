@@ -223,6 +223,9 @@ else
         echo "ERROR: The 'today' input must be an ISO-8601 date-time, like 2026-09-07T12:00:00Z, but it is: '${INPUT_TODAY}'" >&2
         exit 1
     fi
+    if ! [[ "${INPUT_TODAY}" =~ (Z|[+-][0-9]{2}:[0-9]{2})$ ]]; then
+        INPUT_TODAY="${INPUT_TODAY}Z"
+    fi
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
 
