@@ -130,7 +130,7 @@
   </xsl:function>
   <xsl:function name="z:td-award">
     <xsl:param name="a" as="xs:integer"/>
-    <td class="ff right" data-value="{$a}">
+    <td class="ff right" data-text="{$a}">
       <xsl:copy-of select="z:award($a)"/>
     </td>
   </xsl:function>
