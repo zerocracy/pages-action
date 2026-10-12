@@ -21,8 +21,7 @@ unless SimpleCov.running || ARGV.include?('--no-cov')
     add_filter 'vendor/'
     add_filter 'target/'
     add_filter 'test/'
-    track_files 'judges/**.rb'
-    track_files 'lib/**.rb'
+    track_files '{judges,lib}/**/*.rb'
   end
 end
 
