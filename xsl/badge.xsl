@@ -5,6 +5,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/2000/svg" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
   <xsl:include href="when.xsl"/>
+  <xsl:include href="rounded.xsl"/>
   <xsl:output method="xml" omit-xml-declaration="yes"/>
   <xsl:param name="today" as="xs:string"/>
   <xsl:template match="/fb">
@@ -18,7 +19,7 @@
           <xsl:text>0.0</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="format-number($sum div $count, '0.0')"/>
+          <xsl:value-of select="format-number(z:rounded($sum div $count, 10), '0.0')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
