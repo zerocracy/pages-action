@@ -88,7 +88,7 @@ for input in INPUT_TIMEOUT INPUT_LIFETIME; do
     done
 done
 
-if run_case accepted-bound "${max_minutes}" "${max_minutes}"; then
+if run_case accepted-bound 1 "${max_minutes}"; then
     exit_code=0
 else
     exit_code=$?
@@ -100,8 +100,22 @@ fi
 args="${tmp}/accepted-bound/update.args"
 timeout_seconds=$(awk '$0 == "--timeout" { getline; print; exit }' "${args}")
 lifetime_seconds=$(awk '$0 == "--lifetime" { getline; print; exit }' "${args}")
-if [ "${timeout_seconds}" != 9223372036854775800 ] || [ "${lifetime_seconds}" != 9223372036854775800 ]; then
+if [ "${timeout_seconds}" != 60 ] || [ "${lifetime_seconds}" != 9223372036854775800 ]; then
     echo "ERROR: maximum bound was not forwarded as expected: timeout=${timeout_seconds}, lifetime=${lifetime_seconds}"
+    exit 1
+fi
+
+if run_case too-close 5 5; then
+    echo "ERROR: script should reject a timeout that is not smaller than lifetime"
+    exit 1
+fi
+if ! grep -Fxq "INPUT_TIMEOUT (300 seconds) must be at least 10 percent smaller than INPUT_LIFETIME (300 seconds)" "${tmp}/too-close/log.txt"; then
+    echo "ERROR: expected an error about timeout and lifetime"
+    cat "${tmp}/too-close/log.txt"
+    exit 1
+fi
+if [ -e "${tmp}/too-close/update.args" ]; then
+    echo "ERROR: judges update ran with a timeout equal to lifetime"
     exit 1
 fi
 
