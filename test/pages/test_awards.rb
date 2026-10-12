@@ -343,10 +343,10 @@ class TestAwards < Minitest::Test
   def test_programmer_rejects_non_github_href
     now = Time.now.utc.iso8601
     xml = xslt(
-      "<xsl:call-template name=\"programmer\">
+      "<r><xsl:call-template name=\"programmer\">
         <xsl:with-param name=\"id\" select=\"'x'\"/>
         <xsl:with-param name=\"name\" select=\"'dude'\"/>
-      </xsl:call-template>",
+      </xsl:call-template></r>",
       "
       <fb>
         <f>
@@ -361,6 +361,7 @@ class TestAwards < Minitest::Test
       ",
       'today' => now
     )
+    assert_includes(xml.xpath('//tr').text, 'evil', xml)
     assert_empty(xml.xpath("//a[starts-with(@href, 'javascript:')]"), xml)
   end
 
