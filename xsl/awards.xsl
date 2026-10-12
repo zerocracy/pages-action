@@ -39,7 +39,7 @@
     in current awards and previously posted "reconciliation" facts.
     -->
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name]"/>
+    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
     <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
     <xsl:choose>
