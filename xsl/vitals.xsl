@@ -6,6 +6,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
   <xsl:include href="script-with-cdata.xsl"/>
   <xsl:include href="when.xsl"/>
+  <xsl:include href="rounded.xsl"/>
   <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
   <xsl:param name="today" as="xs:string"/>
   <xsl:param name="css" as="xs:string"/>
@@ -35,7 +36,7 @@
       <xsl:value-of select="error((), concat('Format must be &quot;0.0&quot; or &quot;0.00&quot;, but got: ', $format))"/>
     </xsl:if>
     <xsl:variable name="factor" as="xs:integer" select="if ($format = '0.0') then 10 else 100"/>
-    <xsl:variable name="rounded" as="xs:double" select="if ($value lt 0) then -(round(-$value * $factor) div $factor) else round($value * $factor) div $factor"/>
+    <xsl:variable name="rounded" as="xs:double" select="z:rounded($value, $factor)"/>
     <xsl:variable name="formatted" select="format-number($rounded, $format)"/>
     <xsl:choose>
       <xsl:when test="$value &gt;= 0 and not($formatted = '-0.0' or $formatted = '-0.00')">
