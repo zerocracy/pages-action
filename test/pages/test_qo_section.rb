@@ -32,6 +32,20 @@ class TestQoSection < Minitest::Test
     assert_equal(colors.first, colors.last, 'Import order must not change metric colors')
   end
 
+  def test_gives_every_metric_its_own_color
+    metrics = (1..15).map { |i| "<n_metric_#{(96 + i).chr}>0.#{i}</n_metric_#{(96 + i).chr}>" }.join
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      "<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>#{metrics}</f></fb>",
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    hues = xml.xpath('//script').map(&:content).join.scan(/borderColor:chroma\.hsl\((\d+),/).flatten
+    assert_equal(15, hues.uniq.size, xml)
+  end
+
   def test_snake_case_to_title
     xml = xslt(
       '<r><xsl:value-of select="z:snake-case-to-title(\'average_issue_lifetime\')"/></r>',
