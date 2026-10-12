@@ -8,6 +8,7 @@ base=$(realpath "$(dirname "$0")/..")
 
 mkdir -p "${base}/target/entries-logs"
 while IFS= read -r sh; do
+    rm -rf "${base}/target/${sh}"
     mkdir -p "${base}/target/${sh}"
     if /bin/bash -c "cd \"${base}/target/${sh}\" && exec \"${base}/entries/${sh}\" \"${base}\" > \"${base}/target/entries-logs/${sh}.txt\" 2>&1"; then
         echo "👍🏻 ${sh} passed"
