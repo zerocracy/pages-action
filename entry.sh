@@ -239,13 +239,7 @@ while IFS= read -r o; do
             echo "The 'github_token' option is empty, ignoring it"
             continue
         fi
-        if [ "${INPUT_VERBOSE}" == 'true' ]; then
-            set +x
-        fi
-        echo "::add-mask::${v#github_token=}"
-        if [ "${INPUT_VERBOSE}" == 'true' ]; then
-            set -x
-        fi
+        echo "::add-mask::${v#*=}"
     fi
     options+=("--option=${v}")
 done <<< "${INPUT_OPTIONS}"
