@@ -31,7 +31,7 @@ class TestAwards < Minitest::Test
       ',
       'today' => '2026-09-19T04:04:04Z'
     )
-    values = xml.xpath('//td[@data-value]/@data-value').map(&:value)
+    values = xml.xpath('//td[@data-text]/@data-text').map(&:value)
     assert_includes(values, '5', xml)
     refute_includes(values, '55', xml)
   end
