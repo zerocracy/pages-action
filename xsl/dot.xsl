@@ -77,7 +77,7 @@
                     <xsl:variable name="v" select="$f/*[name()=$n]"/>
                     <xsl:choose>
                       <xsl:when test="$v">
-                        <xsl:value-of select="$v/text()"/>
+                        <xsl:value-of select="z:value($v)"/>
                       </xsl:when>
                       <xsl:otherwise>
                         <xsl:text> </xsl:text>
