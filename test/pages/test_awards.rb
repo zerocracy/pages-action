@@ -422,4 +422,18 @@ class TestAwards < Minitest::Test
     xml = xslt('<xsl:copy-of select="z:td-award(0)"/>', '<fb/>')
     assert_equal('0', xml.xpath('/td/@data-text').to_s, xml)
   end
+
+  def test_prints_since_dates_without_timezone
+    [
+      '<fb/>',
+      '<fb><f><what>reconciliation</what><when>2024-07-03T00:00:00Z</when><since>2024-06-01T00:00:00Z</since>' \
+      '<who>7</who><who_name>dude</who_name><awarded>100</awarded><payout>70</payout><balance>30</balance></f>' \
+      '<f><is_human>1</is_human><who>7</who><who_name>dude</who_name><award>40</award>' \
+      '<when>2024-07-02T00:00:00Z</when></f></fb>'
+    ].each do |fb|
+      xml = xslt("<r><xsl:apply-templates select='/' mode='awards'/></r>", fb, 'today' => '2024-07-05T00:00:00Z')
+      assert_match(/(No awards since|Since) \d{4}-\d{2}-\d{2}[ (]/, xml.to_s, xml)
+      refute_match(/\d{4}-\d{2}-\d{2}Z/, xml.xpath('//text()').text, xml)
+    end
+  end
 end
