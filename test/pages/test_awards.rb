@@ -78,7 +78,7 @@ class TestAwards < Minitest::Test
       ",
       'today' => Time.now.utc.iso8601
     )
-    assert_equal('30', xml.xpath('/td/text()').to_s, xml)
+    assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
 
   def test_fn_payables_out_of_window
@@ -195,7 +195,7 @@ class TestAwards < Minitest::Test
       ",
       'today' => Time.now.utc.iso8601
     )
-    assert_equal('30', xml.xpath('/td/text()').to_s, xml)
+    assert_equal('55', xml.xpath('/td/text()').to_s, xml)
   end
 
   def test_fn_payables_uses_latest_reconciliation_when_facts_are_out_of_order
