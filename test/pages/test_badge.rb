@@ -8,6 +8,22 @@ require 'shellwords'
 require_relative '../test__helper'
 
 class TestBadge < Minitest::Test
+  def test_uses_running_balance_period_and_human_awards
+    xml = badge_svg(
+      <<~XML
+        <fb>
+          <f><what>pmp</what><area>hr</area><days_of_running_balance>7</days_of_running_balance></f>
+          <f><award>10</award><when>2024-01-01T00:00:00Z</when><is_human>1</is_human></f>
+          <f><award>90</award><when>2023-12-20T00:00:00Z</when><is_human>1</is_human></f>
+          <f><award>100</award><when>2024-01-01T00:00:00Z</when><is_human>0</is_human></f>
+        </fb>
+      XML
+    )
+    texts = xml.xpath("//*[local-name()='text']").map(&:text)
+    assert_includes(texts, '+10.0', xml)
+    refute_includes(texts, '+66.7', xml)
+  end
+
   def test_validate_svg
     WebMock.enable_net_connect!
     f = File.join(__dir__, '../../target/html/simple-badge.svg')
@@ -37,8 +53,8 @@ class TestBadge < Minitest::Test
     xml = badge_svg(
       "
       <fb>
-        <f><award>4</award><when>2023-12-01T00:00:00Z</when></f>
-        <f><award>4</award><when>2023-12-02T00:00:00Z</when></f>
+        <f><award>4</award><when>2023-12-25T00:00:00Z</when><is_human>1</is_human></f>
+        <f><award>4</award><when>2023-12-26T00:00:00Z</when><is_human>1</is_human></f>
       </fb>
       "
     )
