@@ -112,11 +112,22 @@
               </xsl:if>
               <xsl:variable name="cell" select="z:value(*[name()=$n][1])"/>
               <xsl:choose>
-                <xsl:when test="not(normalize-space($cell) castable as xs:decimal)">
+                <xsl:when test="normalize-space($cell) castable as xs:decimal">
+                  <xsl:value-of select="xs:decimal(normalize-space($cell))"/>
+                </xsl:when>
+                <xsl:when test="not(normalize-space($cell) castable as xs:double)">
                   <xsl:text>null</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
-                  <xsl:value-of select="xs:decimal(normalize-space($cell))"/>
+                  <xsl:variable name="number" select="xs:double(normalize-space($cell))"/>
+                  <xsl:choose>
+                    <xsl:when test="$number castable as xs:decimal">
+                      <xsl:value-of select="xs:decimal($number)"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:text>null</xsl:text>
+                    </xsl:otherwise>
+                  </xsl:choose>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:for-each>
