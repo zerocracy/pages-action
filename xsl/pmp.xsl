@@ -16,7 +16,8 @@
     <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area][1]"/>
     <xsl:choose>
       <xsl:when test="$a">
-        <xsl:variable name="v" select="z:value($a/*[name()=$param][1])"/>
+        <xsl:variable name="property" select="$a/*[name()=$param][1]"/>
+        <xsl:variable name="v" select="string(($property/v, $property[not(v)])[1])"/>
         <xsl:choose>
           <xsl:when test="$v">
             <xsl:value-of select="$v"/>
