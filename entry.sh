@@ -288,7 +288,7 @@ judges "${gopts[@]}" update \
 # Produce downloadable formats from the factbase after this cycle's judges
 # have refreshed its derived facts.
 for f in yaml xml json html; do
-    ${JUDGES} "${gopts[@]}" print \
+    judges "${gopts[@]}" print \
         --format "${f}" \
         --columns "${INPUT_COLUMNS}" \
         --highlighted "${INPUT_HIGHLIGHTED}"\
