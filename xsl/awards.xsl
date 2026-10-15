@@ -356,10 +356,11 @@
         </td>
         <xsl:for-each select="1 to $weeks">
           <xsl:variable name="week" select="."/>
+          <xsl:variable name="paid" select="$fb/f[what='reconciliation' and who=$id and z:in-week(z:when(when), $week) and z:when(when) &lt;= xs:dateTime($today)]"/>
           <td class="right">
             <xsl:choose>
-              <xsl:when test="$fb/f[what='reconciliation' and who=$id and z:in-week(z:when(when), $week)]">
-                <xsl:for-each select="$fb/f[what='reconciliation' and who=$id and z:in-week(z:when(when), $week)]">
+              <xsl:when test="$paid">
+                <xsl:for-each select="$paid">
                   <xsl:if test="position() &gt; 1">
                     <br/>
                   </xsl:if>
