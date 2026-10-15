@@ -189,6 +189,7 @@
       <xsl:with-param name="content">
         $(function() {
           $("#awards").tablesorter({
+            selectorHeaders: '> thead tr:last-child th',
             sortList: [[2 + weeks, 1]]
           });
         });
