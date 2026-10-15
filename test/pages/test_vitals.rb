@@ -154,6 +154,18 @@ class TestVitals < Minitest::Test
     )
   end
 
+  def test_dot_ignores_a_fact_after_today
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2024-07-04T00:00:00Z</when>' \
+      '<total_repositories>3</total_repositories></f>' \
+      '<f><what>dimensions-of-terrain</what><when>2024-07-06T00:00:00Z</when>' \
+      '<total_repositories>99</total_repositories></f></fb>',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_equal('3', xml.xpath('//td[@class="ff right"]/text()').to_s.strip, xml)
+  end
+
   def test_dot_shows_one_of_many_values
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
@@ -455,9 +467,15 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '-0001')
   end
 
+  def test_description_ignores_an_award_after_today
+    html = generate_vitals_html(facts: '<f><when>2024-12-01T22:22:22Z</when><award>86</award></f>')
+    description = html[%r{<meta name="description".*?/>}m].to_s
+    assert_includes(description, '+14.0 average points per task, 14 total points', html)
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false', bytes: nil)
+  def generate_vitals_html(adless: 'false', bytes: nil, facts: '')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -487,6 +505,7 @@ class TestVitals < Minitest::Test
             <where>github</where>
             <when>2024-06-26T22:22:22Z</when>
           </f>
+          #{facts}
         </fb>
       XML
       output = File.join(dir, 'vitals.html')
