@@ -330,7 +330,9 @@ else
 fi
 
 url=${INPUT_URL}
-url="${url%/}"
+while [[ "${url}" == */ ]]; do
+    url="${url%/}"
+done
 if [ -z "${url}" ]; then
     url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
     repo=${GITHUB_REPOSITORY#*/}
