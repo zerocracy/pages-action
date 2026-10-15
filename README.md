@@ -67,7 +67,8 @@ You need to have
   [Java],
   [xmllint],
   [HTML Tidy],
-  [OpenSSL],
+  [Ruby], [Bundler],
+  [wget], [tree],
   and
   [Docker]
   installed.
@@ -95,4 +96,7 @@ Then, you should be able to open the `target/html/simple-vitals.html`
 [xmllint]: https://gnome.pages.gitlab.gnome.org/libxml2/xmllint.html
 [Java]: https://www.java.com/en/
 [HTML Tidy]: https://www.html-tidy.org/
-[OpenSSL]: https://www.openssl.org/
+[Ruby]: https://www.ruby-lang.org/en/
+[Bundler]: https://bundler.io/
+[wget]: https://www.gnu.org/software/wget/
+[tree]: https://oldmanprogrammer.net/source.php?dir=projects/tree
