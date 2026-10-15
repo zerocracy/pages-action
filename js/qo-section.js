@@ -12,12 +12,13 @@
  */
 function qo_render(canvas, data) {
   const ctx = document.getElementById(canvas);
-  ctx.style.height = '10em';
+  ctx.parentNode.style.height = '10em';
   new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
-      responsive: false,
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           position: 'right'
