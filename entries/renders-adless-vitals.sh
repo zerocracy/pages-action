@@ -25,3 +25,5 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 grep "The output will have no mention of Zerocracy" 'log.txt'
 
 ! grep -qi zerocracy 'output/test-vitals.html'
+
+! grep -q '<img' 'output/test-vitals.html'
