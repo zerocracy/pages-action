@@ -130,7 +130,7 @@ class TestVitals < Minitest::Test
       '<f><what>dimensions-of-terrain</what><when>2024-07-04T00:00:00Z</when><total_files>2380</total_files></f></fb>',
       'today' => '2024-07-05T00:00:00Z'
     )
-    assert_includes(xml.xpath('//tr[td[1]="total_stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
+    assert_includes(xml.xpath('//tr[td[1]="Total Stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
   end
 
   def test_dot_shows_one_of_many_values
