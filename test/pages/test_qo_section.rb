@@ -207,4 +207,18 @@ class TestQoSection < Minitest::Test
       end
     end
   end
+
+  def test_names_cpi_and_spi_in_capitals
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'earned-value'\"/>" \
+      "<xsl:with-param name='title' select=\"'X'\"/>" \
+      '</xsl:call-template></r>',
+      "<fb><f><when>2024-07-03T22:22:22Z</when><what>earned-value</what><n_cpi>0.9</n_cpi><n_spi>0.8</n_spi></f></fb>",
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    js = xml.xpath('//script').map(&:content).join
+    assert_includes(js, "label:'CPI'", xml)
+    assert_includes(js, "label:'SPI'", xml)
+  end
 end
