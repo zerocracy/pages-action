@@ -260,7 +260,8 @@ class TestVitals < Minitest::Test
   def test_shows_dot_dimensions_as_titles
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
-      '<fb><f><what>dimensions-of-terrain</what><when>2024-10-13T12:30:55Z</when><total_commits>5</total_commits></f></fb>',
+      '<fb><f><what>dimensions-of-terrain</what><when>2024-10-13T12:30:55Z</when>' \
+      '<total_commits>5</total_commits></f></fb>',
       'today' => '2024-10-14T12:00:00Z'
     )
     assert_equal('Total Commits', xml.xpath('//tbody/tr/td[1]').text, xml)
