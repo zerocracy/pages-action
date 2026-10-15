@@ -80,4 +80,21 @@ class TestMakefile < Minitest::Test
       refute_path_exists(File.join(dir, 'target/saxon.jar'), 'a failed download left saxon.jar behind')
     end
   end
+
+  def test_rebuilds_the_docker_image_after_a_stylesheet_changes
+    Dir.mktmpdir do |dir|
+      FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+      FileUtils.mkdir_p(%w[xsl target].map { |path| File.join(dir, path) })
+      %w[Dockerfile entry.sh xsl/vitals.xsl Gemfile Gemfile.lock html-minifier-config.json].each do |file|
+        File.write(File.join(dir, file), '')
+        File.utime(Time.now - 100, Time.now - 100, File.join(dir, file))
+      end
+      File.utime(Time.now - 100, Time.now - 100, File.join(dir, 'Makefile'))
+      File.write(File.join(dir, 'target/docker-image.txt'), 'x')
+      File.utime(Time.now - 50, Time.now - 50, File.join(dir, 'target/docker-image.txt'))
+      assert(system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL), 'unchanged')
+      File.utime(Time.now, Time.now, File.join(dir, 'xsl/vitals.xsl'))
+      refute(system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL))
+    end
+  end
 end
