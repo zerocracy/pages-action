@@ -521,4 +521,21 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_shows_no_payout_dated_after_today
+    xml = xslt(
+      "<r><xsl:call-template name=\"programmer\">
+        <xsl:with-param name=\"id\" select=\"'1'\"/>
+        <xsl:with-param name=\"name\" select=\"'jeff'\"/>
+      </xsl:call-template></r>",
+      '
+      <fb>
+        <f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award><when>2024-10-08T10:00:00Z</when><why>x</why></f>
+        <f><what>reconciliation</what><who>1</who><who_name>jeff</who_name><when>2024-10-16T10:00:00Z</when><since>2024-09-01T00:00:00Z</since><awarded>50</awarded><payout>777</payout><balance>5</balance></f>
+      </fb>
+      ',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_empty(xml.xpath('//span[contains(@title, "2024-10-16")]'), xml)
+  end
 end
