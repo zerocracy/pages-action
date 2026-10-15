@@ -24,6 +24,9 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 
 grep "The output will have no mention of Zerocracy" 'log.txt'
 
-! grep -qi zerocracy 'output/test-vitals.html'
+if grep -q '<img' 'output/test-vitals.html'; then
+  echo 'The adless page must have no logo'
+  exit 1
+fi
 
-! grep -q '<img' 'output/test-vitals.html'
+! grep -qi zerocracy 'output/test-vitals.html'
