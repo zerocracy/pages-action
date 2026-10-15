@@ -5,12 +5,16 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <xsl:template match="/" mode="bylaws">
-    <xsl:apply-templates select="/fb/f[what='bylaws']"/>
-  </xsl:template>
-  <xsl:template match="/fb/f[what='bylaws' and not(html)]">
-    <p class="darkred">
-      <xsl:text>There is no information about bylaws.</xsl:text>
-    </p>
+    <xsl:choose>
+      <xsl:when test="/fb/f[what='bylaws' and html]">
+        <xsl:apply-templates select="/fb/f[what='bylaws' and html]"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <p class="darkred">
+          <xsl:text>There is no information about bylaws.</xsl:text>
+        </p>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
   <xsl:template match="/fb/f[what='bylaws' and html]">
     <div class="bylaws">
