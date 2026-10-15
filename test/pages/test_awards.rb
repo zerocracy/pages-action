@@ -521,4 +521,20 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_links_an_award_by_one_href
+    xml = xslt(
+      "<r><xsl:call-template name=\"programmer\">
+        <xsl:with-param name=\"id\" select=\"'1'\"/>
+        <xsl:with-param name=\"name\" select=\"'jeff'\"/>
+      </xsl:call-template></r>",
+      '
+      <fb>
+        <f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award><when>2024-10-08T10:00:00Z</when><why>x</why><href><v>https://github.com/a/b/pull/1</v><v>https://github.com/a/b/pull/2</v></href></f>
+      </fb>
+      ',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_equal('https://github.com/a/b/pull/1', xml.xpath('//td/a[span]/@href').to_s, xml)
+  end
 end
