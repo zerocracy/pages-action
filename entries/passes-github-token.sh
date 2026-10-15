@@ -15,6 +15,13 @@ set -e
 if [ "$1" = '--version' ]; then
     exit 0
 fi
+if [ "$1" = 'print' ]; then
+    for arg in "$@"; do
+        output=${arg}
+    done
+    touch "${output}"
+    exit 0
+fi
 if [ "$1" = 'update' ]; then
     printf '%s\n' "$@" > "${JUDGES_UPDATE_ARGS}"
 fi
