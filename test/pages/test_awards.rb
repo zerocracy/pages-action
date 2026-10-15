@@ -645,8 +645,24 @@ class TestAwards < Minitest::Test
       </xsl:call-template></r>",
       '
       <fb>
-        <f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award><when>2024-10-08T10:00:00Z</when><why>x</why></f>
-        <f><what>reconciliation</what><who>1</who><who_name>jeff</who_name><when>2024-10-16T10:00:00Z</when><since>2024-09-01T00:00:00Z</since><awarded>50</awarded><payout>777</payout><balance>5</balance></f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-10-08T10:00:00Z</when>
+          <why>x</why>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <when>2024-10-16T10:00:00Z</when>
+          <since>2024-09-01T00:00:00Z</since>
+          <awarded>50</awarded>
+          <payout>777</payout>
+          <balance>5</balance>
+        </f>
       </fb>
       ',
       'today' => '2024-10-14T12:00:00Z'
