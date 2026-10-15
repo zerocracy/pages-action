@@ -53,7 +53,7 @@ class TestCopyRepoNames < Minitest::Test
     end
     client = Object.new
     client.define_singleton_method(:repository) do |id|
-      raise Fbe::OffQuota, 'no quota' if id == 222
+      raise(Fbe::OffQuota, 'no quota') if id == 222
       {
         full_name: 'yegor256/first', description: 'first', stargazers_count: 5,
         forks_count: 1, language: 'Ruby', open_issues_count: 0, updated_at: '2024-01-01T00:00:00Z'
