@@ -253,7 +253,7 @@ if [ "${INPUT_VERBOSE}" == 'true' ]; then
 fi
 github_token_found=false
 for opt in "${options[@]}"; do
-    if [[ "${opt}" == "--option=github_token="* ]]; then
+    if [[ "${opt,,}" == "--option=github_token="* ]]; then
         github_token_found=true
         break
     fi
