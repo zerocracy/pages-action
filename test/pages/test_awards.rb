@@ -459,4 +459,19 @@ class TestAwards < Minitest::Test
     )
     assert_equal(1, xml.xpath('//td[text()="first reason; second reason"]').size, xml)
   end
+
+  def test_shows_a_negative_awarded_as_a_plus
+    xml = xslt(
+      "<r><xsl:copy-of select=\"z:payables('dude')\"/></r>",
+      '
+      <fb>
+        <f><what>reconciliation</what><when>2024-10-01T00:00:00Z</when><since>2024-09-01T00:00:00Z</since>
+          <who_name>dude</who_name><awarded>-399</awarded><payout>0</payout><balance>0</balance></f>
+        <f><is_human>1</is_human><when>2024-10-08T00:00:00Z</when><who_name>dude</who_name><award>10</award></f>
+      </fb>
+      ',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_includes(xml.xpath('/r/td/@title').to_s, '(10 + 399)', xml)
+  end
 end
