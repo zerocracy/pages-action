@@ -195,10 +195,10 @@ class TestVitals < Minitest::Test
   def test_bylaws_responsive_columns_in_css
     f = File.join(__dir__, '../../target/css/main.css')
     skip("File not found:  #{f}") unless File.exist?(f)
-    css = File.read(f).gsub(/\s+/, '')
-    assert_includes(css, '.bylaws.columns{column-count:5}', 'Desktop layout broken')
-    assert_includes(css, '@media(max-width:1280px){.bylaws.columns{column-count:2}}', 'Tablet layout broken')
-    assert_includes(css, '@media(max-width:768px){.bylaws.columns{column-count:1}}', 'Phone layout broken')
+    css = File.read(f).gsub(/\s+/, ' ').gsub(/\s*([{}:;()])\s*/, '\\1')
+    assert_includes(css, '.bylaws .columns{column-count:5}', 'Desktop layout broken')
+    assert_includes(css, '@media(max-width:1280px){.bylaws .columns{column-count:2}}', 'Tablet layout broken')
+    assert_includes(css, '@media(max-width:768px){.bylaws .columns{column-count:1}}', 'Phone layout broken')
   end
 
   def test_css_links_allow_pipe_in_url
