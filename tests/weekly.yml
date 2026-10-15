@@ -5,8 +5,8 @@
   xpaths: |
     /html
     //div[@class="qo-section"]
-    //script[contains(., "qo_render('quality-of-service',{labels:['1/29','3/31','4/3']")]
-    //script[contains(., "qo_render('quantity-of-deliverables',{labels:['1/15']")]
+    //script[contains(., "labels:['1/29','3/31','4/3']")]
+    //script[contains(., "deliverables',{labels:['1/15']")]
 -
   _id: 1
   what: pmp
