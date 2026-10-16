@@ -71,10 +71,9 @@ function displayOutdatedWarning() {
     return;
   }
   const age = Date.now() - time;
-  const hours = Math.floor(age / TIME_UNITS.HOUR);
   const warning = $("#page-outdated-warning");
   if (age > OUTDATED_THRESHOLD_HOURS * TIME_UNITS.HOUR) {
-    const message = `This page was generated ${hours} ${hours === 1 ? 'hour' : 'hours'} ago. The information is most probably outdated.`;
+    const message = `This page was generated ${formatRelativeTime(age, new Date(time))}. The information is most probably outdated.`;
     if (warning.length === 0) {
       $('footer').prepend(`<p id="page-outdated-warning" class='red'>${message}</p>`);
     } else {

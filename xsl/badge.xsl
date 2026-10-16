@@ -19,7 +19,7 @@
           <xsl:text>0.0</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="format-number(z:rounded($sum div $count, 10), '0.0')"/>
+          <xsl:value-of select="format-number(z:rounded($sum div $count, 10) + 0, '0.0')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>

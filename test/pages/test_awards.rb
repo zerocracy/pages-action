@@ -436,4 +436,27 @@ class TestAwards < Minitest::Test
       refute_match(/\d{4}-\d{2}-\d{2}Z/, xml.xpath('//text()').text, xml)
     end
   end
+
+  def test_separates_many_reasons
+    xml = xslt(
+      "<r><xsl:call-template name=\"programmer\">
+        <xsl:with-param name=\"id\" select=\"'1'\"/>
+        <xsl:with-param name=\"name\" select=\"'jeff'\"/>
+      </xsl:call-template></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-10-08T10:00:00Z</when>
+          <why><v>first reason</v><v>second reason</v></why>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_equal(1, xml.xpath('//td[text()="first reason; second reason"]').size, xml)
+  end
 end
