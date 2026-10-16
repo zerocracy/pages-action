@@ -418,6 +418,20 @@ class TestAwards < Minitest::Test
     assert_includes(text, 'there is 1 award in total', xml)
   end
 
+  def test_says_one_awarding_fact_without_a_plural
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award>' \
+      '<when>2024-06-01T00:00:00Z</when></f></fb>',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    assert_equal(
+      'There is 1 awarding fact in the XML, while 1 of them counts',
+      xml.xpath('//tfoot//span/@title').to_s,
+      xml
+    )
+  end
+
   def test_keeps_the_sort_value_where_tablesorter_reads_it
     xml = xslt('<xsl:copy-of select="z:td-award(0)"/>', '<fb/>')
     assert_equal('0', xml.xpath('/td/@data-text').to_s, xml)
