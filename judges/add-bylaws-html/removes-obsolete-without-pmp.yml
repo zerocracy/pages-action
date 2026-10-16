@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: bylaws
+    html: '<p>obsolete</p>'
+  -
+    what: unrelated
+    value: 42
+expected:
+  - /fb[count(f)=1]
+  - /fb[count(f[what='bylaws'])=0]
+  - /fb/f[what='unrelated' and value=42]
