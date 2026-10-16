@@ -15,7 +15,7 @@ class TestMakefileValidation < Minitest::Test
       FileUtils.mkdir_p(%w[target/fb target/css target/js tests sass js].map { |path| File.join(dir, path) })
       %w[
         target/fb/sample.fb target/css/main.css target/js/test.js target/saxon.jar
-        sass/main.scss js/main.js tests/symbols.js
+        sass/main.scss js/main.js tests/symbols.js Gemfile Gemfile.lock
       ].each do |file|
         File.write(File.join(dir, file), '')
       end
