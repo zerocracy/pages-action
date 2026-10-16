@@ -365,9 +365,16 @@
                   </xsl:if>
                   <span>
                     <xsl:attribute name="title">
-                      <xsl:text>Since </xsl:text>
-                      <xsl:value-of select="z:day(xs:date(xs:dateTime(z:value(since))))"/>
-                      <xsl:text> you've accumulated </xsl:text>
+                      <xsl:choose>
+                        <xsl:when test="since">
+                          <xsl:text>Since </xsl:text>
+                          <xsl:value-of select="z:day(xs:date(xs:dateTime(z:value(since))))"/>
+                          <xsl:text> you've accumulated </xsl:text>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:text>You've accumulated </xsl:text>
+                        </xsl:otherwise>
+                      </xsl:choose>
                       <xsl:value-of select="xs:integer(z:value(awarded))"/>
                       <xsl:text> points, a payout of </xsl:text>
                       <xsl:value-of select="xs:integer(z:value(payout))"/>
