@@ -46,6 +46,27 @@ class TestQoSection < Minitest::Test
     assert_equal(15, hues.uniq.size, xml)
   end
 
+  def test_says_there_is_no_information_without_metrics
+    [
+      '<fb/>',
+      '<fb><f><_id>1</_id><when>2024-07-03T22:22:22.8492Z</when><what>quality-of-service</what></f></fb>'
+    ].each do |fb|
+      xml = xslt(
+        "<r><xsl:call-template name='qo-section'>" \
+        "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+        "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+        '</xsl:call-template></r>',
+        fb,
+        'today' => '2024-07-05T00:00:00Z'
+      )
+      assert_equal(
+        ['No information visible at the moment.'],
+        xml.xpath('//p[@class="darkred"]/text()').map(&:to_s), xml
+      )
+      assert_empty(xml.xpath('//canvas | //script'), xml)
+    end
+  end
+
   def test_snake_case_to_title
     xml = xslt(
       '<r><xsl:value-of select="z:snake-case-to-title(\'average_issue_lifetime\')"/></r>',
