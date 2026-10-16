@@ -233,18 +233,13 @@ while IFS= read -r o; do
         x="${x#"${x%%[![:space:]]*}"}"
         v="${k}=${x}"
     fi
-    if [[ "${v}" == "github_token="* ]]; then
-        if [ "${v}" = "github_token=" ]; then
+    option_key="${v%%=*}"
+    if [[ "${v}" == *=* && "${option_key,,}" == 'github_token' ]]; then
+        if [ -z "${v#*=}" ]; then
             echo "The 'github_token' option is empty, ignoring it"
             continue
         fi
-        if [ "${INPUT_VERBOSE}" == 'true' ]; then
-            set +x
-        fi
-        echo "::add-mask::${v#github_token=}"
-        if [ "${INPUT_VERBOSE}" == 'true' ]; then
-            set -x
-        fi
+        echo "::add-mask::${v#*=}"
     fi
     options+=("--option=${v}")
 done <<< "${INPUT_OPTIONS}"
@@ -253,7 +248,9 @@ if [ "${INPUT_VERBOSE}" == 'true' ]; then
 fi
 github_token_found=false
 for opt in "${options[@]}"; do
-    if [[ "${opt,,}" == "--option=github_token="* ]]; then
+    option_key="${opt#--option=}"
+    option_key="${option_key%%=*}"
+    if [[ "${option_key,,}" == 'github_token' ]]; then
         github_token_found=true
         break
     fi
