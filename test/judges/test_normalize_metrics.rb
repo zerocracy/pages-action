@@ -25,4 +25,21 @@ class TestNormalizeMetrics < Minitest::Test
     f = fb.query('(eq average_issue_lifetime 200)').each.to_a.first
     assert_in_delta(1.0, f['n_average_issue_lifetime'].first, 0.0001, fb.to_json)
   end
+
+  def test_takes_the_earliest_moment_of_a_fact_with_many
+    fb = Factbase.new
+    old = fb.insert
+    old._id = 1
+    old.what = 'quality-of-service'
+    old.when = Time.parse('2025-01-01T00:00:00Z')
+    old.when = Time.parse('2023-01-01T00:00:00Z')
+    old.average_issue_lifetime = 0
+    f = fb.insert
+    f._id = 2
+    f.what = 'quality-of-service'
+    f.when = Time.parse('2024-01-01T00:00:00Z')
+    f.average_issue_lifetime = 20
+    load_it('normalize-metrics', fb)
+    assert_empty(fb.query('(exists n_average_issue_lifetime)').each.to_a, fb.to_json)
+  end
 end
