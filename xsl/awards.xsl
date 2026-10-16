@@ -8,6 +8,7 @@
   <xsl:variable name="weeks" select="xs:integer(ceiling(xs:float($days) div 7))"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
   <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today) and is_human = 1]"/>
+  <xsl:variable name="reconciliations" select="$fb/f[what='reconciliation' and z:when(when) &lt;= xs:dateTime($today)]"/>
   <xsl:function name="z:monday" as="xs:date">
     <!--
     Takes week number (e.g. 4) and returns ISO-8601 date of the
@@ -195,7 +196,7 @@
         <!-- Run -->
         <col style="width: 4em;"/>
         <!-- Pay -->
-        <xsl:if test="$fb/f[what='reconciliation']">
+        <xsl:if test="$reconciliations">
           <col style="width: 4em;"/>
         </xsl:if>
       </colgroup>
@@ -209,7 +210,7 @@
             <br/>
             <xsl:text>⬇</xsl:text>
           </td>
-          <td colspan="{if ($fb/f[what='reconciliation']) then '2' else '1'}">
+          <td colspan="{if ($reconciliations) then '2' else '1'}">
             <xsl:text> </xsl:text>
           </td>
         </tr>
@@ -242,7 +243,7 @@
           <th class="right sorter">
             <xsl:text>Run</xsl:text>
           </th>
-          <xsl:if test="$fb/f[what='reconciliation']">
+          <xsl:if test="$reconciliations">
             <th class="right sorter">
               <xsl:text>Pay</xsl:text>
             </th>
@@ -294,7 +295,7 @@
             <xsl:copy-of select="z:td-award(xs:integer(sum($facts[z:in-week(z:when(when), $week)]/award)))"/>
           </xsl:for-each>
           <xsl:copy-of select="z:td-award(xs:integer(sum($facts/award)))"/>
-          <xsl:if test="$fb/f[what='reconciliation']">
+          <xsl:if test="$reconciliations">
             <td class="right ff">
               <!-- Pay -->
               <xsl:text> </xsl:text>
@@ -340,7 +341,7 @@
         <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name and z:in-week(z:when(when), $week)]/award)))"/>
       </xsl:for-each>
       <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name]/award)))"/>
-      <xsl:if test="$fb/f[what='reconciliation']">
+      <xsl:if test="$reconciliations">
         <xsl:copy-of select="z:payables($name)"/>
       </xsl:if>
     </tr>
@@ -439,7 +440,7 @@
           <!-- Run -->
           <xsl:text> </xsl:text>
         </td>
-        <xsl:if test="$fb/f[what='reconciliation']">
+        <xsl:if test="$reconciliations">
           <td>
             <!-- Pay -->
             <xsl:text> </xsl:text>
