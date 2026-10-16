@@ -39,7 +39,7 @@
       <xsl:value-of select="$title"/>
     </h2>
     <xsl:choose>
-      <xsl:when test="empty($facts/f)">
+      <xsl:when test="empty($facts/f/*[starts-with(name(), 'n_')])">
         <p class="darkred">
           <xsl:text>No information visible at the moment.</xsl:text>
         </p>
