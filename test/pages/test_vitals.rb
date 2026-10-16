@@ -227,6 +227,12 @@ class TestVitals < Minitest::Test
     assert_match(/<link rel="icon"\s+href="x"/, generate_vitals_html(adless: 'true'))
   end
 
+  def test_names_zerocracy_unless_adless_is_true
+    ['', 'False', 'no'].each do |adless|
+      assert_includes(generate_vitals_html(adless:), 'supervised by Zerocracy', "adless=#{adless.inspect}")
+    end
+  end
+
   def test_adless_page_carries_no_update_banner
     html = generate_vitals_html(adless: 'true')
     refute_match(%r{github\.com/zerocracy/pages-action/releases}, html, html)
@@ -239,6 +245,16 @@ class TestVitals < Minitest::Test
     }.each do |size, text|
       assert_includes(generate_vitals_html(size:), "#{text}</span>", "#{size} bytes must be shown as #{text}")
     end
+  end
+
+  def test_says_there_is_no_dot_information_without_dimensions
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2024-10-13T12:30:55Z</when><_id>1</_id><_job>1</_job></f></fb>',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_empty(xml.xpath('//table'), xml)
+    assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
   private

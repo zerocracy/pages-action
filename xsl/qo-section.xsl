@@ -85,7 +85,7 @@
               <xsl:text>,</xsl:text>
             </xsl:if>
             <xsl:text>{label:'</xsl:text>
-            <xsl:value-of select="z:snake-case-to-title(substring-after($n, 'n_'))"/>
+            <xsl:value-of select="if ($n = ('n_cpi', 'n_spi')) then upper-case(substring-after($n, 'n_')) else z:snake-case-to-title(substring-after($n, 'n_'))"/>
             <xsl:text>',borderColor:</xsl:text>
             <xsl:variable name="c" select="substring-before(substring-after(concat(',', $colors, ','), concat(',', $n, ':')), ',')"/>
             <xsl:choose>
