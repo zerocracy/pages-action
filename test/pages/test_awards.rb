@@ -418,6 +418,22 @@ class TestAwards < Minitest::Test
     assert_includes(text, 'there is 1 award in total', xml)
   end
 
+  def test_dates_the_points_accumulated_after_the_payout_by_the_payout
+    xml = xslt(
+      "<xsl:copy-of select=\"z:payables('jeff')\"/>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>60</award>' \
+      '<when>2024-05-10T00:00:00Z</when></f>' \
+      '<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>40</award>' \
+      '<when>2024-05-20T00:00:00Z</when></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>jeff</who_name><when>2024-05-31T00:00:00Z</when>' \
+      '<since>2024-05-01T00:00:00Z</since><awarded>100</awarded><payout>70</payout><balance>30</balance></f>' \
+      '<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>25</award>' \
+      '<when>2024-06-05T00:00:00Z</when></f></fb>',
+      'today' => '2024-06-10T00:00:00Z'
+    )
+    assert_includes(xml.xpath('/td/@title').to_s, "since 2024-05-31 you've accumulated 25 points", xml)
+  end
+
   def test_keeps_the_sort_value_where_tablesorter_reads_it
     xml = xslt('<xsl:copy-of select="z:td-award(0)"/>', '<fb/>')
     assert_equal('0', xml.xpath('/td/@data-text').to_s, xml)
