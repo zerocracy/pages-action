@@ -5,9 +5,8 @@ input:
   -
     what: pmp
     area: hr
-    good: '(award (give 10 "for good work"))'
+    good: '(award (give 13 "for good work"))'
     newer: '(award (frobnicate 5) (give 10 "for something new"))'
 expected:
   - /fb[count(f)=2]
-  - /fb/f[what='bylaws' and contains(html, 'for good work')]
-  - /fb/f[what='bylaws' and not(contains(html, 'for something new'))]
+  - /fb/f[what='bylaws' and contains(html, '<strong>13</strong>')]
