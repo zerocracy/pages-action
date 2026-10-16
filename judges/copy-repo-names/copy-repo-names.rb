@@ -14,6 +14,9 @@ repos =
     h[id] = Fbe.octo.repository(id)
   rescue Fbe::OffQuota
     break h
+  rescue Octokit::NotFound
+    Fbe.fb.query("(and (eq what \"repo-details\") (eq repository #{id.inspect}))").delete!
+    next
   rescue Octokit::Error, Faraday::Error
     next
   end
