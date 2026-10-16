@@ -257,9 +257,14 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_keeps_the_inline_css_unescaped
+    css = 'header > p { color: red; } .x::after { content: "a & b"; }'
+    assert_includes(generate_vitals_html(css:), "<style>#{css}</style>")
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false', size: 0)
+  def generate_vitals_html(adless: 'false', size: 0, css: 'body{}')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -309,9 +314,8 @@ class TestVitals < Minitest::Test
           fbe=0.0.50
           css-links=
           js-links=
-          css=body{}
           js=
-        ].push("adless=#{adless}").map { |p| Shellwords.escape(p) },
+        ].push("adless=#{adless}", "css=#{css}").map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
       File.read(output)
