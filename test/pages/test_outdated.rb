@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
+require 'json'
 require 'open3'
 require_relative '../test__helper'
 
@@ -42,6 +43,17 @@ class TestOutdated < Minitest::Test
     assert_includes(out, 'This page was generated 7 days ago.', out)
   end
 
+  def test_warns_about_a_page_older_than_a_day
+    calls = warn_about(((24 * 60) + 30) * 60, 0)
+    assert_equal(1, calls.size, calls)
+    assert_includes(calls.first, 'prepend: <p id="page-outdated-warning"', calls)
+    assert_includes(calls.first, 'The information is most probably outdated.', calls)
+  end
+
+  def test_removes_the_warning_from_a_page_younger_than_a_day
+    assert_equal(['remove'], warn_about(23 * 60 * 60, 1))
+  end
+
   private
 
   def relative(start, finish)
@@ -54,5 +66,29 @@ class TestOutdated < Minitest::Test
     out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
     assert_predicate(status, :success?, out)
     out
+  end
+
+  def warn_about(age, warnings)
+    script = [
+      'const calls = [];',
+      'global.$ = (s) => {',
+      "  if (s === '#generated-time') {",
+      "    return { attr: () => new Date(Date.now() - #{age * 1000}).toISOString() };",
+      '  }',
+      "  if (s === '#page-outdated-warning') {",
+      "    return { length: #{warnings}, text: (t) => calls.push(`text: ${t}`), remove: () => calls.push('remove') };",
+      '  }',
+      "  if (s === 'footer') {",
+      '    return { prepend: (h) => calls.push(`prepend: ${h}`) };',
+      '  }',
+      '  return {};',
+      '};',
+      File.read(File.join(__dir__, '../../js/outdated.js')),
+      'displayOutdatedWarning();',
+      'process.stdout.write(JSON.stringify(calls));'
+    ].join("\n")
+    out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
+    assert_predicate(status, :success?, out)
+    JSON.parse(out)
   end
 end
