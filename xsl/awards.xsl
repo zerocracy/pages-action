@@ -272,11 +272,11 @@
             <!-- Name -->
             <span>
               <xsl:attribute name="title">
-                <xsl:text>There are </xsl:text>
-                <xsl:copy-of select="count(/fb/f[award])"/>
-                <xsl:text> awarding facts in the XML, while </xsl:text>
+                <xsl:variable name="total" select="count(/fb/f[award])"/>
+                <xsl:value-of select="if ($total = 1) then 'There is 1 awarding fact' else concat('There are ', $total, ' awarding facts')"/>
+                <xsl:text> in the XML, while </xsl:text>
                 <xsl:copy-of select="count($facts)"/>
-                <xsl:text> of them count</xsl:text>
+                <xsl:value-of select="if (count($facts) = 1) then ' of them counts' else ' of them count'"/>
               </xsl:attribute>
               <xsl:text>Total</xsl:text>
               <xsl:if test="count($facts) != count(/fb/f[award])">
