@@ -37,9 +37,12 @@ header {
         border-radius: .2em;
         font-size: 2em;
         font-weight: bolder;
-        margin-left: 1em;
         padding: 0 .2em;
         vertical-align: middle;
+    }
+
+    img + span {
+        margin-left: 1em;
     }
 }
 
