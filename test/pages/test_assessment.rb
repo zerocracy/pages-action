@@ -36,4 +36,14 @@ class TestAssessment < Minitest::Test
     )
     assert_equal('2024-07-01T00:00:00Z', xml.xpath("//*[local-name()='time']/@datetime").to_s, xml)
   end
+
+  def test_ends_the_pre_right_after_the_date
+    xml = xslt(
+      "<div><xsl:apply-templates select='/' mode='assessment'/></div>",
+      "<fb><f><what>latest-assessment</what><text>Line one.\nLine two.</text>
+      <when>2026-09-01T00:00:00Z</when><total>1</total></f></fb>"
+    )
+    pre = xml.xpath("//*[local-name()='pre']").text
+    assert_match(/2026-09-01\z/, pre)
+  end
 end
