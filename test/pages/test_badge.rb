@@ -53,6 +53,14 @@ class TestBadge < Minitest::Test
     assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+12.3', xml)
   end
 
+  def test_shows_no_minus_for_an_average_rounded_to_zero
+    awards = Array.new(96) { 8 } + Array.new(97) { -8 }
+    xml = badge_svg(
+      "<fb>#{awards.map { |a| "<f><award>#{a}</award><when>2023-12-01T00:00:00Z</when></f>" }.join}</fb>"
+    )
+    refute_includes(xml.xpath("//*[local-name()='text']").map(&:text), '-0.0', xml)
+  end
+
   private
 
   def badge_svg(xml)
