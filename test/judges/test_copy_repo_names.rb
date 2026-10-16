@@ -39,4 +39,25 @@ class TestCopyRepoNames < Minitest::Test
     assert_equal('second', details.first.description, fb.to_json)
     assert_equal(9, details.first.stars, fb.to_json)
   end
+
+  def test_forgets_a_repository_that_is_not_found
+    fb = Factbase.new
+    award = fb.insert
+    award.what = 'award'
+    award.repository = 404
+    old = fb.insert
+    old.what = 'repo-details'
+    old.repository = 404
+    old.repository_name = 'yegor256/gone'
+    client = Object.new
+    client.define_singleton_method(:repository) { |_id| raise(Octokit::NotFound) }
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it('copy-repo-names', fb)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
+  end
 end
