@@ -133,6 +133,16 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//tr[td[1]="total_stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
   end
 
+  def test_dot_skips_facts_older_than_the_window
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2024-06-06T00:00:00Z</when><total_old>1</total_old></f>' \
+      '<f><what>dimensions-of-terrain</what><when>2024-06-08T00:00:00Z</when><total_stars>140</total_stars></f></fb>',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_equal(['total_stars'], xml.xpath('//tbody/tr/td[1]').map { |td| td.text.strip }, xml)
+  end
+
   def test_dot_shows_one_of_many_values
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
