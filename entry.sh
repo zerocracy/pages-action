@@ -78,7 +78,7 @@ echo "The workspace directory is: $(pwd)"
 if [ -z "${INPUT_FACTBASE}" ]; then
     echo "No factbase parameter provided, looking for *.fb files in current directory..."
     fb_files=()
-    for candidate in *.fb; do
+    for candidate in *.fb .*.fb; do
         if [ -f "${candidate}" ]; then
             fb_files+=("${candidate}")
         fi
