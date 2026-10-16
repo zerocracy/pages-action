@@ -78,7 +78,7 @@
             <xsl:text>, making the amount payable equal to </xsl:text>
             <xsl:value-of select="z:value($rec/balance)"/>
             <xsl:text>; since </xsl:text>
-            <xsl:value-of select="z:day(xs:date(xs:dateTime(z:value($rec/since))))"/>
+            <xsl:value-of select="z:day(xs:date(z:when($rec/when)))"/>
             <xsl:text> you've accumulated </xsl:text>
             <xsl:value-of select="$delta"/>
             <xsl:text> points (</xsl:text>
