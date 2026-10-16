@@ -257,6 +257,11 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_heads_the_dot_notice_without_dimensions
+    xml = xslt("<r><xsl:apply-templates select='/' mode='dot'/></r>", '<fb/>', 'today' => '2024-10-14T12:00:00Z')
+    assert_equal('Dimensions of Terrain (DoT)', xml.xpath('/r/*[1][self::h2]').text.strip, xml)
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', size: 0)
