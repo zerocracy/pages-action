@@ -201,6 +201,14 @@ class TestVitals < Minitest::Test
     assert_includes(css, '@media(max-width:768px){.bylaws.columns{column-count:1}}', 'Phone layout broken')
   end
 
+  def test_moves_the_project_name_away_only_from_the_logo
+    f = File.join(__dir__, '../../target/css/main.css')
+    skip("File not found:  #{f}") unless File.exist?(f)
+    css = File.read(f).gsub(/\s+/, '')
+    assert_includes(css, 'headerimg+span{margin-left:1em}', css)
+    refute_match(/headerspan\{[^}]*margin-left/, css, css)
+  end
+
   def test_css_links_allow_pipe_in_url
     xml = xslt(
       <<~XSL,
