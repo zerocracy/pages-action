@@ -6,6 +6,9 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
   <xsl:variable name="dot_facts" select="/fb/f[what='dimensions-of-terrain' and z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today)]"/>
   <xsl:template match="/" mode="dot">
+    <h2>
+      <xsl:text>Dimensions of Terrain (DoT)</xsl:text>
+    </h2>
     <xsl:choose>
       <xsl:when test="empty($dot_facts/*[contains(name(), '_') and not(starts-with(name(), '_'))])">
         <p class="darkred">
@@ -18,9 +21,6 @@
     </xsl:choose>
   </xsl:template>
   <xsl:template match="/fb" mode="dot-non-empty">
-    <h2>
-      <xsl:text>Dimensions of Terrain (DoT)</xsl:text>
-    </h2>
     <table>
       <colgroup>
         <!-- Name -->
