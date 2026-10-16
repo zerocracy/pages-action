@@ -66,7 +66,7 @@ case "${INPUT_URL}" in
         ;;
 esac
 case "${INPUT_URL}" in
-    ''|http://*|https://*)
+    ''|http://[!/]*|https://[!/]*)
         ;;
     *)
         echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2

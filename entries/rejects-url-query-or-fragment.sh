@@ -33,7 +33,7 @@ for url in 'https://example.com/reports?theme=dark' 'https://example.com/reports
     fi
 done
 
-for url in 'example.com/reports' 'ftp://example.com/reports'; do
+for url in 'example.com/reports' 'ftp://example.com/reports' 'https://' 'https:///reports'; do
     if env "GITHUB_WORKSPACE=${PWD}" "JUDGES=${PWD}/judges-probe" \
         'LATEST_VERSION=test' 'INPUT_FACTBASE=test.fb' \
         'INPUT_OUTPUT=output' "INPUT_URL=${url}" \
