@@ -203,7 +203,7 @@
           <xsl:with-param name="content" select="$js"/>
         </xsl:call-template>
         <style>
-          <xsl:value-of select="$css" disable-output-escaping="no"/>
+          <xsl:value-of select="$css" disable-output-escaping="yes"/>
         </style>
       </head>
       <body>
