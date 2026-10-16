@@ -227,6 +227,12 @@ class TestVitals < Minitest::Test
     assert_match(/<link rel="icon"\s+href="x"/, generate_vitals_html(adless: 'true'))
   end
 
+  def test_names_zerocracy_unless_adless_is_true
+    ['', 'False', 'no'].each do |adless|
+      assert_includes(generate_vitals_html(adless:), 'supervised by Zerocracy', "adless=#{adless.inspect}")
+    end
+  end
+
   def test_adless_page_carries_no_update_banner
     html = generate_vitals_html(adless: 'true')
     refute_match(%r{github\.com/zerocracy/pages-action/releases}, html, html)
