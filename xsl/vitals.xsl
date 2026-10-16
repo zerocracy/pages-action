@@ -179,7 +179,9 @@
           </xsl:attribute>
         </meta>
         <meta property="og:type" content="website"/>
-        <meta property="og:url" content="{$url}/{$name}-vitals.html"/>
+        <xsl:if test="$url != ''">
+          <meta property="og:url" content="{$url}/{$name}-vitals.html"/>
+        </xsl:if>
         <xsl:if test="$ads">
           <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
           <meta property="og:image:type" content="image/png"/>
@@ -379,11 +381,13 @@
               <xsl:text>It shows the average reward amount. </xsl:text>
               <br/>
               <xsl:text>The higher the number, the better the discipline you maintain. </xsl:text>
-              <xsl:text>Click </xsl:text>
-              <a href="#" data-text="[![discipline]({$url}/{$name}-badge.svg)]({$url}/{$name}-vitals.html)" class="copy">
-                <xsl:text>here</xsl:text>
-              </a>
-              <xsl:text> to copy the Markdown to the clipboard.</xsl:text>
+              <xsl:if test="$url != ''">
+                <xsl:text>Click </xsl:text>
+                <a href="#" data-text="[![discipline]({$url}/{$name}-badge.svg)]({$url}/{$name}-vitals.html)" class="copy">
+                  <xsl:text>here</xsl:text>
+                </a>
+                <xsl:text> to copy the Markdown to the clipboard.</xsl:text>
+              </xsl:if>
             </p>
           </footer>
         </section>
