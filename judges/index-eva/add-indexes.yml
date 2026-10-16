@@ -58,3 +58,9 @@ expected:
     /fb/f[what='earned-value' and ev='1' and ac='2' and
     n_cpi='0.5' and n_spi='0.25']
   - /fb/f[not(start) and n_cpi and n_spi]
+  - >
+    /fb/f[ac='433' and ev='4342.42' and starts-with(n_cpi,'10.02')
+    and starts-with(n_spi,'0.66')]
+  - /fb/f[ev='0.0' and n_cpi='0.0' and n_spi='0.0']
+  - /fb/f[pv='0' and n_cpi and not(n_spi)]
+  - /fb/f[ac='0' and n_spi and not(n_cpi)]
