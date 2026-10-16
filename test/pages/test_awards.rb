@@ -418,6 +418,25 @@ class TestAwards < Minitest::Test
     assert_includes(text, 'there is 1 award in total', xml)
   end
 
+  def test_renders_a_payout_without_since
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>60</award>' \
+      '<when>2024-06-03T00:00:00Z</when></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>jeff</who_name><when>2024-05-31T00:00:00Z</when>' \
+      '<awarded>100</awarded><payout>70</payout><balance>30</balance></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>jeff</who_name><when>2024-06-05T00:00:00Z</when>' \
+      '<since>2024-05-31T00:00:00Z</since><awarded>100</awarded><payout>70</payout><balance>30</balance></f></fb>',
+      'today' => '2024-06-10T00:00:00Z'
+    )
+    assert_includes(
+      xml.xpath('//span/@title').map(&:to_s),
+      "You've accumulated 100 points, a payout of 70 points has been made on 2024-05-31, " \
+      'making the amount payable equal to 30',
+      xml
+    )
+  end
+
   def test_keeps_the_sort_value_where_tablesorter_reads_it
     xml = xslt('<xsl:copy-of select="z:td-award(0)"/>', '<fb/>')
     assert_equal('0', xml.xpath('/td/@data-text').to_s, xml)
