@@ -38,7 +38,7 @@ class TestRepositories < Minitest::Test
     )
     assert_equal(
       'foo/bar [ 1 star · 0 forks · 0 open issues and pull requests ]',
-      xml.xpath('//li').first.text,
+      xml.xpath('//li').first.text.strip,
       xml
     )
   end
