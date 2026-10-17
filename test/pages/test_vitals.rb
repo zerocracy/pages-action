@@ -133,6 +133,24 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//tr[td[1]="total_stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
   end
 
+  def test_dot_skips_facts_before_the_first_week_column
+    fact = '<f><what>dimensions-of-terrain</what><when>2026-09-19T00:00:00Z</when>' \
+           '<total_files>2400</total_files><total_stars>100</total_stars></f>'
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      "<fb>#{fact}<f><what>dimensions-of-terrain</what><when>2026-10-13T00:00:00Z</when>" \
+      '<total_stars>119</total_stars></f></fb>',
+      'today' => '2026-10-16T12:00:00Z'
+    )
+    assert_equal(%w[total_stars], xml.xpath('//tr/td[1]').map(&:text), xml)
+    alone = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      "<fb>#{fact}</fb>",
+      'today' => '2026-10-16T12:00:00Z'
+    )
+    assert_includes(alone.xpath('//p').text, 'There is no information about the dimensions of terrain.', alone)
+  end
+
   def test_dot_shows_one_of_many_values
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
