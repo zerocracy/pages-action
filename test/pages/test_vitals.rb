@@ -257,6 +257,11 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_says_there_is_no_information_about_bylaws
+    xml = xslt("<r><xsl:apply-templates select='/' mode='bylaws'/></r>", '<fb/>')
+    assert_includes(xml.xpath('//p').text, 'There is no information about bylaws.', xml)
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', size: 0)
