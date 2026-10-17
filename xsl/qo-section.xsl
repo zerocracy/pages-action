@@ -14,6 +14,10 @@
     <xsl:variable name="thu" select="if ($off ge 0) then $d + xs:dayTimeDuration(concat('P', $off, 'D')) else $d - xs:dayTimeDuration(concat('P', -$off, 'D'))"/>
     <xsl:value-of select="concat(format-number(year-from-date($thu), '0000'), '-W', format-date($thu, '[W01]'))"/>
   </xsl:function>
+  <xsl:function name="z:week-start" as="xs:date">
+    <xsl:param name="d" as="xs:date"/>
+    <xsl:sequence select="$d - xs:dayTimeDuration(concat('P', xs:integer(format-date($d, '[F1]')) - 1, 'D'))"/>
+  </xsl:function>
   <xsl:function name="z:snake-case-to-title" as="xs:string">
     <xsl:param name="line" as="xs:string"/>
     <xsl:variable name="words" select="tokenize($line, '_')"/>
@@ -53,12 +57,33 @@
             <xsl:text> </xsl:text>
           </canvas>
         </div>
+        <xsl:variable name="sorted" as="element()*">
+          <xsl:perform-sort select="$facts/f">
+            <xsl:sort select="z:when(when)" order="ascending"/>
+          </xsl:perform-sort>
+        </xsl:variable>
+        <xsl:variable name="slots" as="element()*">
+          <xsl:for-each select="$sorted">
+            <xsl:variable name="p" select="position()"/>
+            <xsl:if test="$p &gt; 1">
+              <xsl:variable name="prev" select="xs:date(z:when($sorted[$p - 1]/when))"/>
+              <xsl:variable name="gap" select="xs:integer(round((z:week-start(xs:date(z:when(when))) - z:week-start($prev)) div xs:dayTimeDuration('P7D')))"/>
+              <xsl:for-each select="1 to $gap - 1">
+                <f>
+                  <when>
+                    <xsl:value-of select="xs:dateTime($prev + xs:dayTimeDuration(concat('P', . * 7, 'D')))"/>
+                  </when>
+                </f>
+              </xsl:for-each>
+            </xsl:if>
+            <xsl:sequence select="."/>
+          </xsl:for-each>
+        </xsl:variable>
         <xsl:variable name="js-content">
           <xsl:text>$(function(){qo_render('</xsl:text>
           <xsl:value-of select="$what"/>
           <xsl:text>',{labels:[</xsl:text>
-          <xsl:for-each select="$facts/f">
-            <xsl:sort select="z:when(when)" order="ascending"/>
+          <xsl:for-each select="$slots">
             <xsl:if test="position() &gt; 1">
               <xsl:text>,</xsl:text>
             </xsl:if>
@@ -67,8 +92,7 @@
             <xsl:text>'</xsl:text>
           </xsl:for-each>
           <xsl:text>],fullDates:[</xsl:text>
-          <xsl:for-each select="$facts/f">
-            <xsl:sort select="z:when(when)" order="ascending"/>
+          <xsl:for-each select="$slots">
             <xsl:if test="position() &gt; 1">
               <xsl:text>,</xsl:text>
             </xsl:if>
@@ -105,8 +129,7 @@
               <xsl:text>,hidden:true</xsl:text>
             </xsl:if>
             <xsl:text>,data:[</xsl:text>
-            <xsl:for-each select="$facts/f">
-              <xsl:sort select="z:when(when)" order="ascending"/>
+            <xsl:for-each select="$slots">
               <xsl:if test="position() &gt; 1">
                 <xsl:text>,</xsl:text>
               </xsl:if>
