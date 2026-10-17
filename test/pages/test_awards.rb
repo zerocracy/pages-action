@@ -459,4 +459,10 @@ class TestAwards < Minitest::Test
     )
     assert_equal(1, xml.xpath('//td[text()="first reason; second reason"]').size, xml)
   end
+
+  def test_keeps_award_numbers_on_one_line_in_css
+    f = File.join(__dir__, '../../target/css/main.css')
+    skip("File not found:  #{f}") unless File.exist?(f)
+    assert_includes(File.read(f).gsub(/\s+/, ''), '#awardstd.ff{white-space:nowrap}')
+  end
 end
