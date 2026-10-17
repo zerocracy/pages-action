@@ -6,7 +6,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
   <!--
   Removes the Zerocracy favicon, logo and link from the HTML
-  printed by "judges print --format html", for the "adless" mode.
+  printed by the "judges" tool as HTML, for the "adless" mode.
   -->
   <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
   <xsl:template match="/">
