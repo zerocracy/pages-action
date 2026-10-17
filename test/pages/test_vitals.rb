@@ -257,6 +257,10 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_names_the_vitals_page_in_the_title
+    assert_includes(generate_vitals_html, '<title>Vitals page of the "test" project</title>')
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', size: 0)
