@@ -60,6 +60,69 @@ class TestAwards < Minitest::Test
     assert_equal('110', rows.first.at_xpath('./td[last()]').text.strip, xml)
   end
 
+  def test_keeps_idless_awards_separate_from_a_reused_login
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>shared-login</who_name>
+          <when>2024-06-01T00:00:00Z</when>
+          <award>40</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who_name>shared-login</who_name>
+          <when>2024-06-01T00:00:00Z</when>
+          <award>60</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
+    assert_equal(2, rows.size, xml)
+    assert_equal([40, 60], rows.map { |row| row.at_xpath('./td[last()]').text.to_i }.sort, xml)
+  end
+
+  def test_keeps_reconciliations_separate_when_only_one_user_has_an_id
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what><who>42</who><who_name>shared-login</who_name>
+          <when>2024-05-31T00:00:00Z</when><since>2024-05-01T00:00:00Z</since>
+          <awarded>0</awarded><payout>0</payout><balance>10</balance>
+        </f>
+        <f>
+          <what>reconciliation</what><who_name>shared-login</who_name>
+          <when>2024-05-31T00:00:00Z</when><since>2024-05-01T00:00:00Z</since>
+          <awarded>0</awarded><payout>0</payout><balance>20</balance>
+        </f>
+        <f>
+          <is_human>1</is_human><who>42</who><who_name>shared-login</who_name>
+          <when>2024-06-01T00:00:00Z</when><award>40</award>
+        </f>
+        <f>
+          <is_human>1</is_human><who_name>shared-login</who_name>
+          <when>2024-06-01T00:00:00Z</when><award>60</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
+    assert_equal(2, rows.size, xml)
+    assert_equal(
+      [[40, 50], [60, 80]],
+      rows.map { |row| row.xpath('./td[position() >= last() - 1]').map { |cell| cell.text.to_i } }.sort,
+      xml
+    )
+  end
+
   def test_fn_payables
     xml = xslt(
       "<xsl:copy-of select=\"z:payables('dude')\"/>",

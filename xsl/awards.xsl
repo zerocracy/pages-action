@@ -44,7 +44,7 @@
     -->
     <xsl:param name="id" as="xs:string"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else who_name=$name) and z:when(when) &lt;= xs:dateTime($today)]"/>
+    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
     <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
     <xsl:choose>
@@ -60,7 +60,7 @@
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else who_name=$name) and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
+          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer(z:value($rec/awarded))"/>
           <xsl:variable name="payable" select="$accumulated - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance))"/>
           <xsl:attribute name="title">
@@ -277,7 +277,7 @@
               </xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
-          <xsl:if test="count($facts[(if ($id != '') then who=$id else who_name=$name)]) &gt; 0">
+          <xsl:if test="count($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]) &gt; 0">
             <xsl:call-template name="programmer">
               <xsl:with-param name="id" select="$id"/>
               <xsl:with-param name="name" select="$name"/>
@@ -348,7 +348,7 @@
           </a>
         </span>
         <xsl:text> (</xsl:text>
-        <xsl:variable name="c" select="count($facts[(if ($id != '') then who=$id else who_name=$name)]/award)"/>
+        <xsl:variable name="c" select="count($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]/award)"/>
         <a href="#" onclick="$('.p_{$name}').toggle(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
@@ -360,14 +360,14 @@
       </td>
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
-        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[(if ($id != '') then who=$id else who_name=$name) and z:in-week(z:when(when), $week)]/award)))"/>
+        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:in-week(z:when(when), $week)]/award)))"/>
       </xsl:for-each>
-      <xsl:copy-of select="z:td-award(xs:integer(sum($facts[(if ($id != '') then who=$id else who_name=$name)]/award)))"/>
+      <xsl:copy-of select="z:td-award(xs:integer(sum($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]/award)))"/>
       <xsl:if test="$fb/f[what='reconciliation']">
         <xsl:copy-of select="z:payables($id, $name)"/>
       </xsl:if>
     </tr>
-    <xsl:if test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else who_name=$name)]">
+    <xsl:if test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name))]">
       <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
         <td>
           <!-- Avatar -->
@@ -381,8 +381,8 @@
           <xsl:variable name="week" select="."/>
           <td class="right">
             <xsl:choose>
-              <xsl:when test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else who_name=$name) and z:in-week(z:when(when), $week)]">
-                <xsl:for-each select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else who_name=$name) and z:in-week(z:when(when), $week)]">
+              <xsl:when test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:in-week(z:when(when), $week)]">
+                <xsl:for-each select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:in-week(z:when(when), $week)]">
                   <xsl:if test="position() &gt; 1">
                     <br/>
                   </xsl:if>
@@ -419,7 +419,7 @@
         </td>
       </tr>
     </xsl:if>
-    <xsl:for-each select="$facts[(if ($id != '') then who=$id else who_name=$name)]">
+    <xsl:for-each select="$facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]">
       <xsl:sort select="z:when(when)"/>
       <xsl:variable name="fact" select="."/>
       <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
