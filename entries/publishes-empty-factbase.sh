@@ -27,5 +27,5 @@ grep "The 'github-token' plugin parameter is set" 'log.txt'
 [ -e 'output/test-vitals.html' ]
 [ -e 'output/test-badge.svg' ]
 
-diff <(ls -A output | LC_ALL=C sort) \
+diff <(find output -mindepth 1 -printf "%P\n" | LC_ALL=C sort) \
   <(printf '%s\n' test.yaml test.xml test.json test.html test-vitals.html test-badge.svg | LC_ALL=C sort)
