@@ -521,4 +521,20 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_keeps_award_details_out_of_tablesorter
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award>
+          <when>2024-07-02T00:00:00Z</when></f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_equal(1, xml.xpath('//table[@id="awards"]//tr[contains(@class, "p_jeff")]').size, xml)
+    assert_empty(xml.xpath('//tr[contains(@class, "tablesorter-childRow")]'), xml)
+    assert_equal(1, xml.xpath('//a[@data-who="jeff"]').size, xml)
+  end
 end
