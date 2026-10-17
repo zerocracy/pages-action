@@ -257,6 +257,26 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_skips_bot_awards_in_the_description
+    xml = xslt(
+      '<xsl:apply-imports/>',
+      '
+      <fb>
+        <f><award>10</award><who_name>jeff</who_name><when>2024-07-01T00:00:00Z</when></f>
+        <f><award>1000</award><who_name>robot</who_name><when>2024-07-01T00:00:00Z</when><is_human>0</is_human></f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z', 'name' => 'test', 'logo' => 'x', 'url' => 'https://example.com',
+      'version' => '0.0.1', 'latest-version' => '0.0.1', 'fbe' => '0.0.1', 'adless' => 'false',
+      'css' => 'body{}', 'js' => '', 'css-links' => '', 'js-links' => ''
+    )
+    assert_includes(
+      xml.xpath('//meta[@name="description"]/@content').to_s,
+      '+10.0 average points per task, 10 total points earned, 1 contributors.',
+      xml
+    )
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', size: 0)
