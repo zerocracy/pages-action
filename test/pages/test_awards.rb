@@ -459,4 +459,25 @@ class TestAwards < Minitest::Test
     )
     assert_equal(1, xml.xpath('//td[text()="first reason; second reason"]').size, xml)
   end
+
+  def test_sums_each_week_in_the_total_row
+    facts = [
+      ['30', '2026-09-29T10:00:00Z'],
+      ['20', '2026-10-06T10:00:00Z'],
+      ['10', '2026-10-13T10:00:00Z']
+    ].map do |amount, timestamp|
+      '<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name>' \
+        "<award>#{amount}</award><when>#{timestamp}</when></f>"
+    end.join
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      "<fb>#{facts}</fb>",
+      'today' => '2026-10-14T12:00:00Z'
+    )
+    assert_equal(
+      %w[0 30 20 10 60],
+      xml.xpath('//table[@id="awards"]/tfoot/tr/td[@data-text]/@data-text').map(&:to_s),
+      xml
+    )
+  end
 end
