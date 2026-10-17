@@ -215,6 +215,13 @@ for f in yaml xml json html; do
         "${INPUT_FACTBASE}" \
         "${staging}/${name}.${f}"
 done
+if [ "${INPUT_ADLESS}" == 'true' ]; then
+    java -jar "${SELF}/target/saxon.jar" \
+        "-s:${staging}/${name}.html" \
+        "-xsl:${SELF}/target/xsl/adless.xsl" \
+        "-o:${staging}/${name}.adless.html"
+    mv "${staging}/${name}.adless.html" "${staging}/${name}.html"
+fi
 
 declare -a options=()
 if [ "${INPUT_VERBOSE}" == 'true' ]; then
