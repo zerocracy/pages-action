@@ -528,7 +528,7 @@ class TestAwards < Minitest::Test
       ['20', '2026-10-06T10:00:00Z'],
       ['10', '2026-10-13T10:00:00Z']
     ].map do |amount, timestamp|
-      "<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name>" \
+      '<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name>' \
         "<award>#{amount}</award><when>#{timestamp}</when></f>"
     end.join
     xml = xslt(
