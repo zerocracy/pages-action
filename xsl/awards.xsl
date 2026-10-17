@@ -374,7 +374,7 @@
                       <xsl:text> points has been made on </xsl:text>
                       <xsl:value-of select="z:day(xs:date(z:when(when)))"/>
                       <xsl:text>, making the amount payable equal to </xsl:text>
-                      <xsl:value-of select="balance"/>
+                      <xsl:value-of select="z:value(balance)"/>
                     </xsl:attribute>
                     <xsl:value-of select="xs:integer(z:value(payout))"/>
                   </span>
