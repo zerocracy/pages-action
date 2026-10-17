@@ -222,4 +222,19 @@ class TestQoSection < Minitest::Test
     assert_includes(js, "label:'CPI'", xml)
     assert_includes(js, "label:'SPI'", xml)
   end
+
+  def test_keeps_empty_weeks_between_facts
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-06-03T10:00:00Z</when><what>quality-of-service</what><n_composite>0.1</n_composite></f>' \
+      '<f><when>2024-06-24T10:00:00Z</when><what>quality-of-service</what><n_composite>0.4</n_composite></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    js = xml.xpath('//script').map(&:content).join
+    assert_includes(js, "labels:['6/3','6/10','6/17','6/24']", js)
+    assert_includes(js, 'data:[0.1,null,null,0.4]', js)
+  end
 end
