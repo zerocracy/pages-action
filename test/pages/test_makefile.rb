@@ -85,7 +85,10 @@ class TestMakefile < Minitest::Test
     Dir.mktmpdir do |dir|
       FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
       FileUtils.mkdir_p(%w[xsl target].map { |path| File.join(dir, path) })
-      %w[Dockerfile entry.sh xsl/vitals.xsl Gemfile Gemfile.lock html-minifier-config.json].each do |file|
+      %w[
+        Dockerfile entry.sh xsl/vitals.xsl Gemfile Gemfile.lock html-minifier-config.json
+        eslint.config.js .stylelintrc.json
+      ].each do |file|
         File.write(File.join(dir, file), '')
         File.utime(Time.now - 100, Time.now - 100, File.join(dir, file))
       end
