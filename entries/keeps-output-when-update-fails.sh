@@ -37,7 +37,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 cat log.txt
 test "${code}" -eq 3
 
-test "$(ls -A output | wc -l)" -eq 6
+test "$(find output -mindepth 1 | wc -l)" -eq 6
 for f in output/*; do
   test "$(cat "${f}")" = 'old'
 done
