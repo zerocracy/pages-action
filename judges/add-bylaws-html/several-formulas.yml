@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: pmp
+    area: hr
+    first: '(award (explain "First rule of the policy") (give 10 "for the first"))'
+    second: '(award (explain "Second rule of the policy") (give 20 "for the second"))'
+    third: '(award (explain "Third rule of the policy") (give 30 "for the third"))'
+expected:
+  - /fb[count(f)=2]
+  - /fb/f[what='bylaws' and contains(html, 'First rule of the policy')]
+  - /fb/f[what='bylaws' and contains(html, 'Second rule of the policy')]
+  - /fb/f[what='bylaws' and contains(html, 'Third rule of the policy')]
