@@ -222,4 +222,17 @@ class TestQoSection < Minitest::Test
     assert_includes(js, "label:'CPI'", xml)
     assert_includes(js, "label:'SPI'", xml)
   end
+
+  def test_drops_the_some_prefix_from_labels
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'X'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
+      '<n_some_backlog_size>1</n_some_backlog_size></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    assert_includes(xml.xpath('//script').map(&:content).join, "label:'Backlog Size'", xml)
+  end
 end
