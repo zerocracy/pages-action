@@ -14,6 +14,10 @@
     <xsl:variable name="thu" select="if ($off ge 0) then $d + xs:dayTimeDuration(concat('P', $off, 'D')) else $d - xs:dayTimeDuration(concat('P', -$off, 'D'))"/>
     <xsl:value-of select="concat(format-number(year-from-date($thu), '0000'), '-W', format-date($thu, '[W01]'))"/>
   </xsl:function>
+  <xsl:function name="z:week-start" as="xs:date">
+    <xsl:param name="d" as="xs:date"/>
+    <xsl:sequence select="$d - xs:dayTimeDuration(concat('P', xs:integer(format-date($d, '[F1]')) - 1, 'D'))"/>
+  </xsl:function>
   <xsl:function name="z:snake-case-to-title" as="xs:string">
     <xsl:param name="line" as="xs:string"/>
     <xsl:variable name="words" select="tokenize($line, '_')"/>
@@ -53,31 +57,26 @@
             <xsl:text> </xsl:text>
           </canvas>
         </div>
-        <xsl:variable name="first" select="min($facts/f/xs:date(z:when(when)))"/>
-        <xsl:variable name="start" select="$first - xs:dayTimeDuration(concat('P', xs:integer(format-date($first, '[F1]')) - 1, 'D'))"/>
-        <xsl:variable name="indexed" as="element()*">
-          <xsl:for-each select="$facts/f">
-            <xsl:copy>
-              <xsl:attribute name="week" select="xs:integer((xs:date(z:when(when)) - $start) div xs:dayTimeDuration('P1D')) idiv 7"/>
-              <xsl:copy-of select="*"/>
-            </xsl:copy>
-          </xsl:for-each>
+        <xsl:variable name="sorted" as="element()*">
+          <xsl:perform-sort select="$facts/f">
+            <xsl:sort select="z:when(when)" order="ascending"/>
+          </xsl:perform-sort>
         </xsl:variable>
         <xsl:variable name="slots" as="element()*">
-          <xsl:for-each select="0 to xs:integer(max($indexed/@week))">
-            <xsl:variable name="i" select="."/>
-            <xsl:choose>
-              <xsl:when test="$indexed[@week = $i]">
-                <xsl:sequence select="$indexed[@week = $i]"/>
-              </xsl:when>
-              <xsl:otherwise>
+          <xsl:for-each select="$sorted">
+            <xsl:variable name="p" select="position()"/>
+            <xsl:if test="$p &gt; 1">
+              <xsl:variable name="prev" select="xs:date(z:when($sorted[$p - 1]/when))"/>
+              <xsl:variable name="gap" select="xs:integer(round((z:week-start(xs:date(z:when(when))) - z:week-start($prev)) div xs:dayTimeDuration('P7D')))"/>
+              <xsl:for-each select="1 to $gap - 1">
                 <f>
                   <when>
-                    <xsl:value-of select="xs:dateTime($first + xs:dayTimeDuration(concat('P', $i * 7, 'D')))"/>
+                    <xsl:value-of select="xs:dateTime($prev + xs:dayTimeDuration(concat('P', . * 7, 'D')))"/>
                   </when>
                 </f>
-              </xsl:otherwise>
-            </xsl:choose>
+              </xsl:for-each>
+            </xsl:if>
+            <xsl:sequence select="."/>
           </xsl:for-each>
         </xsl:variable>
         <xsl:variable name="js-content">
