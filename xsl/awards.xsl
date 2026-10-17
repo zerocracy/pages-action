@@ -6,8 +6,8 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:z="https://www.zerocracy.com" version="2.0" exclude-result-prefixes="xs z">
   <xsl:variable name="days" select="z:pmp('hr', 'days_of_running_balance', '28')"/>
   <xsl:variable name="weeks" select="xs:integer(ceiling(xs:float($days) div 7))"/>
-  <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
-  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today) and is_human = 1]"/>
+  <xsl:variable name="since" select="xs:dateTime(z:monday(1))"/>
+  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt;= $since and z:when(when) &lt;= xs:dateTime($today) and is_human = 1]"/>
   <xsl:function name="z:monday" as="xs:date">
     <!--
     Takes week number (e.g. 4) and returns ISO-8601 date of the
@@ -142,11 +142,12 @@
       <xsl:when test="empty($facts)">
         <p class="darkred">
           <xsl:text>No awards since </xsl:text>
+          <xsl:variable name="ago" select="days-from-duration(xs:date(xs:dateTime($today)) - xs:date($since))"/>
           <xsl:value-of select="z:day(xs:date($since))"/>
           <xsl:text> (</xsl:text>
-          <xsl:value-of select="$days"/>
+          <xsl:value-of select="$ago"/>
           <xsl:text> day</xsl:text>
-          <xsl:if test="string($days) != '1'">
+          <xsl:if test="$ago != 1">
             <xsl:text>s</xsl:text>
           </xsl:if>
           <xsl:text> before today)</xsl:text>
