@@ -712,4 +712,10 @@ class TestAwards < Minitest::Test
     refute_empty(xml.xpath('//table[@id="awards"]//th[starts-with(text(), "w")]'), xml)
     assert_includes(xml.xpath('//table[@id="awards"]//th/@title').map(&:text).join(' '), '-0001')
   end
+
+  def test_keeps_award_numbers_on_one_line_in_css
+    f = File.join(__dir__, '../../target/css/main.css')
+    skip("File not found:  #{f}") unless File.exist?(f)
+    assert_includes(File.read(f).gsub(/\s+/, ''), '#awardstd.ff{white-space:nowrap}')
+  end
 end
