@@ -188,8 +188,20 @@
     <xsl:call-template name="script-with-cdata">
       <xsl:with-param name="content">
         $(function() {
-          $("#awards").tablesorter({
+          const details = $("#awards tr.p-table").detach();
+          $("#awards").on("sortStart", function() {
+            details.detach();
+          }).tablesorter({
             sortList: [[2 + weeks, 1]]
+          });
+          $("#awards a.details").on("click", function() {
+            const rows = details.filter(".p_" + $(this).attr("data-who"));
+            if (rows.parent().length) {
+              rows.detach();
+            } else {
+              rows.show().insertAfter($(this).closest("tr"));
+            }
+            return false;
           });
         });
       </xsl:with-param>
@@ -338,7 +350,7 @@
         </span>
         <xsl:text> (</xsl:text>
         <xsl:variable name="c" select="count($facts[who_name=$name]/award)"/>
-        <a href="#" onclick="$('.p_{$name}').toggle(); return false;">
+        <a href="#" class="details" data-who="{$name}">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
           <xsl:if test="$c != 1">
@@ -357,7 +369,7 @@
       </xsl:if>
     </tr>
     <xsl:if test="$fb/f[what='reconciliation' and who=$id]">
-      <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
+      <tr class="sub p-table p_{$name}" style="display: none;">
         <td>
           <!-- Avatar -->
           <xsl:text> </xsl:text>
@@ -418,7 +430,7 @@
     <xsl:for-each select="$facts[who_name=$name]">
       <xsl:sort select="z:when(when)"/>
       <xsl:variable name="fact" select="."/>
-      <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
+      <tr class="sub p-table p_{$name}" style="display: none;">
         <td>
           <!-- Avatar -->
           <xsl:text> </xsl:text>
