@@ -53,12 +53,38 @@
             <xsl:text> </xsl:text>
           </canvas>
         </div>
+        <xsl:variable name="first" select="min($facts/f/xs:date(z:when(when)))"/>
+        <xsl:variable name="start" select="$first - xs:dayTimeDuration(concat('P', xs:integer(format-date($first, '[F1]')) - 1, 'D'))"/>
+        <xsl:variable name="indexed" as="element()*">
+          <xsl:for-each select="$facts/f">
+            <xsl:copy>
+              <xsl:attribute name="week" select="xs:integer((xs:date(z:when(when)) - $start) div xs:dayTimeDuration('P1D')) idiv 7"/>
+              <xsl:copy-of select="*"/>
+            </xsl:copy>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:variable name="slots" as="element()*">
+          <xsl:for-each select="0 to xs:integer(max($indexed/@week))">
+            <xsl:variable name="i" select="."/>
+            <xsl:choose>
+              <xsl:when test="$indexed[@week = $i]">
+                <xsl:sequence select="$indexed[@week = $i]"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <f>
+                  <when>
+                    <xsl:value-of select="xs:dateTime($first + xs:dayTimeDuration(concat('P', $i * 7, 'D')))"/>
+                  </when>
+                </f>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:for-each>
+        </xsl:variable>
         <xsl:variable name="js-content">
           <xsl:text>$(function(){qo_render('</xsl:text>
           <xsl:value-of select="$what"/>
           <xsl:text>',{labels:[</xsl:text>
-          <xsl:for-each select="$facts/f">
-            <xsl:sort select="z:when(when)" order="ascending"/>
+          <xsl:for-each select="$slots">
             <xsl:if test="position() &gt; 1">
               <xsl:text>,</xsl:text>
             </xsl:if>
@@ -67,8 +93,7 @@
             <xsl:text>'</xsl:text>
           </xsl:for-each>
           <xsl:text>],fullDates:[</xsl:text>
-          <xsl:for-each select="$facts/f">
-            <xsl:sort select="z:when(when)" order="ascending"/>
+          <xsl:for-each select="$slots">
             <xsl:if test="position() &gt; 1">
               <xsl:text>,</xsl:text>
             </xsl:if>
@@ -105,8 +130,7 @@
               <xsl:text>,hidden:true</xsl:text>
             </xsl:if>
             <xsl:text>,data:[</xsl:text>
-            <xsl:for-each select="$facts/f">
-              <xsl:sort select="z:when(when)" order="ascending"/>
+            <xsl:for-each select="$slots">
               <xsl:if test="position() &gt; 1">
                 <xsl:text>,</xsl:text>
               </xsl:if>
