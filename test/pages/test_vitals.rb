@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: MIT
 
 require 'nokogiri'
-require 'open3'
 require 'online'
+require 'open3'
 require 'w3c_validators'
 require 'webmock/minitest'
 require_relative '../test__helper'
