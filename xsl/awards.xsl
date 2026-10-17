@@ -33,6 +33,15 @@
     <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
     <xsl:value-of select="$when &gt;= $monday and $when &lt; $sunday"/>
   </xsl:function>
+  <xsl:function name="z:local-day" as="xs:string">
+    <!--
+    Prints the day of a moment in the time zone of $today, the zone
+    the week columns are built in, so that a payout is dated on the
+    same day as the week it is put into.
+    -->
+    <xsl:param name="when" as="xs:dateTime"/>
+    <xsl:sequence select="z:day(xs:date(adjust-dateTime-to-timezone($when, timezone-from-dateTime(xs:dateTime($today)))))"/>
+  </xsl:function>
   <xsl:function name="z:payables">
     <!--
     Calculates the amount to be paid to a user, according to the information
@@ -62,7 +71,7 @@
             <xsl:text>The last payout of </xsl:text>
             <xsl:value-of select="xs:integer(z:value($rec/payout))"/>
             <xsl:text> points has been made on </xsl:text>
-            <xsl:value-of select="z:day(xs:date(z:when($rec/when)))"/>
+            <xsl:value-of select="z:local-day(z:when($rec/when))"/>
             <xsl:text>, making the amount payable equal to </xsl:text>
             <xsl:value-of select="z:value($rec/balance)"/>
             <xsl:text>; since </xsl:text>
@@ -372,7 +381,7 @@
                       <xsl:text> points, a payout of </xsl:text>
                       <xsl:value-of select="xs:integer(z:value(payout))"/>
                       <xsl:text> points has been made on </xsl:text>
-                      <xsl:value-of select="z:day(xs:date(z:when(when)))"/>
+                      <xsl:value-of select="z:local-day(z:when(when))"/>
                       <xsl:text>, making the amount payable equal to </xsl:text>
                       <xsl:value-of select="balance"/>
                     </xsl:attribute>
