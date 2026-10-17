@@ -71,8 +71,8 @@
             <xsl:value-of select="$delta"/>
             <xsl:text> points (</xsl:text>
             <xsl:value-of select="$accumulated"/>
-            <xsl:text> - </xsl:text>
-            <xsl:value-of select="xs:integer(z:value($rec/awarded))"/>
+            <xsl:value-of select="if (xs:integer(z:value($rec/awarded)) lt 0) then ' + ' else ' - '"/>
+            <xsl:value-of select="abs(xs:integer(z:value($rec/awarded)))"/>
             <xsl:text>), that's why the amount payable now is </xsl:text>
             <xsl:value-of select="$payable"/>
           </xsl:attribute>
