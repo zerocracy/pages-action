@@ -206,6 +206,15 @@ if [ $((lifetime - timeout)) -lt $((timeout / 10)) ]; then
     exit 1
 fi
 
+# The "judges" splits these lists on commas and keeps the spaces around each
+# name, so "when, what" would mean the columns "when" and " what".
+trimmed() {
+    sed -E 's/[[:space:]]*,[[:space:]]*/,/g; s/^[[:space:]]+//; s/[[:space:]]+$//' <<< "$1"
+}
+INPUT_COLUMNS=$(trimmed "${INPUT_COLUMNS}")
+INPUT_HIGHLIGHTED=$(trimmed "${INPUT_HIGHLIGHTED}")
+INPUT_HIDDEN=$(trimmed "${INPUT_HIDDEN}")
+
 for f in yaml xml json html; do
     judges "${gopts[@]}" print \
         --format "${f}" \
