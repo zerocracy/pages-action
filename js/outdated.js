@@ -21,12 +21,18 @@ const OUTDATED_THRESHOLD_HOURS = 24;
  * @returns {number} Number of months difference
  */
 function getMonthsDifference(startDate, endDate) {
-  const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
-  const monthsDiff = endDate.getMonth() - startDate.getMonth();
-  const dateDiff = endDate.getDate() - startDate.getDate();
-  const lastDay = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0).getDate();
-  let totalMonths = yearsDiff * 12 + monthsDiff;
-  totalMonths -= dateDiff >= 0 || endDate.getDate() === lastDay ? 0 : 1;
+  const shifted = (months) => {
+    const moved = new Date(startDate.getTime());
+    moved.setDate(1);
+    moved.setMonth(moved.getMonth() + months);
+    const lastDay = new Date(moved.getFullYear(), moved.getMonth() + 1, 0).getDate();
+    moved.setDate(Math.min(startDate.getDate(), lastDay));
+    return moved;
+  };
+  let totalMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + endDate.getMonth() - startDate.getMonth();
+  while (totalMonths > 0 && shifted(totalMonths) > endDate) {
+    totalMonths -= 1;
+  }
   return Math.max(0, totalMonths);
 }
 
