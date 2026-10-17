@@ -712,4 +712,37 @@ class TestAwards < Minitest::Test
     refute_empty(xml.xpath('//table[@id="awards"]//th[starts-with(text(), "w")]'), xml)
     assert_includes(xml.xpath('//table[@id="awards"]//th/@title').map(&:text).join(' '), '-0001')
   end
+
+  def test_fn_payables_skips_awards_before_since
+    xml = xslt(
+      "<r><xsl:copy-of select=\"z:payables('dude')\"/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2026-10-01T10:00:00Z</when>
+          <since>2026-09-20T00:00:00Z</since>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>0</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>2026-09-10T10:00:00Z</when>
+          <who_name>dude</who_name>
+          <award>500</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <when>2026-10-05T10:00:00Z</when>
+          <who_name>dude</who_name>
+          <award>30</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2026-10-14T12:00:00Z'
+    )
+    assert_equal('30', xml.xpath('/r/td').text.strip, xml)
+  end
 end
