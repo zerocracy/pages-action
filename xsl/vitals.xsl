@@ -179,7 +179,7 @@
           </xsl:attribute>
         </meta>
         <meta property="og:type" content="website"/>
-        <meta property="og:url" content="{$url}/{$name}-vitals.html"/>
+        <meta property="og:url" content="{$url}/{encode-for-uri($name)}-vitals.html"/>
         <xsl:if test="$ads">
           <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
           <meta property="og:image:type" content="image/png"/>
@@ -350,11 +350,11 @@
               <xsl:text>.</xsl:text>
               <br/>
               <xsl:text>The XML with all data is available </xsl:text>
-              <a href="{$name}.xml">
+              <a href="{encode-for-uri($name)}.xml">
                 <xsl:text>here</xsl:text>
               </a>
               <xsl:text>, and the HTML is available </xsl:text>
-              <a href="{$name}.html">
+              <a href="{encode-for-uri($name)}.html">
                 <xsl:text>here</xsl:text>
               </a>
               <xsl:if test="fb/@size &gt; 1000000">
@@ -371,7 +371,7 @@
               </p>
             </xsl:if>
             <p>
-              <img src="{$name}-badge.svg" alt="Discipline badge"/>
+              <img src="{encode-for-uri($name)}-badge.svg" alt="Discipline badge"/>
               <br/>
               <xsl:text>You can use this badge in the </xsl:text>
               <code>README.md</code>
@@ -380,7 +380,7 @@
               <br/>
               <xsl:text>The higher the number, the better the discipline you maintain. </xsl:text>
               <xsl:text>Click </xsl:text>
-              <a href="#" data-text="[![discipline]({$url}/{$name}-badge.svg)]({$url}/{$name}-vitals.html)" class="copy">
+              <a href="#" data-text="[![discipline]({$url}/{encode-for-uri($name)}-badge.svg)]({$url}/{encode-for-uri($name)}-vitals.html)" class="copy">
                 <xsl:text>here</xsl:text>
               </a>
               <xsl:text> to copy the Markdown to the clipboard.</xsl:text>

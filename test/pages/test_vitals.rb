@@ -257,9 +257,15 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_encodes_the_name_in_urls
+    html = generate_vitals_html(name: 'my team')
+    assert_includes(html, 'https://example.com/my%20team-vitals.html', html)
+    refute_includes(html, 'https://example.com/my team-', html)
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false', size: 0)
+  def generate_vitals_html(adless: 'false', size: 0, name: 'test')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -300,7 +306,6 @@ class TestVitals < Minitest::Test
           "-o:#{Shellwords.escape(output)}"
         ] + %w[
           today=2024-09-26T04:04:04Z
-          name=test
           logo=x
           palette=classic
           url=https://example.com
@@ -311,7 +316,7 @@ class TestVitals < Minitest::Test
           js-links=
           css=body{}
           js=
-        ].push("adless=#{adless}").map { |p| Shellwords.escape(p) },
+        ].push("adless=#{adless}", "name=#{name}").map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
       File.read(output)
