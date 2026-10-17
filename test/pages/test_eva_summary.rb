@@ -53,4 +53,12 @@ class TestEvaSummary < Minitest::Test
     )
     assert_equal('AC: 4, EV: 3, PV: 6, CPI: 0.75, SPI: 0.50.', xml.xpath('/r').text.strip, xml)
   end
+
+  def test_template_with_non_numeric_values
+    xml = xslt(
+      '<r><xsl:apply-templates select="/fb/f"/></r>',
+      '<fb><f><what>earned-value</what><ac>unknown</ac><ev>3</ev><pv>n/a</pv></f></fb>'
+    )
+    assert_equal('Not enough data in the latest earned-value fact.', xml.xpath('/r').text.strip, xml)
+  end
 end
