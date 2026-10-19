@@ -37,10 +37,10 @@
     <!--
     The amount payable to a user: what the latest "reconciliation" left as
     the balance, plus every award since that reconciliation was counted.
-    Zero when the user has no reconciliation at all.
+    Zero when the user has no reconciliation up to today.
     -->
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name]"/>
+    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
     <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
     <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
