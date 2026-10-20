@@ -66,7 +66,7 @@ case "${INPUT_URL}" in
         ;;
 esac
 case "${INPUT_URL}" in
-    ''|http://*|https://*)
+    ''|http://[!/]*|https://[!/]*)
         ;;
     *)
         echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2
@@ -253,7 +253,7 @@ if [ "${INPUT_VERBOSE}" == 'true' ]; then
 fi
 github_token_found=false
 for opt in "${options[@]}"; do
-    if [[ "${opt}" == "--option=github_token="* ]]; then
+    if [[ "${opt,,}" == "--option=github_token="* ]]; then
         github_token_found=true
         break
     fi
@@ -330,7 +330,9 @@ else
 fi
 
 url=${INPUT_URL}
-url="${url%/}"
+while [[ "${url}" == */ ]]; do
+    url="${url%/}"
+done
 if [ -z "${url}" ]; then
     url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
     repo=${GITHUB_REPOSITORY#*/}

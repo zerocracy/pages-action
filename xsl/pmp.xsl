@@ -7,13 +7,14 @@
   <xsl:variable name="fb" select="/fb"/>
   <xsl:function name="z:pmp">
     <!--
-    Finds a "pmp" fact with the given "area" and then
-    tries to find a given property inside.
+    Finds the first "pmp" fact with the given "area" that has
+    the given property and returns its value. If no such fact
+    is found or the value is empty, the default value is returned.
     -->
     <xsl:param name="area" as="xs:string"/>
     <xsl:param name="param" as="xs:string"/>
     <xsl:param name="default" as="xs:string"/>
-    <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area][1]"/>
+    <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area and *[name()=$param]][1]"/>
     <xsl:choose>
       <xsl:when test="$a">
         <xsl:variable name="property" select="$a/*[name()=$param][1]"/>

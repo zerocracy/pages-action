@@ -418,6 +418,25 @@ class TestAwards < Minitest::Test
     assert_includes(text, 'there is 1 award in total', xml)
   end
 
+  def test_renders_a_payout_without_since
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>60</award>' \
+      '<when>2024-06-03T00:00:00Z</when></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>jeff</who_name><when>2024-05-31T00:00:00Z</when>' \
+      '<awarded>100</awarded><payout>70</payout><balance>30</balance></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>jeff</who_name><when>2024-06-05T00:00:00Z</when>' \
+      '<since>2024-05-31T00:00:00Z</since><awarded>100</awarded><payout>70</payout><balance>30</balance></f></fb>',
+      'today' => '2024-06-10T00:00:00Z'
+    )
+    assert_includes(
+      xml.xpath('//span/@title').map(&:to_s),
+      "You've accumulated 100 points, a payout of 70 points has been made on 2024-05-31, " \
+      'making the amount payable equal to 30',
+      xml
+    )
+  end
+
   def test_keeps_the_sort_value_where_tablesorter_reads_it
     xml = xslt('<xsl:copy-of select="z:td-award(0)"/>', '<fb/>')
     assert_equal('0', xml.xpath('/td/@data-text').to_s, xml)
@@ -435,5 +454,28 @@ class TestAwards < Minitest::Test
       assert_match(/(No awards since|Since) \d{4}-\d{2}-\d{2}[ (]/, xml.to_s, xml)
       refute_match(/\d{4}-\d{2}-\d{2}Z/, xml.xpath('//text()').text, xml)
     end
+  end
+
+  def test_separates_many_reasons
+    xml = xslt(
+      "<r><xsl:call-template name=\"programmer\">
+        <xsl:with-param name=\"id\" select=\"'1'\"/>
+        <xsl:with-param name=\"name\" select=\"'jeff'\"/>
+      </xsl:call-template></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-10-08T10:00:00Z</when>
+          <why><v>first reason</v><v>second reason</v></why>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_equal(1, xml.xpath('//td[text()="first reason; second reason"]').size, xml)
   end
 end

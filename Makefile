@@ -118,7 +118,7 @@ rmi: target/docker-image.txt
 verify:
 	./makes/verify.sh
 
-target/docker-image.txt: Makefile Dockerfile entry.sh
+target/docker-image.txt: Makefile Dockerfile entry.sh $(SOURCES) $(wildcard xsl/*.xsl js/*.js sass/*.scss makes/*.sh) Gemfile Gemfile.lock html-minifier-config.json
 	mkdir -p "$$(dirname $@)"
 	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action "$$(pwd)"
 	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action -q "$$(pwd)" > "$@"
