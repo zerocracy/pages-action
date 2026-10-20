@@ -20,6 +20,13 @@ class TestOutdated < Minitest::Test
     assert_equal('27 days ago', relative('2026-01-31T00:00:00Z', '2026-02-27T00:00:00Z'))
   end
 
+  def test_keeps_counting_days_until_the_time_of_day_comes
+    assert_equal('11 months ago', relative('2025-10-16T23:00:00Z', '2026-10-16T00:00:00Z'))
+    assert_equal('one year ago', relative('2025-10-16T23:00:00Z', '2026-10-16T23:00:00Z'))
+    assert_equal('30 days ago', relative('2026-01-15T23:00:00Z', '2026-02-15T00:00:00Z'))
+    assert_equal('one month ago', relative('2026-01-15T23:00:00Z', '2026-02-15T23:00:00Z'))
+  end
+
   def test_shows_a_future_moment_as_a_future_interval
     assert_equal('in 2 days', relative('2026-10-06T12:00:00Z', '2026-10-04T12:00:00Z'))
     assert_equal('in one hour', relative('2026-10-04T13:00:00Z', '2026-10-04T12:00:00Z'))
@@ -28,6 +35,18 @@ class TestOutdated < Minitest::Test
 
   def test_keeps_a_moment_less_than_a_minute_away_as_just_now
     assert_equal('just now', relative('2026-10-04T12:00:30Z', '2026-10-04T12:00:00Z'))
+  end
+
+  def test_tells_the_age_of_an_outdated_page_in_relative_time
+    script = [
+      "let message = ''; global.$ = (s) => (s === 'footer' ? { prepend: (m) => { message = m; } } : " \
+      '{ attr: () => new Date(Date.now() - (7 * 24 * 3600 * 1000)).toISOString(), length: 0 });',
+      File.read(File.join(__dir__, '../../js/outdated.js')),
+      'displayOutdatedWarning(); process.stdout.write(message);'
+    ].join("\n")
+    out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
+    assert_predicate(status, :success?, out)
+    assert_includes(out, 'This page was generated 7 days ago.', out)
   end
 
   private

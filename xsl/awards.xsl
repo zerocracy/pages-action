@@ -33,6 +33,23 @@
     <xsl:variable name="sunday" select="$monday + xs:dayTimeDuration('P7D')"/>
     <xsl:value-of select="$when &gt;= $monday and $when &lt; $sunday"/>
   </xsl:function>
+  <xsl:function name="z:payable" as="xs:integer">
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="z:payable('', $name)"/>
+  </xsl:function>
+  <xsl:function name="z:payable" as="xs:integer">
+    <!--
+    The amount payable to a user: what the latest "reconciliation" left as
+    the balance, plus every award since that reconciliation was counted.
+    Zero when the user has no reconciliation at all.
+    -->
+    <xsl:param name="id" as="xs:string"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name))]"/>
+    <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
+    <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
+    <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
+  </xsl:function>
   <xsl:function name="z:payables">
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="z:payables('', $name)"/>
@@ -255,7 +272,7 @@
         </tr>
       </thead>
       <tbody>
-        <xsl:for-each-group select="$facts" group-by="if (who) then concat('id:', string(who)) else concat('name:', string(who_name))">
+        <xsl:for-each-group select="$facts | $fb/f[what='reconciliation']" group-by="if (who) then concat('id:', string(who)) else concat('name:', string(who_name))">
           <xsl:sort select="sum(current-group()/award)" data-type="number" order="descending"/>
           <xsl:variable name="key" select="current-grouping-key()"/>
           <xsl:variable name="id" select="if (starts-with($key, 'id:')) then substring-after($key, 'id:') else ''"/>
@@ -277,7 +294,7 @@
               </xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
-          <xsl:if test="count($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]) &gt; 0">
+          <xsl:if test="count($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]) &gt; 0 or z:payable($id, string($name)) != 0">
             <xsl:call-template name="programmer">
               <xsl:with-param name="id" select="$id"/>
               <xsl:with-param name="name" select="$name"/>
@@ -388,9 +405,16 @@
                   </xsl:if>
                   <span>
                     <xsl:attribute name="title">
-                      <xsl:text>Since </xsl:text>
-                      <xsl:value-of select="z:day(xs:date(xs:dateTime(z:value(since))))"/>
-                      <xsl:text> you've accumulated </xsl:text>
+                      <xsl:choose>
+                        <xsl:when test="since">
+                          <xsl:text>Since </xsl:text>
+                          <xsl:value-of select="z:day(xs:date(xs:dateTime(z:value(since))))"/>
+                          <xsl:text> you've accumulated </xsl:text>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:text>You've accumulated </xsl:text>
+                        </xsl:otherwise>
+                      </xsl:choose>
                       <xsl:value-of select="xs:integer(z:value(awarded))"/>
                       <xsl:text> points, a payout of </xsl:text>
                       <xsl:value-of select="xs:integer(z:value(payout))"/>
@@ -428,7 +452,7 @@
           <xsl:text> </xsl:text>
         </td>
         <td>
-          <xsl:value-of select="why"/>
+          <xsl:value-of select="why/v, why[not(v)]" separator="; "/>
         </td>
         <xsl:for-each select="1 to $weeks">
           <xsl:variable name="week" select="."/>
