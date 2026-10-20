@@ -164,6 +164,27 @@ class TestVitals < Minitest::Test
     assert_equal('28', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_fn_pmp_reads_a_later_fact_with_the_property
+    xml = xslt(
+      '<r><xsl:value-of select="z:pmp(\'hr\', \'days_of_running_balance\', \'28\')"/></r>',
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <foo>1</foo>
+        </f>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>56</days_of_running_balance>
+        </f>
+      </fb>
+      '
+    )
+    assert_equal('56', xml.xpath('/r/text()').to_s, xml)
+  end
+
   def test_fn_format_signed
     {
       3.3 => ['0.0', '+3.3'],
