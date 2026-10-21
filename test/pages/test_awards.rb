@@ -521,4 +521,42 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_shows_payables_when_no_award_falls_inside_the_window
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-05-20T00:00:00Z</when>
+          <since>2024-04-01T00:00:00Z</since>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <awarded>100</awarded>
+          <payout>70</payout>
+          <balance>30</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <award>100</award>
+          <when>2024-05-01T00:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <award>45</award>
+          <when>2024-05-25T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    refute_match(/No awards since/, xml.to_s, xml)
+    assert_includes(xml.xpath('//tbody/tr[not(contains(@class, "sub"))]/td[2]').map(&:text).join, '@dude', xml)
+    assert_includes(xml.xpath('//tbody/tr[not(contains(@class, "sub"))]/td[last()]').map { |td| td.text.strip }, '75', xml)
+  end
 end
