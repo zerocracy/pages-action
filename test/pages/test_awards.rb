@@ -675,4 +675,30 @@ class TestAwards < Minitest::Test
     )
     assert_equal('30', xml.xpath('/r/td').text.strip, xml)
   end
+
+  def test_gives_a_row_to_a_programmer_owed_points_for_awards_with_unknown_humanity
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-05-20T00:00:00Z</when>
+          <since>2024-04-01T00:00:00Z</since>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <awarded>40</awarded>
+          <payout>0</payout>
+          <balance>40</balance>
+        </f>
+        <f><who>7</who><who_name>dude</who_name><award>40</award><when>2024-05-01T00:00:00Z</when></f>
+        <f><is_human>1</is_human><who>8</who><who_name>jeff</who_name><award>10</award>
+          <when>2024-07-02T00:00:00Z</when></f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    names = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]/td[2]/span/a')
+    assert_includes(names.map(&:text), '@dude', xml)
+  end
 end
