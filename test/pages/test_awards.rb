@@ -411,7 +411,7 @@ class TestAwards < Minitest::Test
         </f>
       </fb>
       ',
-      'today' => '2024-07-05T00:00:00Z'
+      'today' => '2024-07-02T00:00:00Z'
     )
     text = xml.xpath('//p[@class="darkred"]').text
     assert_includes(text, '(1 day before today)', xml)
@@ -520,5 +520,29 @@ class TestAwards < Minitest::Test
       'today' => '2024-07-05T00:00:00Z'
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
+  end
+
+  def test_week_columns_add_up_to_the_run
+    facts = [
+      ['100', '2024-06-08T10:00:00Z'],
+      ['7', '2024-07-01T00:00:00Z'],
+      ['5', '2024-07-03T10:00:00Z']
+    ].map do |amount, timestamp|
+      '<f><is_human>1</is_human><who>1</who><who_name>alice</who_name>' \
+        "<award>#{amount}</award><when>#{timestamp}</when></f>"
+    end.join
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      "<fb>#{facts}</fb>",
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    values = xml.xpath('//table[@id="awards"]/tbody/tr[1]/td[@data-text]/@data-text').map { |v| v.to_s.to_i }
+    assert_equal(12, values.last, xml)
+    assert_equal(values.last, values[0..-2].sum, xml)
+  end
+
+  def test_says_since_the_monday_of_the_first_week
+    xml = xslt("<r><xsl:apply-templates select='/' mode='awards'/></r>", '<fb/>', 'today' => '2024-07-05T00:00:00Z')
+    assert_includes(xml.xpath('//p').text, 'No awards since 2024-06-10 (25 days before today)', xml)
   end
 end
