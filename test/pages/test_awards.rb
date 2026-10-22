@@ -521,4 +521,17 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_requests_small_github_avatars
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name>' \
+      '<award>10</award><when>2024-06-01T00:00:00Z</when></f></fb>',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    img = xml.xpath('//td[@class="avatar"]/a[@href="https://github.com/jeff"]/img').first
+    assert_equal('https://github.com/jeff.png?size=64', img['src'], xml)
+    assert_equal('@jeff', img['alt'], xml)
+    assert_equal('lazy', img['loading'], xml)
+  end
 end
