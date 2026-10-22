@@ -262,6 +262,23 @@ class TestQoSection < Minitest::Test
     assert_equal({ 'Alpha' => '138', 'Beta' => '275', 'Gamma' => '190' }, hues, 'the hues of the lines moved')
   end
 
+  def test_chart_canvas_is_accessible
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'Quality of Service (QoS)'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
+      '<n_composite>0.5</n_composite></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    canvas = xml.at_xpath('//canvas[@id="quality-of-service"]')
+    refute_nil(canvas, xml)
+    assert_equal('img', canvas['role'], xml)
+    assert_equal('Quality of Service (QoS) chart', canvas['aria-label'], xml)
+    assert_equal('Quality of Service (QoS) chart', canvas.text.strip, xml)
+  end
+
   private
 
   def qos_two_weeks
