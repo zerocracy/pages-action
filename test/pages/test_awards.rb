@@ -521,4 +521,17 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_has_no_pay_column_before_the_first_reconciliation
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award>' \
+      '<when>2024-06-01T00:00:00Z</when></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>jeff</who_name><when>2024-07-30T00:00:00Z</when>' \
+      '<since>2024-05-01T00:00:00Z</since><awarded>20</awarded><payout>15</payout><balance>5</balance></f></fb>',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    assert_empty(xml.xpath('//th[.="Pay"]'), xml)
+    refute_includes(xml.to_s, 'There was no reconciliation', xml)
+  end
 end
