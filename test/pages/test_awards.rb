@@ -311,6 +311,28 @@ class TestAwards < Minitest::Test
     assert_equal(%w[alpha beta], rows.map { |row| row.at_xpath('./td[2]/span/a').text.delete_prefix('@') })
   end
 
+  def test_sums_awards_of_each_programmer_in_his_own_row
+    facts = [
+      ['1', 'alice', '30', '2026-10-14T00:00:00Z'],
+      ['2', 'bob', '20', '2026-10-21T00:00:00Z']
+    ].map do |id, name, amount, timestamp|
+      "<f><is_human>1</is_human><who>#{id}</who><who_name>#{name}</who_name>" \
+        "<award>#{amount}</award><when>#{timestamp}</when></f>"
+    end.join
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      "<fb><f><what>pmp</what><area>hr</area><days_of_running_balance>14</days_of_running_balance></f>#{facts}</fb>",
+      'today' => '2026-10-22T12:00:00Z'
+    )
+    {
+      'alice' => ['+30', "\u2014", '+30'],
+      'bob' => ["\u2014", '+20', '+20']
+    }.each do |name, cells|
+      row = xml.at_xpath("//table[@id='awards']/tbody/tr[td[2]/span/a = '@#{name}']")
+      assert_equal(cells, row.xpath('./td[position() > 2]/span').map(&:text), xml)
+    end
+  end
+
   def test_fn_in_week_takes_midnight_of_monday
     xml = xslt(
       '<r><xsl:value-of select="z:in-week(xs:dateTime(\'2024-09-23T00:00:00Z\'), 2)"/></r>',
