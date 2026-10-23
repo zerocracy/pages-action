@@ -34,24 +34,34 @@
     <xsl:value-of select="$when &gt;= $monday and $when &lt; $sunday"/>
   </xsl:function>
   <xsl:function name="z:payable" as="xs:integer">
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="z:payable('', $name)"/>
+  </xsl:function>
+  <xsl:function name="z:payable" as="xs:integer">
     <!--
     The amount payable to a user: what the latest "reconciliation" left as
     the balance, plus every award since that reconciliation was counted.
     Zero when the user has no reconciliation at all.
     -->
+    <xsl:param name="id" as="xs:string"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name]"/>
+    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name))]"/>
     <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
     <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
-    <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
+    <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
+  </xsl:function>
+  <xsl:function name="z:payables">
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="z:payables('', $name)"/>
   </xsl:function>
   <xsl:function name="z:payables">
     <!--
     Calculates the amount to be paid to a user, according to the information
     in current awards and previously posted "reconciliation" facts.
     -->
+    <xsl:param name="id" as="xs:string"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name and z:when(when) &lt;= xs:dateTime($today)]"/>
+    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
     <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
     <xsl:choose>
@@ -67,7 +77,7 @@
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
+          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer(z:value($rec/awarded))"/>
           <xsl:variable name="payable" select="$accumulated - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance))"/>
           <xsl:attribute name="title">
@@ -262,11 +272,29 @@
         </tr>
       </thead>
       <tbody>
-        <xsl:for-each-group select="$facts | $fb/f[what='reconciliation']" group-by="who_name">
+        <xsl:for-each-group select="$facts | $fb/f[what='reconciliation']" group-by="if (who) then concat('id:', string(who)) else concat('name:', string(who_name))">
           <xsl:sort select="sum(current-group()/award)" data-type="number" order="descending"/>
-          <xsl:variable name="id" select="who/text()"/>
-          <xsl:variable name="name" select="who_name/text()"/>
-          <xsl:if test="count($facts[who_name = $name]) &gt; 0 or z:payable($name) != 0">
+          <xsl:variable name="key" select="current-grouping-key()"/>
+          <xsl:variable name="id" select="if (starts-with($key, 'id:')) then substring-after($key, 'id:') else ''"/>
+          <xsl:variable name="identities" select="$fb/f[what='who-has-name' and who=$id]"/>
+          <xsl:variable name="name">
+            <xsl:choose>
+              <xsl:when test="$id != '' and $identities">
+                <xsl:for-each select="$identities">
+                  <xsl:sort select="exists(when)" data-type="number" order="ascending"/>
+                  <xsl:sort select="z:when(when)" order="ascending"/>
+                  <xsl:sort select="name" order="ascending"/>
+                  <xsl:if test="position() = last()">
+                    <xsl:value-of select="name"/>
+                  </xsl:if>
+                </xsl:for-each>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="if ($id = '') then substring-after($key, 'name:') else current-group()[last()]/who_name"/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
+          <xsl:if test="count($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]) &gt; 0 or z:payable($id, string($name)) != 0">
             <xsl:call-template name="programmer">
               <xsl:with-param name="id" select="$id"/>
               <xsl:with-param name="name" select="$name"/>
@@ -337,7 +365,7 @@
           </a>
         </span>
         <xsl:text> (</xsl:text>
-        <xsl:variable name="c" select="count($facts[who_name=$name]/award)"/>
+        <xsl:variable name="c" select="count($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]/award)"/>
         <a href="#" onclick="$('.p_{$name}').toggle(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
@@ -349,14 +377,14 @@
       </td>
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
-        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name and z:in-week(z:when(when), $week)]/award)))"/>
+        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:in-week(z:when(when), $week)]/award)))"/>
       </xsl:for-each>
-      <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name]/award)))"/>
+      <xsl:copy-of select="z:td-award(xs:integer(sum($facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]/award)))"/>
       <xsl:if test="$fb/f[what='reconciliation']">
-        <xsl:copy-of select="z:payables($name)"/>
+        <xsl:copy-of select="z:payables($id, $name)"/>
       </xsl:if>
     </tr>
-    <xsl:if test="$fb/f[what='reconciliation' and who=$id]">
+    <xsl:if test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name))]">
       <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
         <td>
           <!-- Avatar -->
@@ -370,8 +398,8 @@
           <xsl:variable name="week" select="."/>
           <td class="right">
             <xsl:choose>
-              <xsl:when test="$fb/f[what='reconciliation' and who=$id and z:in-week(z:when(when), $week)]">
-                <xsl:for-each select="$fb/f[what='reconciliation' and who=$id and z:in-week(z:when(when), $week)]">
+              <xsl:when test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:in-week(z:when(when), $week)]">
+                <xsl:for-each select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:in-week(z:when(when), $week)]">
                   <xsl:if test="position() &gt; 1">
                     <br/>
                   </xsl:if>
@@ -415,7 +443,7 @@
         </td>
       </tr>
     </xsl:if>
-    <xsl:for-each select="$facts[who_name=$name]">
+    <xsl:for-each select="$facts[(if ($id != '') then who=$id else (not(who) and who_name=$name))]">
       <xsl:sort select="z:when(when)"/>
       <xsl:variable name="fact" select="."/>
       <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
