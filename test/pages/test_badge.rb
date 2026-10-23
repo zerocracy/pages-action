@@ -33,6 +33,16 @@ class TestBadge < Minitest::Test
     assert_includes(texts, '+0.0', xml)
   end
 
+  def test_hides_logo_when_adless
+    xml = badge_svg('<fb/>', 'adless=true')
+    assert_empty(xml.xpath("//*[local-name()='g'][@transform]"), xml)
+  end
+
+  def test_shows_logo_when_not_adless
+    xml = badge_svg('<fb/>', 'adless=false')
+    refute_empty(xml.xpath("//*[local-name()='g'][@transform]"), xml)
+  end
+
   def test_shows_one_decimal_for_a_whole_average
     xml = badge_svg(
       "
@@ -63,7 +73,7 @@ class TestBadge < Minitest::Test
 
   private
 
-  def badge_svg(xml)
+  def badge_svg(xml, *params)
     Dir.mktmpdir do |dir|
       input = File.join(dir, 'input.xml')
       File.write(input, xml)
@@ -74,7 +84,8 @@ class TestBadge < Minitest::Test
           "-s:#{Shellwords.escape(input)}",
           "-xsl:#{Shellwords.escape(File.join(__dir__, '../../xsl/badge.xsl'))}",
           "-o:#{Shellwords.escape(output)}",
-          'today=2024-01-01T00:00:00'
+          'today=2024-01-01T00:00:00',
+          *params
         ],
         stdout: fake_loog
       )
