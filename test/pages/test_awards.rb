@@ -418,6 +418,37 @@ class TestAwards < Minitest::Test
     assert_includes(text, 'there is 1 award in total', xml)
   end
 
+  def test_says_awards_for_zero_and_award_for_one
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>alice</who_name>
+          <award>20</award>
+          <when>2026-10-14T10:00:00Z</when>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <who>2</who>
+          <who_name>dave</who_name>
+          <when>2026-10-06T00:00:00Z</when>
+          <since>2026-08-01T00:00:00Z</since>
+          <awarded>100</awarded>
+          <balance>130</balance>
+          <payout>70</payout>
+        </f>
+      </fb>
+      ',
+      'today' => '2026-10-16T12:00:00Z'
+    )
+    cells = xml.xpath('//tbody/tr/td[2]').map { |td| td.text.gsub(/\s+/, ' ').strip }
+    assert_includes(cells, '@alice (1 award)', xml)
+    assert_includes(cells, '@dave (0 awards)', xml)
+  end
+
   def test_renders_a_payout_without_since
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='awards'/></r>",
