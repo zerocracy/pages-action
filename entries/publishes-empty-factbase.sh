@@ -26,3 +26,5 @@ grep "The 'github-token' plugin parameter is set" 'log.txt'
 [ -e 'output/test.html' ]
 [ -e 'output/test-vitals.html' ]
 [ -e 'output/test-badge.svg' ]
+grep -F 'HTML generated at: output/test-vitals.html' 'log.txt'
+grep -F 'SVG badge generated at: output/test-badge.svg' 'log.txt'
