@@ -262,11 +262,11 @@
         </tr>
       </thead>
       <tbody>
-        <xsl:for-each-group select="$facts | $fb/f[what='reconciliation']" group-by="who_name">
+        <xsl:for-each-group select="$facts | $fb/f[what='reconciliation']" group-by="(who_name, who)[1]">
           <xsl:sort select="sum(current-group()/award)" data-type="number" order="descending"/>
           <xsl:variable name="id" select="who/text()"/>
-          <xsl:variable name="name" select="who_name/text()"/>
-          <xsl:if test="count($facts[who_name = $name]) &gt; 0 or z:payable($name) != 0">
+          <xsl:variable name="name" select="(who_name, who)[1]/text()"/>
+          <xsl:if test="count($facts[(who_name, who)[1] = $name]) &gt; 0 or z:payable($name) != 0">
             <xsl:call-template name="programmer">
               <xsl:with-param name="id" select="$id"/>
               <xsl:with-param name="name" select="$name"/>
@@ -337,7 +337,7 @@
           </a>
         </span>
         <xsl:text> (</xsl:text>
-        <xsl:variable name="c" select="count($facts[who_name=$name]/award)"/>
+        <xsl:variable name="c" select="count($facts[(who_name, who)[1]=$name]/award)"/>
         <a href="#" onclick="$('.p_{$name}').toggle(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
@@ -349,9 +349,9 @@
       </td>
       <xsl:for-each select="1 to $weeks">
         <xsl:variable name="week" select="."/>
-        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name and z:in-week(z:when(when), $week)]/award)))"/>
+        <xsl:copy-of select="z:td-award(xs:integer(sum($facts[(who_name, who)[1]=$name and z:in-week(z:when(when), $week)]/award)))"/>
       </xsl:for-each>
-      <xsl:copy-of select="z:td-award(xs:integer(sum($facts[who_name=$name]/award)))"/>
+      <xsl:copy-of select="z:td-award(xs:integer(sum($facts[(who_name, who)[1]=$name]/award)))"/>
       <xsl:if test="$fb/f[what='reconciliation']">
         <xsl:copy-of select="z:payables($name)"/>
       </xsl:if>
@@ -415,7 +415,7 @@
         </td>
       </tr>
     </xsl:if>
-    <xsl:for-each select="$facts[who_name=$name]">
+    <xsl:for-each select="$facts[(who_name, who)[1]=$name]">
       <xsl:sort select="z:when(when)"/>
       <xsl:variable name="fact" select="."/>
       <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
