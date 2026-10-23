@@ -46,6 +46,21 @@ class TestQoSection < Minitest::Test
     assert_equal(15, hues.uniq.size, xml)
   end
 
+  def test_draws_every_chart_on_its_own_canvas
+    %w[quality-of-service earned-value].each do |what|
+      xml = xslt(
+        "<r><xsl:call-template name='qo-section'>" \
+        "<xsl:with-param name='what' select=\"'#{what}'\"/>" \
+        "<xsl:with-param name='title' select=\"'Chart'\"/>" \
+        '</xsl:call-template></r>',
+        "<fb><f><when>2024-07-03T22:22:22Z</when><what>#{what}</what><n_alpha>0.1</n_alpha></f></fb>",
+        'today' => '2024-09-26T04:04:04Z'
+      )
+      assert_equal([what], xml.xpath('//canvas/@id').map(&:value), xml)
+      assert_equal([what], xml.xpath('//script').map(&:content).join.scan(/qo_render\('([^']*)'/).flatten, xml)
+    end
+  end
+
   def test_snake_case_to_title
     xml = xslt(
       '<r><xsl:value-of select="z:snake-case-to-title(\'average_issue_lifetime\')"/></r>',
