@@ -414,7 +414,8 @@ java -jar "${SELF}/target/saxon.jar" \
     "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/badge.xsl" \
     "-o:${svg}" \
-    "today=${INPUT_TODAY}"
+    "today=${INPUT_TODAY}" \
+    "adless=${INPUT_ADLESS}"
 echo "SVG badge generated at: ${svg}"
 
 rm "${staging}/${name}.rich.xml"
