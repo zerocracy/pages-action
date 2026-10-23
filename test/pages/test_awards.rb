@@ -521,4 +521,25 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_counts_awards_of_programmers_and_in_total
+    facts = [
+      ['alice', '2024-07-01T10:00:00Z'],
+      ['alice', '2024-07-02T10:00:00Z'],
+      ['alice', '2024-07-03T10:00:00Z'],
+      ['bob', '2024-07-03T10:00:00Z'],
+      ['alice', '2024-01-01T10:00:00Z']
+    ].map do |name, timestamp|
+      "<f><is_human>1</is_human><who>1</who><who_name>#{name}</who_name>" \
+        "<award>10</award><when>#{timestamp}</when></f>"
+    end.join
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      "<fb>#{facts}</fb>",
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    names = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]/td[2]')
+    assert_equal(['@alice (3 awards)', '@bob (1 award)'], names.map { |td| td.text.split.join(' ') }, xml)
+    assert_equal('Total (4/5):', xml.xpath('//table[@id="awards"]/tfoot/tr/td[2]/span').text.strip, xml)
+  end
 end
