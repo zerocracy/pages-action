@@ -341,7 +341,7 @@
         <a href="#" onclick="$('.p_{$name}').toggle(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
-          <xsl:if test="$c &gt; 1">
+          <xsl:if test="$c != 1">
             <xsl:text>s</xsl:text>
           </xsl:if>
         </a>
