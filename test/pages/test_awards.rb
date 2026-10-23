@@ -521,4 +521,69 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_shows_awards_with_unknown_humanity_and_hides_bots
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f><who>1</who><who_name>jeff</who_name><award>10</award><when>2024-07-02T00:00:00Z</when></f>
+        <f><is_human>0</is_human><who>2</who><who_name>robot</who_name><award>99</award>
+          <when>2024-07-02T00:00:00Z</when></f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    names = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]/td[2]/span/a')
+    assert_equal(['@jeff'], names.map(&:text), xml)
+  end
+
+  def test_fn_payables_counts_awards_with_unknown_humanity
+    xml = xslt(
+      "<r><xsl:copy-of select=\"z:payables('dude')\"/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2026-10-01T10:00:00Z</when>
+          <since>2026-09-20T00:00:00Z</since>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>0</balance>
+        </f>
+        <f><when>2026-10-05T10:00:00Z</when><who_name>dude</who_name><award>30</award></f>
+        <f><is_human>0</is_human><when>2026-10-05T10:00:00Z</when><who_name>dude</who_name><award>7</award></f>
+      </fb>
+      ',
+      'today' => '2026-10-14T12:00:00Z'
+    )
+    assert_equal('30', xml.xpath('/r/td').text.strip, xml)
+  end
+
+  def test_gives_a_row_to_a_programmer_owed_points_for_awards_with_unknown_humanity
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-05-20T00:00:00Z</when>
+          <since>2024-04-01T00:00:00Z</since>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <awarded>40</awarded>
+          <payout>0</payout>
+          <balance>40</balance>
+        </f>
+        <f><who>7</who><who_name>dude</who_name><award>40</award><when>2024-05-01T00:00:00Z</when></f>
+        <f><is_human>1</is_human><who>8</who><who_name>jeff</who_name><award>10</award>
+          <when>2024-07-02T00:00:00Z</when></f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    names = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]/td[2]/span/a')
+    assert_includes(names.map(&:text), '@dude', xml)
+  end
 end
