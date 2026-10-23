@@ -248,6 +248,19 @@ class TestVitals < Minitest::Test
     assert_match(/<link rel="icon"\s+href="x"/, generate_vitals_html(adless: 'true'))
   end
 
+  def test_omits_the_logo_and_the_favicon_when_the_logo_is_empty
+    params = {
+      'today' => '2024-09-26T04:04:04Z', 'name' => 'test', 'url' => 'https://example.com', 'version' => '0.0.1',
+      'latest-version' => '0.0.1', 'fbe' => '0.0.50', 'css-links' => '', 'js-links' => '', 'css' => 'body{}',
+      'js' => '', 'adless' => 'true'
+    }
+    empty = xslt('<xsl:apply-imports/>', '<fb/>', params.merge('logo' => ''))
+    assert_empty(empty.xpath("//img[@alt='logo'] | //link[@rel='icon']"), empty)
+    given = xslt('<xsl:apply-imports/>', '<fb/>', params.merge('logo' => 'x'))
+    assert_equal(['x'], given.xpath("//img[@alt='logo']/@src").map(&:value), given)
+    assert_equal(['x'], given.xpath("//link[@rel='icon']/@href").map(&:value), given)
+  end
+
   def test_does_not_declare_a_non_svg_logo_as_svg
     html = generate_vitals_html
     refute_match(%r{<link rel="icon"[^>]*type="image/svg\+xml"}, html, html[/<link rel="icon"[^>]*>/])
