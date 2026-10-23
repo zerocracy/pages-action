@@ -254,6 +254,10 @@ class TestVitals < Minitest::Test
     end
   end
 
+  def test_counts_one_contributor_in_its_description
+    assert_match(/ 1 contributor\./, generate_vitals_html[%r{<meta name="description".*?/>}m].to_s)
+  end
+
   def test_adless_page_carries_no_update_banner
     html = generate_vitals_html(adless: 'true')
     refute_match(%r{github\.com/zerocracy/pages-action/releases}, html, html)
