@@ -164,6 +164,27 @@ class TestVitals < Minitest::Test
     assert_equal('28', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_fn_pmp_reads_a_later_fact_with_the_property
+    xml = xslt(
+      '<r><xsl:value-of select="z:pmp(\'hr\', \'days_of_running_balance\', \'28\')"/></r>',
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <foo>1</foo>
+        </f>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>56</days_of_running_balance>
+        </f>
+      </fb>
+      '
+    )
+    assert_equal('56', xml.xpath('/r/text()').to_s, xml)
+  end
+
   def test_fn_format_signed
     {
       3.3 => ['0.0', '+3.3'],
@@ -227,10 +248,19 @@ class TestVitals < Minitest::Test
     assert_match(/<link rel="icon"\s+href="x"/, generate_vitals_html(adless: 'true'))
   end
 
+  def test_does_not_declare_a_non_svg_logo_as_svg
+    html = generate_vitals_html
+    refute_match(%r{<link rel="icon"[^>]*type="image/svg\+xml"}, html, html[/<link rel="icon"[^>]*>/])
+  end
+
   def test_names_zerocracy_unless_adless_is_true
     ['', 'False', 'no'].each do |adless|
       assert_includes(generate_vitals_html(adless:), 'supervised by Zerocracy', "adless=#{adless.inspect}")
     end
+  end
+
+  def test_counts_one_contributor_in_its_description
+    assert_match(/ 1 contributor\./, generate_vitals_html[%r{<meta name="description".*?/>}m].to_s)
   end
 
   def test_adless_page_carries_no_update_banner

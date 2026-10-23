@@ -77,15 +77,14 @@
   </xsl:function>
   <xsl:function name="z:pmp">
     <!--
-    Finds a "pmp" fact with the given "area" and then
-    tries to find a given property inside. If the fact is not
-    found or the property doesn't exist, the default value
-    is returned.
+    Finds the first "pmp" fact with the given "area" that has
+    the given property and returns its value. If no such fact
+    is found or the value is empty, the default value is returned.
     -->
     <xsl:param name="area" as="xs:string"/>
     <xsl:param name="param" as="xs:string"/>
     <xsl:param name="default" as="xs:string"/>
-    <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area][1]"/>
+    <xsl:variable name="a" select="$fb/f[what='pmp' and area=$area and *[name()=$param]][1]"/>
     <xsl:choose>
       <xsl:when test="$a">
         <xsl:variable name="v" select="z:value($a/*[name()=$param][1])"/>
@@ -167,8 +166,8 @@
           <xsl:text> average points per task, </xsl:text>
           <xsl:value-of select="format-number(sum($facts/award), '0')"/>
           <xsl:text> total points earned, </xsl:text>
-          <xsl:value-of select="count(distinct-values($facts/who_name))"/>
-          <xsl:text> contributors.</xsl:text>
+          <xsl:value-of select="z:counted(count(distinct-values($facts/who_name)), 'contributor')"/>
+          <xsl:text>.</xsl:text>
         </xsl:variable>
         <meta name="description" content="{$description}"/>
         <meta property="og:title">
@@ -191,7 +190,7 @@
           <xsl:value-of select="$name"/>
         </title>
         <xsl:if test="$logo != ''">
-          <link rel="icon" href="{$logo}" type="image/svg+xml"/>
+          <link rel="icon" href="{$logo}"/>
         </xsl:if>
         <xsl:call-template name="css-links">
           <xsl:with-param name="links" select="$css-links"/>
