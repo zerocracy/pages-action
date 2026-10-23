@@ -521,4 +521,14 @@ class TestAwards < Minitest::Test
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
   end
+
+  def test_sorts_only_by_the_last_header_row
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award>' \
+      '<when>2024-10-08T10:00:00Z</when></f></fb>',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_includes(xml.xpath('//script').map(&:content).join, "selectorHeaders: '> thead tr:last-child th'", xml)
+  end
 end
