@@ -79,10 +79,10 @@ case "${INPUT_URL}" in
         ;;
 esac
 case "${INPUT_URL}" in
+    '')
+        ;;
     http://*|https://*)
-        if [[ "${INPUT_URL}" =~ ^https?://[^[:space:]/]+(/.*)?$ ]]; then
-            ;;
-        else
+        if ! [[ "${INPUT_URL}" =~ ^https?://[^[:space:]/]+(/.*)?$ ]]; then
             echo 'INPUT_URL must be an absolute URL that starts with http:// or https:// and has a non-empty host' >&2
             exit 1
         fi
