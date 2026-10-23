@@ -4,6 +4,13 @@
 
 set -e -o pipefail
 
+trim() {
+    local value="${1-}"
+    value="${value#"${value%%[![:space:]]*}"}"
+    value="${value%"${value##*[![:space:]]}"}"
+    printf '%s' "${value}"
+}
+
 VERSION="${PAGES_ACTION_VERSION:-0.0.0}"
 
 echo "Checking for the latest version of zerocracy/pages-action..."
@@ -11,7 +18,7 @@ echo "Checking for the latest version of zerocracy/pages-action..."
 if [ -z "${LATEST_VERSION}" ]; then
     if command -v curl >/dev/null 2>&1; then
         declare -a curl_args=(-s --max-time 10)
-        token="$(printenv "INPUT_GITHUB-TOKEN" || true)"
+        token=$(trim "$(printenv "INPUT_GITHUB-TOKEN" || true)")
         if [ -n "${token}" ]; then
             curl_args+=(-H "Authorization: token ${token}")
         fi
@@ -28,7 +35,7 @@ fi
 
 echo "The 'pages-action' ${VERSION} is running"
 
-github_token=$(printenv "INPUT_GITHUB-TOKEN" || true)
+github_token=$(trim "$(printenv "INPUT_GITHUB-TOKEN" || true)")
 if [ -n "${github_token}" ]; then
     echo "::add-mask::${github_token}"
 fi
@@ -262,12 +269,13 @@ if [ "${github_token_found}" == "true" ]; then
     echo "The 'github_token' option is set, using it"
 fi
 if [ "${github_token_found}" == "false" ]; then
-    if [ -z "$(printenv "INPUT_GITHUB-TOKEN")" ]; then
+    trimmed_github_token=$(trim "$(printenv "INPUT_GITHUB-TOKEN" || true)")
+    if [ -z "${trimmed_github_token}" ]; then
         echo "The 'github-token' plugin parameter is not set (\$INPUT_GITHUB-TOKEN is empty)"
     else
         echo "The 'github-token' plugin parameter is set, using it"
         set +x
-        options+=("--option=github_token=$(printenv "INPUT_GITHUB-TOKEN")");
+        options+=("--option=github_token=${trimmed_github_token}");
         [ "${INPUT_VERBOSE}" == 'true' ] && set -x
         github_token_found=true
     fi
