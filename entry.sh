@@ -212,6 +212,7 @@ for f in yaml xml json html; do
         --columns "${INPUT_COLUMNS}" \
         --highlighted "${INPUT_HIGHLIGHTED}"\
         --hidden "${INPUT_HIDDEN}" \
+        --title "${name}" \
         "${INPUT_FACTBASE}" \
         "${staging}/${name}.${f}"
 done
