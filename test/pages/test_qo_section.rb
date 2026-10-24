@@ -46,6 +46,21 @@ class TestQoSection < Minitest::Test
     assert_equal(15, hues.uniq.size, xml)
   end
 
+  def test_shows_every_series_when_there_is_no_composite
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
+      '<n_some_alpha>0.1</n_some_alpha><n_some_beta>0.2</n_some_beta></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    script = xml.xpath('//script').map(&:content).join
+    assert_equal(2, script.scan('label:').size, xml)
+    refute_includes(script, 'hidden:true', xml)
+  end
+
   def test_snake_case_to_title
     xml = xslt(
       '<r><xsl:value-of select="z:snake-case-to-title(\'average_issue_lifetime\')"/></r>',

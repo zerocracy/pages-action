@@ -78,7 +78,9 @@
           </xsl:for-each>
           <xsl:text>],</xsl:text>
           <xsl:text>datasets:[</xsl:text>
-          <xsl:for-each select="distinct-values($facts/f/*[starts-with(name(), 'n_')]/name())">
+          <xsl:variable name="names" select="distinct-values($facts/f/*[starts-with(name(), 'n_')]/name())"/>
+          <xsl:variable name="shown" select="exists($names[not(contains(substring-after(., 'n_'), '_'))])"/>
+          <xsl:for-each select="$names">
             <xsl:sort select="."/>
             <xsl:variable name="n" select="."/>
             <xsl:if test="position() &gt; 1">
@@ -101,7 +103,7 @@
                 <xsl:text>,borderWidth:1</xsl:text>
               </xsl:otherwise>
             </xsl:choose>
-            <xsl:if test="contains(substring-after($n, 'n_'), '_')">
+            <xsl:if test="$shown and contains(substring-after($n, 'n_'), '_')">
               <xsl:text>,hidden:true</xsl:text>
             </xsl:if>
             <xsl:text>,data:[</xsl:text>
