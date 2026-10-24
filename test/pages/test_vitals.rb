@@ -289,6 +289,18 @@ class TestVitals < Minitest::Test
     assert_match(%r{github\.com/zerocracy/pages-action/releases}, generate_vitals_html)
   end
 
+  def test_shows_the_update_banner_only_when_the_version_is_not_the_latest
+    params = {
+      'today' => '2024-09-26T04:04:04Z', 'name' => 'test', 'logo' => 'x', 'url' => 'https://example.com',
+      'fbe' => '0.0.50', 'css-links' => '', 'js-links' => '', 'css' => 'body{}', 'js' => '', 'adless' => 'false'
+    }
+    banner = '//footer//span[contains(., "while the latest version is")]'
+    same = xslt('<xsl:apply-imports/>', '<fb/>', params.merge('version' => '0.0.1', 'latest-version' => '0.0.1'))
+    assert_empty(same.xpath(banner), same)
+    older = xslt('<xsl:apply-imports/>', '<fb/>', params.merge('version' => '0.0.1', 'latest-version' => '0.0.2'))
+    refute_empty(older.xpath(banner), older)
+  end
+
   def test_shows_the_size_of_the_factbase_rounded_in_its_units
     {
       10_000_001 => '10MB', 25_600_000 => '26MB', 10_001 => '10kB', 12_499 => '12kB', 10_000 => '10000 bytes'
