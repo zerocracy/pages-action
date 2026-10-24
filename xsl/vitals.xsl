@@ -195,6 +195,9 @@
         <xsl:call-template name="css-links">
           <xsl:with-param name="links" select="$css-links"/>
         </xsl:call-template>
+        <xsl:if test="$ads">
+          <link href="https://www.zerocracy.com/css/palette.css" rel="stylesheet"/>
+        </xsl:if>
         <xsl:call-template name="js-links">
           <xsl:with-param name="links" select="$js-links"/>
         </xsl:call-template>
