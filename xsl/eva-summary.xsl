@@ -17,15 +17,15 @@
       <xsl:when test="exists($ac) and exists($ev) and exists($pv) and $ac != 0 and $pv != 0">
         <p>
           <xsl:text>AC: </xsl:text>
-          <xsl:value-of select="format-number($ac, '0')"/>
+          <xsl:value-of select="format-number(z:rounded($ac, 1), '0')"/>
           <xsl:text>, EV: </xsl:text>
-          <xsl:value-of select="format-number($ev, '0')"/>
+          <xsl:value-of select="format-number(z:rounded($ev, 1), '0')"/>
           <xsl:text>, PV: </xsl:text>
-          <xsl:value-of select="format-number($pv, '0')"/>
+          <xsl:value-of select="format-number(z:rounded($pv, 1), '0')"/>
           <xsl:text>, CPI: </xsl:text>
-          <xsl:copy-of select="z:index($ev div $ac)"/>
+          <xsl:copy-of select="z:index(z:rounded($ev div $ac, 100))"/>
           <xsl:text>, SPI: </xsl:text>
-          <xsl:copy-of select="z:index($ev div $pv)"/>
+          <xsl:copy-of select="z:index(z:rounded($ev div $pv, 100))"/>
           <xsl:text>.</xsl:text>
         </p>
       </xsl:when>
