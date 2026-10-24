@@ -24,7 +24,7 @@ end
 
 desc 'Run all judges'
 task :judges do
-  live = ARGV.include?('--live') ? '' : '--disable live'
+  live = ENV['LIVE'] == 'true' ? '' : '--disable live'
   sh "judges --verbose test #{live} --no-log judges"
 end
 
