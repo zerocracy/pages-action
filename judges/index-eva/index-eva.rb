@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 require 'fbe/fb'
+require 'fbe/overwrite'
 
 common =
   "
@@ -17,11 +18,10 @@ Fbe.fb.query(
   (and
     #{common}
     (exists ac)
-    (not (eq ac 0))
-    (absent n_cpi))
+    (not (eq ac 0)))
   "
-).each do |f|
-  f.n_cpi = f.ev.to_f / f.ac
+).each.to_a.each do |f|
+  Fbe.overwrite(f, 'n_cpi', f.ev.to_f / f.ac, fb: Fbe.fb)
 end
 
 Fbe.fb.query(
@@ -29,9 +29,8 @@ Fbe.fb.query(
   (and
     #{common}
     (exists pv)
-    (not (eq pv 0))
-    (absent n_spi))
+    (not (eq pv 0)))
   "
-).each do |f|
-  f.n_spi = f.ev.to_f / f.pv
+).each.to_a.each do |f|
+  Fbe.overwrite(f, 'n_spi', f.ev.to_f / f.pv, fb: Fbe.fb)
 end
