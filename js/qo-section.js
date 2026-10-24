@@ -12,7 +12,7 @@
  */
 function qo_render(canvas, data) {
   const ctx = document.getElementById(canvas);
-  ctx.style.height = '10em';
+  ctx.style.height = `${10 + (Math.ceil(data.datasets.length / 4) * 1.5)}em`;
   new Chart(ctx, {
     type: 'line',
     data: data,
@@ -20,7 +20,7 @@ function qo_render(canvas, data) {
       responsive: false,
       plugins: {
         legend: {
-          position: 'right'
+          position: 'bottom'
         },
         tooltip: {
           callbacks: {
