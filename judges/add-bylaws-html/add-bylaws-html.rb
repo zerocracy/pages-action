@@ -15,7 +15,10 @@ f&.all_properties&.each do |prop|
   next unless q.is_a?(String)
   next unless q.start_with?('(award')
   md = Fbe::Award.new(q).bylaw.markdown
-  htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(escape_html: true), no_intra_emphasis: true).render(md)
+  htmls << Redcarpet::Markdown.new(
+    Redcarpet::Render::HTML.new(escape_html: true, safe_links_only: true),
+    no_intra_emphasis: true
+  ).render(md)
   par += 1
 end
 return if htmls.empty?
