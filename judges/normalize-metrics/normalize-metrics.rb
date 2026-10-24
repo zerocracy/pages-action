@@ -16,8 +16,11 @@ end
 
 def value(fact, name)
   vv = fact[name]
-  return vv.first.to_f unless name.start_with?('some_')
-  vv.sum(&:to_f) / vv.size
+  return vv.sum(&:to_f) / vv.size if name.start_with?('some_')
+  return vv.first.to_f unless name.start_with?('total_') && fact['since']
+  days = (fact['when'].min - fact['since'].min) / 86_400
+  return vv.first.to_f unless days.positive?
+  vv.first.to_f / days
 end
 
 %w[quantity-of-deliverables quality-of-service].each do |qo|
