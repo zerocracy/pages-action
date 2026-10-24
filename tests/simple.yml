@@ -21,6 +21,7 @@
     //div[@class="repositories"]//time[@class="relative-time"]
     //div[@class="repositories"]//time[string-length(@title) > 0]
     //div[@class="repositories"][contains(., " open issues and pull requests")]
+    //div[@class="bylaws"]//p/strong[.="25"]
 -
   _id: 1
   what: pmp
