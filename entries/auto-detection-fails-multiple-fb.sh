@@ -24,3 +24,7 @@ if [ $exit_code -eq 0 ]; then
   echo "Check log.txt for details of the failure"
   exit 1
 fi
+
+grep -Fx 'ERROR: Multiple .fb files found in the current directory:' log.txt
+grep -Fx '  - first.fb' log.txt
+grep -Fx '  - second.fb' log.txt

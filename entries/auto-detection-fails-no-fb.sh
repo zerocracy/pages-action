@@ -22,3 +22,5 @@ if [ $exit_code -eq 0 ]; then
   echo "Check log.txt for details of the failure"
   exit 1
 fi
+
+grep -Fx 'ERROR: No .fb files found in the current directory.' log.txt
