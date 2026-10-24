@@ -14,12 +14,15 @@ repos =
     h[id] = Fbe.octo.repository(id)
   rescue Fbe::OffQuota
     break h
+  rescue Octokit::NotFound
+    h[id] = {}
   rescue Octokit::Error, Faraday::Error
     next
   end
 
 repos.each do |id, json|
   Fbe.fb.query("(and (eq what \"repo-details\") (eq repository #{id.inspect}))").delete!
+  next if json.empty?
   d = Fbe.fb.insert
   d.what = 'repo-details'
   d.where = 'github'
