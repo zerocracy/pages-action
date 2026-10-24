@@ -150,8 +150,10 @@
     <xsl:apply-templates select="/fb" mode="awards"/>
   </xsl:template>
   <xsl:template match="/fb" mode="awards">
+    <xsl:variable name="owed" as="xs:boolean"
+      select="some $n in distinct-values($fb/f[what='reconciliation']/who_name) satisfies z:payable(xs:string($n)) != 0"/>
     <xsl:choose>
-      <xsl:when test="empty($facts)">
+      <xsl:when test="empty($facts) and not($owed)">
         <p class="darkred">
           <xsl:text>No awards since </xsl:text>
           <xsl:value-of select="z:day(xs:date($since))"/>
