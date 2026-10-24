@@ -24,9 +24,6 @@ inputs:
   logo:
     description: 'URL of the logo to put on the HTML page'
     default: ''
-  palette:
-    description: 'Palette name (e.g. classic, dark, mild)'
-    default: 'classic'
   adless:
     description: 'Hide all Zerocracy links, banners, and logos'
     default: false
