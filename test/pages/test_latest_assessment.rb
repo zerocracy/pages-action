@@ -46,6 +46,20 @@ class TestLatestAssessment < Minitest::Test
     assert_equal(Time.utc(2024, 6, 1), latest.when)
   end
 
+  def test_skips_assessments_written_after_today
+    fb = Factbase.new
+    { 'Old' => Time.utc(2024, 1, 10), 'New' => Time.utc(2025, 3, 10) }.each do |text, time|
+      f = fb.insert
+      f.what = 'assessment'
+      f.text = text
+      f.when = time
+    end
+    load_it('latest-assessment', fb, 'today' => '2024-06-01T00:00:00Z')
+    latest = fb.query('(eq what "latest-assessment")').each.to_a.first
+    assert_equal('Old', latest.text)
+    assert_equal(1, latest.total)
+  end
+
   private
 
   def assessment_factbase
