@@ -7,7 +7,7 @@
   <xsl:variable name="dot_facts" select="/fb/f[what='dimensions-of-terrain' and z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today)]"/>
   <xsl:template match="/" mode="dot">
     <xsl:choose>
-      <xsl:when test="empty($dot_facts)">
+      <xsl:when test="empty($dot_facts/*[contains(name(), '_') and not(starts-with(name(), '_'))])">
         <p class="darkred">
           <xsl:text>There is no information about the dimensions of terrain.</xsl:text>
         </p>

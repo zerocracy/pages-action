@@ -21,12 +21,18 @@ const OUTDATED_THRESHOLD_HOURS = 24;
  * @returns {number} Number of months difference
  */
 function getMonthsDifference(startDate, endDate) {
-  const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
-  const monthsDiff = endDate.getMonth() - startDate.getMonth();
-  const dateDiff = endDate.getDate() - startDate.getDate();
-  const lastDay = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0).getDate();
-  let totalMonths = yearsDiff * 12 + monthsDiff;
-  totalMonths -= dateDiff >= 0 || endDate.getDate() === lastDay ? 0 : 1;
+  const shifted = (months) => {
+    const moved = new Date(startDate.getTime());
+    moved.setDate(1);
+    moved.setMonth(moved.getMonth() + months);
+    const lastDay = new Date(moved.getFullYear(), moved.getMonth() + 1, 0).getDate();
+    moved.setDate(Math.min(startDate.getDate(), lastDay));
+    return moved;
+  };
+  let totalMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + endDate.getMonth() - startDate.getMonth();
+  while (totalMonths > 0 && shifted(totalMonths) > endDate) {
+    totalMonths -= 1;
+  }
   return Math.max(0, totalMonths);
 }
 
@@ -71,10 +77,9 @@ function displayOutdatedWarning() {
     return;
   }
   const age = Date.now() - time;
-  const hours = Math.floor(age / TIME_UNITS.HOUR);
   const warning = $("#page-outdated-warning");
   if (age > OUTDATED_THRESHOLD_HOURS * TIME_UNITS.HOUR) {
-    const message = `This page was generated ${hours} ${hours === 1 ? 'hour' : 'hours'} ago. The information is most probably outdated.`;
+    const message = `This page was generated ${formatRelativeTime(age, new Date(time))}. The information is most probably outdated.`;
     if (warning.length === 0) {
       $('footer').prepend(`<p id="page-outdated-warning" class='red'>${message}</p>`);
     } else {

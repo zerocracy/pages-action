@@ -164,6 +164,27 @@ class TestVitals < Minitest::Test
     assert_equal('28', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_fn_pmp_reads_a_later_fact_with_the_property
+    xml = xslt(
+      '<r><xsl:value-of select="z:pmp(\'hr\', \'days_of_running_balance\', \'28\')"/></r>',
+      '
+      <fb>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <foo>1</foo>
+        </f>
+        <f>
+          <what>pmp</what>
+          <area>hr</area>
+          <days_of_running_balance>56</days_of_running_balance>
+        </f>
+      </fb>
+      '
+    )
+    assert_equal('56', xml.xpath('/r/text()').to_s, xml)
+  end
+
   def test_fn_format_signed
     {
       3.3 => ['0.0', '+3.3'],
@@ -223,8 +244,43 @@ class TestVitals < Minitest::Test
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
   end
 
+  def test_counts_the_contributors_in_the_description_by_who
+    {
+      '<who>1</who></f><f><when>2024-09-01T00:00:00Z</when><award>5</award><who>2</who>' => '2 contributors',
+      '<who>1</who><who_name>old</who_name></f><f><when>2024-09-01T00:00:00Z</when><award>5</award><who>1</who>' \
+      '<who_name>new</who_name>' => '1 contributor'
+    }.each do |tail, people|
+      xml = xslt(
+        '<xsl:apply-imports/>',
+        "<fb><f><when>2024-09-01T00:00:00Z</when><award>10</award>#{tail}</f></fb>",
+        'today' => '2024-09-26T04:04:04Z', 'name' => 'test', 'logo' => 'x', 'url' => 'https://example.com',
+        'version' => '0.0.1', 'latest-version' => '0.0.1', 'fbe' => '0.0.50', 'adless' => 'false',
+        'css-links' => '', 'js-links' => '', 'css' => '', 'js' => ''
+      )
+      assert_includes(
+        xml.xpath('//meta[@name="description"]/@content').to_s, ", #{people}.",
+        "The awards of #{tail} must be counted as #{people}"
+      )
+    end
+  end
+
   def test_uses_the_supplied_logo_as_the_favicon
     assert_match(/<link rel="icon"\s+href="x"/, generate_vitals_html(adless: 'true'))
+  end
+
+  def test_does_not_declare_a_non_svg_logo_as_svg
+    html = generate_vitals_html
+    refute_match(%r{<link rel="icon"[^>]*type="image/svg\+xml"}, html, html[/<link rel="icon"[^>]*>/])
+  end
+
+  def test_names_zerocracy_unless_adless_is_true
+    ['', 'False', 'no'].each do |adless|
+      assert_includes(generate_vitals_html(adless:), 'supervised by Zerocracy', "adless=#{adless.inspect}")
+    end
+  end
+
+  def test_counts_one_contributor_in_its_description
+    assert_match(/ 1 contributor\./, generate_vitals_html[%r{<meta name="description".*?/>}m].to_s)
   end
 
   def test_adless_page_carries_no_update_banner
@@ -239,6 +295,16 @@ class TestVitals < Minitest::Test
     }.each do |size, text|
       assert_includes(generate_vitals_html(size:), "#{text}</span>", "#{size} bytes must be shown as #{text}")
     end
+  end
+
+  def test_says_there_is_no_dot_information_without_dimensions
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2024-10-13T12:30:55Z</when><_id>1</_id><_job>1</_job></f></fb>',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_empty(xml.xpath('//table'), xml)
+    assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
   private
