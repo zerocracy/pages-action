@@ -41,11 +41,11 @@
     <!--
     The amount payable to a user: what the latest "reconciliation" left as
     the balance, plus every award since that reconciliation was counted.
-    Zero when the user has no reconciliation at all.
+    Zero when the user has no reconciliation up to today.
     -->
     <xsl:param name="id" as="xs:string"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name))]"/>
+    <xsl:variable name="recs" select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
     <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
     <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
@@ -369,7 +369,7 @@
         <a href="#" onclick="$('.p_{$name}').toggle(); return false;">
           <xsl:value-of select="$c"/>
           <xsl:text> award</xsl:text>
-          <xsl:if test="$c &gt; 1">
+          <xsl:if test="$c != 1">
             <xsl:text>s</xsl:text>
           </xsl:if>
         </a>

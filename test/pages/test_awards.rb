@@ -558,6 +558,37 @@ class TestAwards < Minitest::Test
     assert_includes(text, 'there is 1 award in total', xml)
   end
 
+  def test_says_awards_for_zero_and_award_for_one
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>alice</who_name>
+          <award>20</award>
+          <when>2026-10-14T10:00:00Z</when>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <who>2</who>
+          <who_name>dave</who_name>
+          <when>2026-10-06T00:00:00Z</when>
+          <since>2026-08-01T00:00:00Z</since>
+          <awarded>100</awarded>
+          <balance>130</balance>
+          <payout>70</payout>
+        </f>
+      </fb>
+      ',
+      'today' => '2026-10-16T12:00:00Z'
+    )
+    cells = xml.xpath('//tbody/tr/td[2]').map { |td| td.text.gsub(/\s+/, ' ').strip }
+    assert_includes(cells, '@alice (1 award)', xml)
+    assert_includes(cells, '@dave (0 awards)', xml)
+  end
+
   def test_renders_a_payout_without_since
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='awards'/></r>",
@@ -660,5 +691,89 @@ class TestAwards < Minitest::Test
       'today' => '2024-07-05T00:00:00Z'
     )
     assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
+  end
+
+  def test_ignores_future_reconciliation_when_giving_a_row_to_a_programmer_owed_points
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-05-20T00:00:00Z</when>
+          <since>2024-04-01T00:00:00Z</since>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <awarded>100</awarded>
+          <payout>70</payout>
+          <balance>30</balance>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-08-01T00:00:00Z</when>
+          <since>2024-07-31T00:00:00Z</since>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>75</payout>
+          <balance>0</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <award>100</award>
+          <when>2024-05-01T00:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <award>45</award>
+          <when>2024-05-25T00:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>8</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-07-02T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_includes(xml.xpath('//tbody/tr/td[last()]').map { |td| td.text.strip }, '75', xml)
+    assert_equal(1, xml.xpath("//tbody/tr[contains(., '@dude')]").size, xml)
+  end
+
+  def test_gives_no_row_to_a_programmer_with_only_a_future_reconciliation
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-08-01T00:00:00Z</when>
+          <since>2024-04-01T00:00:00Z</since>
+          <who>9</who>
+          <who_name>later</who_name>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>50</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>8</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-07-02T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
+    assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
 end

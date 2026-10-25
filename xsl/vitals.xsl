@@ -166,8 +166,8 @@
           <xsl:text> average points per task, </xsl:text>
           <xsl:value-of select="format-number(sum($facts/award), '0')"/>
           <xsl:text> total points earned, </xsl:text>
-          <xsl:value-of select="count(distinct-values($facts/who_name))"/>
-          <xsl:text> contributors.</xsl:text>
+          <xsl:value-of select="z:counted(count(distinct-values($facts/who)), 'contributor')"/>
+          <xsl:text>.</xsl:text>
         </xsl:variable>
         <meta name="description" content="{$description}"/>
         <meta property="og:title">
@@ -190,7 +190,7 @@
           <xsl:value-of select="$name"/>
         </title>
         <xsl:if test="$logo != ''">
-          <link rel="icon" href="{$logo}" type="image/svg+xml"/>
+          <link rel="icon" href="{$logo}"/>
         </xsl:if>
         <xsl:call-template name="css-links">
           <xsl:with-param name="links" select="$css-links"/>
