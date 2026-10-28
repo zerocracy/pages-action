@@ -198,11 +198,35 @@ class TestVitals < Minitest::Test
       0.0 => ['0.0', '+0.0'],
       10.5 => ['0.00', '+10.50'],
       -7.8 => ['0.00', '-7.80'],
-      10.6 => ['0.00', '+10.60']
+      10.6 => ['0.00', '+10.60'],
+      1.005 => ['0.00', '+1.01'],
+      0.145 => ['0.00', '+0.15'],
+      -1.005 => ['0.00', '-1.01'],
+      -0.145 => ['0.00', '-0.15'],
+      1.0049 => ['0.00', '+1.00'],
+      -1.0049 => ['0.00', '-1.00'],
+      1.0051 => ['0.00', '+1.01'],
+      -1.0051 => ['0.00', '-1.01'],
+      1_000_000.065 => ['0.00', '+1000000.07'],
+      -1_000_000.065 => ['0.00', '-1000000.07'],
+      1.0e-7 => ['0.00', '+0.00'],
+      -1.0e-7 => ['0.00', '0.00'],
+      1.0e20 => ['0.00', '+100000000000000000000.00'],
+      0.14499999999999996 => ['0.00', '+0.14'],
+      1.0049999999999997 => ['0.00', '+1.00']
     }.each do |value, (format, expected)|
       xml = xslt("<r><xsl:value-of select=\"z:format-signed(#{value}, '#{format}')\"/></r>", '<fb/>')
       assert_equal(expected, xml.xpath('/r/text()').to_s, "Failed for value #{value} with format #{format}: #{xml}")
     end
+  end
+
+  def test_fn_rounded_preserves_nonfinite_values
+    %w[NaN INF -INF].each do |value|
+      xml = xslt("<r><xsl:value-of select=\"z:rounded(xs:double('#{value}'), 100)\"/></r>", '<fb/>')
+      assert_equal(value, xml.xpath('/r/text()').to_s, xml)
+    end
+    xml = xslt('<r><xsl:value-of select="z:rounded(1, 0)"/></r>', '<fb/>')
+    assert_equal('NaN', xml.xpath('/r/text()').to_s, xml)
   end
 
   def test_fn_format_signed_invalid_formats
