@@ -7,11 +7,15 @@ require 'fbe/award'
 require 'fbe/fb'
 require 'redcarpet'
 
-f = Fbe.fb.query('(and (eq what "pmp") (eq area "hr"))').each.to_a.first
+props = {}
+Fbe.fb.query('(and (eq what "pmp") (eq area "hr"))').each do |f|
+  f.all_properties.each do |prop|
+    props[prop] = f[prop].first unless props.key?(prop)
+  end
+end
 htmls = []
 par = 1
-f&.all_properties&.each do |prop|
-  q = f[prop].first
+props.each_value do |q|
   next unless q.is_a?(String)
   next unless q.start_with?('(award')
   md = Fbe::Award.new(q).bylaw.markdown
