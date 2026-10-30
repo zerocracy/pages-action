@@ -222,4 +222,40 @@ class TestQoSection < Minitest::Test
     assert_includes(js, "label:'CPI'", xml)
     assert_includes(js, "label:'SPI'", xml)
   end
+
+  def test_shows_fact_taken_exactly_at_today_as_last_point
+    script = qos_two_weeks
+    assert_includes(script, "labels:['9/10','9/26']", 'the point taken at today is missing')
+    assert_includes(script, "fullDates:['10 SEP 2024','26 SEP 2024']", 'the full date of today is missing')
+    assert_includes(script, "label:'Composite',borderColor:'orange',data:[0.6,0.5]", 'the value at today is missing')
+  end
+
+  def test_orders_datasets_by_metric_name
+    labels = qos_two_weeks.scan(/label:'([^']+)'/).flatten
+    assert_equal(%w[Alpha Beta Composite Gamma], labels, 'the datasets are not in the order of their names')
+  end
+
+  def test_gives_each_metric_its_fixed_hue
+    hues = qos_two_weeks.scan(/label:'([^']+)',borderColor:chroma\.hsl\((\d+),/).to_h
+    assert_equal({ 'Alpha' => '138', 'Beta' => '275', 'Gamma' => '190' }, hues, 'the hues of the lines moved')
+  end
+
+  private
+
+  def qos_two_weeks
+    facts =
+      '<f><when>2024-09-10T10:00:00Z</when><what>quality-of-service</what>' \
+      '<n_gamma>0.2</n_gamma><n_beta>0.1</n_beta><n_alpha>0.4</n_alpha><n_composite>0.6</n_composite></f>' \
+      '<f><when>2024-09-26T04:04:04Z</when><what>quality-of-service</what>' \
+      '<n_gamma>0.3</n_gamma><n_beta>0.2</n_beta><n_alpha>0.1</n_alpha><n_composite>0.5</n_composite></f>'
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      "<fb>#{facts}</fb>",
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    xml.xpath('//script').map(&:content).join
+  end
 end
