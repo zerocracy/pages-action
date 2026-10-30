@@ -222,4 +222,35 @@ class TestQoSection < Minitest::Test
     assert_includes(js, "label:'CPI'", xml)
     assert_includes(js, "label:'SPI'", xml)
   end
+
+  def test_iso_week_first_days_of_year_belong_to_previous_year
+    %w[2027-01-01 2027-01-02 2027-01-03].each do |day|
+      xml = xslt("<r><xsl:value-of select=\"z:iso-week(xs:dateTime('#{day}T12:00:00Z'))\"/></r>", '<fb/>')
+      assert_equal('2026-W53', xml.xpath('//r/text()').to_s.strip, day)
+    end
+    xml = xslt('<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2027-01-04T12:00:00Z\'))"/></r>', '<fb/>')
+    assert_equal('2027-W01', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_first_sunday_of_year_belongs_to_previous_year
+    xml = xslt('<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2021-01-03T12:00:00Z\'))"/></r>', '<fb/>')
+    assert_equal('2020-W53', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_last_monday_of_year_belongs_to_next_year
+    { '2025-12-29' => '2026-W01', '2024-12-30' => '2025-W01' }.each do |day, week|
+      xml = xslt("<r><xsl:value-of select=\"z:iso-week(xs:dateTime('#{day}T12:00:00Z'))\"/></r>", '<fb/>')
+      assert_equal(week, xml.xpath('//r/text()').to_s.strip, day)
+    end
+  end
+
+  def test_iso_week_last_thursday_of_year_stays_in_its_year
+    xml = xslt('<r><xsl:value-of select="z:iso-week(xs:dateTime(\'2026-12-31T12:00:00Z\'))"/></r>', '<fb/>')
+    assert_equal('2026-W53', xml.xpath('//r/text()').to_s.strip)
+  end
+
+  def test_iso_week_keeps_four_digits_of_short_year
+    xml = xslt('<r><xsl:value-of select="z:iso-week(xs:dateTime(\'0999-06-01T00:00:00Z\'))"/></r>', '<fb/>')
+    assert_match(/\A0999-W\d{2}\z/, xml.xpath('//r/text()').to_s.strip)
+  end
 end
