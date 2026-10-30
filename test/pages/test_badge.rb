@@ -71,6 +71,37 @@ class TestBadge < Minitest::Test
     refute_includes(xml.xpath("//*[local-name()='text']").map(&:text), '-0.0', xml)
   end
 
+  def test_counts_an_award_made_exactly_at_today
+    xml = badge_svg('<fb><f><award>9</award><when>2024-01-01T00:00:00</when></f></fb>')
+    texts = xml.xpath("//*[local-name()='text']").map(&:text)
+    refute_includes(texts, '+0.0', xml)
+    assert_includes(texts, '+9.0', xml)
+  end
+
+  def test_skips_an_award_made_after_today
+    xml = badge_svg(
+      '<fb><f><award>9</award><when>2024-01-01T00:00:01</when></f>' \
+      '<f><award>3</award><when>2023-12-31T00:00:00Z</when></f></fb>'
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+3.0', xml)
+  end
+
+  def test_rounds_an_average_that_is_not_a_multiple_of_five_hundredths
+    awards = [1, 0, 0, 0, 0, 0, 0]
+    xml = badge_svg(
+      "<fb>#{awards.map { |a| "<f><award>#{a}</award><when>2023-12-01T00:00:00Z</when></f>" }.join}</fb>"
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+0.1', xml)
+  end
+
+  def test_rounds_an_average_of_two_thirds
+    awards = [1, 1, 0]
+    xml = badge_svg(
+      "<fb>#{awards.map { |a| "<f><award>#{a}</award><when>2023-12-01T00:00:00Z</when></f>" }.join}</fb>"
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+0.7', xml)
+  end
+
   private
 
   def badge_svg(xml, *params)
