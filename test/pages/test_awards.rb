@@ -636,4 +636,38 @@ class TestAwards < Minitest::Test
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
+
+  def test_shows_four_weeks_when_no_window_is_set
+    xml = window(
+      '<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>12</award>' \
+      '<when>2026-10-28T00:00:00Z</when></f>'
+    )
+    assert_equal(%w[w41 w42 w43 w44], weeks(xml), xml)
+  end
+
+  def test_rounds_a_window_of_thirty_days_up_to_five_weeks
+    xml = window(
+      '<f><what>pmp</what><area>hr</area><days_of_running_balance>30</days_of_running_balance></f>' \
+      '<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>24</award>' \
+      '<when>2026-10-02T00:00:00Z</when></f>' \
+      '<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>12</award>' \
+      '<when>2026-10-28T00:00:00Z</when></f>'
+    )
+    assert_equal(%w[w40 w41 w42 w43 w44], weeks(xml), xml)
+    assert_equal('+24', xml.xpath('//tbody/tr[not(@class)][1]/td[3]').text.strip, xml)
+  end
+
+  private
+
+  def window(facts)
+    xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      "<fb>#{facts}</fb>",
+      'today' => '2026-10-29T12:00:00Z'
+    )
+  end
+
+  def weeks(xml)
+    xml.xpath("//thead/tr[2]/th[starts-with(normalize-space(.), 'w')]").map { |th| th.text.strip }
+  end
 end
