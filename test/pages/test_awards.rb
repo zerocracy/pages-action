@@ -636,4 +636,43 @@ class TestAwards < Minitest::Test
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
+
+  def test_puts_award_of_programmer_into_its_own_week
+    rows = award_rows
+    assert_equal(['', '', '', '+7'], week_cells(rows, 'bob', 'fix'), 'the award of bob is in a wrong week')
+    assert_equal(['', '', '', '+5'], week_cells(rows, 'alice', 'fix'), 'the award of alice is in a wrong week')
+  end
+
+  def test_puts_payouts_of_programmer_into_their_own_week
+    rows = award_rows
+    assert_equal(['', '', '', '1020'], week_cells(rows, 'alice', 'Payouts:'), 'the payouts of alice moved')
+    assert_empty(rows.xpath('//tr[contains(@class, "p_bob")][td[2]="Payouts:"]'), 'bob got the payouts of alice')
+  end
+
+  def test_separates_two_payouts_of_one_week_by_one_break
+    cell = award_rows.xpath('//tr[contains(@class, "p_alice")][td[2]="Payouts:"]/td[6]').first
+    assert_equal(%w[span br span], cell.xpath('*').map(&:name), 'the payouts are not separated by exactly one break')
+  end
+
+  private
+
+  def award_rows
+    xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>5</award>' \
+      '<when>2024-09-24T10:00:00Z</when><why>fix</why></f>' \
+      '<f><is_human>1</is_human><who>2</who><who_name>bob</who_name><award>7</award>' \
+      '<when>2024-09-25T10:00:00Z</when><why>fix</why></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>alice</who_name><when>2024-09-24T12:00:00Z</when>' \
+      '<since>2024-09-01T00:00:00Z</since><awarded>50</awarded><payout>10</payout><balance>40</balance></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>alice</who_name><when>2024-09-25T12:00:00Z</when>' \
+      '<since>2024-09-24T12:00:00Z</since><awarded>40</awarded><payout>20</payout><balance>20</balance></f></fb>',
+      'today' => '2024-09-26T00:00:00Z'
+    )
+  end
+
+  def week_cells(xml, name, reason)
+    xml.xpath("//tr[contains(@class, 'p_#{name}')][td[2]='#{reason}']/td[position() > 2 and position() < 7]")
+      .map { |td| td.text.gsub(/\s+/, '') }
+  end
 end
