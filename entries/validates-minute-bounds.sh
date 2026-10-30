@@ -119,6 +119,48 @@ if [ -e "${tmp}/too-close/update.args" ]; then
     exit 1
 fi
 
+if run_case barely-close 20 21; then
+    echo "ERROR: script should reject a lifetime that is less than 10 percent above the timeout"
+    exit 1
+fi
+if ! grep -Fxq "INPUT_TIMEOUT (1200 seconds) must be at least 10 percent smaller than INPUT_LIFETIME (1260 seconds)" "${tmp}/barely-close/log.txt"; then
+    echo "ERROR: expected an error about timeout and lifetime for 20 and 21 minutes"
+    cat "${tmp}/barely-close/log.txt"
+    exit 1
+fi
+if [ -e "${tmp}/barely-close/update.args" ]; then
+    echo "ERROR: judges update ran with a lifetime only 5 percent above the timeout"
+    exit 1
+fi
+
+if run_case long-but-close 30 32; then
+    echo "ERROR: script should reject 30 and 32 minutes, two minutes is less than 10 percent of 30"
+    exit 1
+fi
+if ! grep -Fxq "INPUT_TIMEOUT (1800 seconds) must be at least 10 percent smaller than INPUT_LIFETIME (1920 seconds)" "${tmp}/long-but-close/log.txt"; then
+    echo "ERROR: expected an error about timeout and lifetime for 30 and 32 minutes"
+    cat "${tmp}/long-but-close/log.txt"
+    exit 1
+fi
+
+if run_case exactly-apart 10 11; then
+    exit_code=0
+else
+    exit_code=$?
+fi
+if [ "${exit_code:-0}" -ne 77 ]; then
+    echo "ERROR: expected judges update sentinel exit 77 for a lifetime exactly 10 percent above the timeout, got ${exit_code:-0}"
+    cat "${tmp}/exactly-apart/log.txt"
+    exit 1
+fi
+args="${tmp}/exactly-apart/update.args"
+timeout_seconds=$(awk '$0 == "--timeout" { getline; print; exit }' "${args}")
+lifetime_seconds=$(awk '$0 == "--lifetime" { getline; print; exit }' "${args}")
+if [ "${timeout_seconds}" != 600 ] || [ "${lifetime_seconds}" != 660 ]; then
+    echo "ERROR: 10 and 11 minutes were not forwarded as expected: timeout=${timeout_seconds}, lifetime=${lifetime_seconds}"
+    exit 1
+fi
+
 if run_case defaults '' ''; then
     exit_code=0
 else
