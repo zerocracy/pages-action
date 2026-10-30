@@ -636,4 +636,43 @@ class TestAwards < Minitest::Test
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
+
+  def test_names_every_week_header_across_new_year
+    ths = award_week_headers('2024-12-30T00:00:00Z', '2025-01-10T00:00:00Z')
+    assert_equal(%w[w51 w52 w1 w2], ths.map { |th| th.text.strip }, 'the week numbers are wrong')
+    assert_equal(
+      [
+        'Week #51 in 2024, starting on Monday 2024-12-16',
+        'Week #52 in 2024, starting on Monday 2024-12-23',
+        'Week #1 in 2025, starting on Monday 2024-12-30',
+        'Week #2 in 2025, starting on Monday 2025-01-06'
+      ],
+      ths.map { |th| th['title'] },
+      'the week titles are wrong'
+    )
+  end
+
+  def test_names_two_digit_weeks_in_autumn
+    ths = award_week_headers('2024-10-21T00:00:00Z', '2024-10-25T00:00:00Z')
+    assert_equal(%w[w40 w41 w42 w43], ths.map { |th| th.text.strip }, 'two digit weeks lost a digit')
+    assert_equal('Week #43 in 2024, starting on Monday 2024-10-21', ths.last['title'], 'the last title is wrong')
+  end
+
+  def test_names_week_fifty_three
+    ths = award_week_headers('2026-12-31T00:00:00Z', '2027-01-08T00:00:00Z')
+    assert_equal(%w[w51 w52 w53 w1], ths.map { |th| th.text.strip }, 'the week 53 is not shown')
+    assert_equal('Week #53 in 2026, starting on Monday 2026-12-28', ths[2]['title'], 'the title of week 53 is wrong')
+  end
+
+  private
+
+  def award_week_headers(award, today)
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><what>pmp</what><area>hr</area><days_of_running_balance>28</days_of_running_balance></f>' \
+      "<f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award><when>#{award}</when></f></fb>",
+      'today' => today
+    )
+    xml.xpath('//thead/tr/th[position() > 2 and position() < last()]')
+  end
 end
