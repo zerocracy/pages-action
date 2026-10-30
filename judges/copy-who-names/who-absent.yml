@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  - what: something
+    who: 42
+  - what: who-has-name
+    name: orphan
+  - what: who-has-name
+    who: 42
+    name: jeff
+expected:
+  - /fb/f[what='something' and who=42 and who_name='jeff']
+  - /fb[not(f[who_name='orphan'])]
