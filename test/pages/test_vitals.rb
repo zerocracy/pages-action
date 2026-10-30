@@ -307,6 +307,22 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_rounds_the_total_points_in_the_description_half_away_from_zero
+    { '0.5' => '1', '-0.4' => '0', '2.5' => '3' }.each do |award, total|
+      xml = xslt(
+        '<xsl:apply-imports/>',
+        "<fb><f><when>2024-09-01T00:00:00Z</when><award>#{award}</award><who>1</who><is_human>1</is_human></f></fb>",
+        'today' => '2024-09-26T04:04:04Z', 'name' => 'test', 'logo' => 'x', 'url' => 'https://example.com',
+        'version' => '0.0.1', 'latest-version' => '0.0.1', 'fbe' => '0.0.50', 'adless' => 'false',
+        'css-links' => '', 'js-links' => '', 'css' => '', 'js' => ''
+      )
+      assert_includes(
+        xml.xpath('//meta[@name="description"]/@content').to_s, ", #{total} total points earned,",
+        "The total of #{award} must be shown as #{total}"
+      )
+    end
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', size: 0)
