@@ -53,4 +53,20 @@ class TestEvaSummary < Minitest::Test
     )
     assert_equal('AC: 4, EV: 3, PV: 6, CPI: 0.75, SPI: 0.50.', xml.xpath('/r').text.strip, xml)
   end
+
+  def test_template_rounds_amounts_with_a_half_away_from_zero
+    xml = xslt(
+      '<r><xsl:apply-templates select="/fb/f"/></r>',
+      '<fb><f><what>earned-value</what><ac>2.5</ac><ev>3.5</ev><pv>0.5</pv></f></fb>'
+    )
+    assert_equal('AC: 3, EV: 4, PV: 1, CPI: 1.40, SPI: 7.00.', xml.xpath('/r').text.strip, xml)
+  end
+
+  def test_template_rounds_indexes_with_a_half_away_from_zero
+    xml = xslt(
+      '<r><xsl:apply-templates select="/fb/f"/></r>',
+      '<fb><f><what>earned-value</what><ac>8</ac><ev>1</ev><pv>8</pv></f></fb>'
+    )
+    assert_equal('AC: 8, EV: 1, PV: 8, CPI: 0.13, SPI: 0.13.', xml.xpath('/r').text.strip, xml)
+  end
 end
