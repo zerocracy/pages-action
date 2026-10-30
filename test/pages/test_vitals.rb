@@ -297,6 +297,37 @@ class TestVitals < Minitest::Test
     end
   end
 
+  def test_shows_exactly_ten_million_bytes_in_kilobytes
+    html = generate_vitals_html(size: 10_000_000)
+    assert_includes(html, '10000kB</span>', 'the MB edge moved down to 10,000,000 bytes')
+    assert_includes(html, '<span title="10000000 bytes">', 'the exact size is not in the title')
+  end
+
+  def test_rounds_megabytes_just_below_a_half_down
+    html = generate_vitals_html(size: 10_499_999)
+    assert_includes(html, '10MB</span>', 'megabytes were not divided by a million')
+  end
+
+  def test_rounds_megabytes_at_a_half_up
+    html = generate_vitals_html(size: 10_500_000)
+    assert_includes(html, '11MB</span>', 'a half megabyte was not rounded up')
+  end
+
+  def test_rounds_kilobytes_at_a_half_up
+    html = generate_vitals_html(size: 12_500)
+    assert_includes(html, '13kB</span>', 'kilobytes were not divided by a thousand')
+  end
+
+  def test_shows_one_byte_below_ten_million_in_kilobytes
+    html = generate_vitals_html(size: 9_999_999)
+    assert_includes(html, '10000kB</span>', 'the size below the MB edge was not shown in kilobytes')
+  end
+
+  def test_shows_a_small_factbase_in_bytes
+    html = generate_vitals_html(size: 9_999)
+    assert_includes(html, '9999 bytes</span>', 'a small factbase was not shown in bytes')
+  end
+
   def test_says_there_is_no_dot_information_without_dimensions
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
