@@ -510,6 +510,31 @@ class TestAwards < Minitest::Test
     assert_equal(1, xml.xpath('//td[text()="first reason; second reason"]').size, xml)
   end
 
+  def test_gives_a_row_to_a_programmer_owed_only_the_old_balance
+    xml = owed(30)
+    row = xml.xpath("//tbody/tr[td[2][starts-with(normalize-space(.), '@dude (')]]")
+    assert_equal(1, row.size, xml)
+    assert_equal('@dude (0 awards)', row.first.xpath('td[2]').text.gsub(/\s+/, ' ').strip, xml)
+    assert_equal('30', row.first.xpath('td[last()]').text.strip, xml)
+  end
+
+  def test_gives_no_row_to_a_programmer_paid_in_full
+    xml = owed(0)
+    assert_empty(xml.xpath("//tbody/tr[td[2][starts-with(normalize-space(.), '@dude (')]]"), xml)
+    refute_empty(xml.xpath("//tbody/tr[td[2][starts-with(normalize-space(.), '@jeff (')]]"), xml)
+  end
+
+  def test_refuses_a_reconciliation_without_payout
+    assert_raises(RuntimeError) do
+      xslt(
+        "<r><xsl:copy-of select=\"z:payables('dude')\"/></r>",
+        '<fb><f><what>reconciliation</what><when>2024-07-01T00:00:00Z</when><since>2024-04-01T00:00:00Z</since>' \
+        '<who>7</who><who_name>dude</who_name><awarded>100</awarded><balance>30</balance></f></fb>',
+        'today' => '2024-07-05T00:00:00Z'
+      )
+    end
+  end
+
   def test_gives_a_row_to_a_programmer_owed_points_without_recent_awards
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='awards'/></r>",
@@ -635,5 +660,21 @@ class TestAwards < Minitest::Test
     )
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
+  end
+
+  private
+
+  def owed(balance)
+    xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><what>reconciliation</what><when>2024-05-20T00:00:00Z</when><since>2024-04-01T00:00:00Z</since>' \
+      '<who>7</who><who_name>dude</who_name><awarded>100</awarded><payout>70</payout>' \
+      "<balance>#{balance}</balance></f>" \
+      '<f><is_human>1</is_human><who>7</who><who_name>dude</who_name><award>100</award>' \
+      '<when>2024-05-01T00:00:00Z</when></f>' \
+      '<f><is_human>1</is_human><who>8</who><who_name>jeff</who_name><award>10</award>' \
+      '<when>2024-07-02T00:00:00Z</when></f></fb>',
+      'today' => '2024-07-05T00:00:00Z'
+    )
   end
 end
