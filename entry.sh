@@ -404,7 +404,6 @@ java -jar "${SELF}/target/saxon.jar" \
     "css=$(cat "${SELF}/target/css/main.css")" \
     "js=$(cat "${SELF}/${INPUT_JS_FILE:-target/js/main.js}")"
 html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${html}"
-echo "HTML generated at: ${html}"
 
 svg=${staging}/${name}-badge.svg
 java -jar "${SELF}/target/saxon.jar" \
@@ -413,7 +412,6 @@ java -jar "${SELF}/target/saxon.jar" \
     "-o:${svg}" \
     "today=${INPUT_TODAY}" \
     "adless=${INPUT_ADLESS}"
-echo "SVG badge generated at: ${svg}"
 
 rm "${staging}/${name}.rich.xml"
 
@@ -423,3 +421,5 @@ for file in "${staging}"/*; do
         mv -- "${file}" "${INPUT_OUTPUT}/"
     fi
 done
+echo "HTML generated at: ${INPUT_OUTPUT}/${name}-vitals.html"
+echo "SVG badge generated at: ${INPUT_OUTPUT}/${name}-badge.svg"
