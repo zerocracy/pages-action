@@ -17,9 +17,6 @@ release:
   pre: false
   script: |-
     [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
-    sed -i -e "s/:latest/:${tag}/" action.yml
-    git add action.yml
-    git commit -m "version set to ${tag}"
     sudo make -C "$(pwd)" "PAGES_ACTION_VERSION=${tag}" target/html/simple.html
     repo=yegor256/pages-action
     sudo docker build "$(pwd)" --build-arg "VERSION=${tag}" --tag "${repo}:${tag}"
@@ -27,3 +24,9 @@ release:
     cat ../docker-password | sudo docker login --password-stdin -u yegor256
     sudo docker push "${repo}:${tag}"
     sudo docker push "${repo}:latest"
+    digest=$(sudo docker inspect --format '{{index .RepoDigests 0}}' "${repo}:${tag}")
+    [[ "${digest}" =~ ^${repo}@sha256:[0-9a-f]{64}$ ]] || exit -1
+    sed -i -E "s|docker://${repo}@sha256:[0-9a-f]{64}|docker://${digest}|" action.yml
+    grep -q "docker://${digest}" action.yml
+    git add action.yml
+    git commit -m "version set to ${tag}"
