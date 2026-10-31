@@ -636,4 +636,37 @@ class TestAwards < Minitest::Test
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
+
+  def test_shows_one_balance_in_the_payouts_row
+    xml = xslt(
+      "<r><xsl:call-template name=\"programmer\">
+        <xsl:with-param name=\"id\" select=\"'1'\"/>
+        <xsl:with-param name=\"name\" select=\"'jeff'\"/>
+      </xsl:call-template></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-10-08T10:00:00Z</when>
+          <why>x</why>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <when>2024-10-14T10:00:00Z</when>
+          <since>2024-09-01T00:00:00Z</since>
+          <awarded>50</awarded>
+          <payout>777</payout>
+          <balance><v>5</v><v>7</v></balance>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_match(/equal to 5\z/, xml.xpath('//span[contains(@title, "accumulated 50 points")]/@title').to_s, xml)
+  end
 end
