@@ -187,7 +187,9 @@
         </xsl:if>
         <meta property="og:description" content="{$description}"/>
         <title>
+          <xsl:text>Vitals page of the "</xsl:text>
           <xsl:value-of select="$name"/>
+          <xsl:text>" project</xsl:text>
         </title>
         <xsl:if test="$logo != ''">
           <link rel="icon" href="{$logo}"/>
