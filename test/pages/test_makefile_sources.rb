@@ -17,7 +17,7 @@ class TestMakefileSources < Minitest::Test
       )
       %w[
         target/fb/sample.fb tests/sample.yml target/css/main.css target/js/test.js
-        target/saxon.jar sass/main.scss js/main.js tests/symbols.js
+        target/saxon.jar sass/main.scss js/main.js tests/symbols.js Gemfile Gemfile.lock
       ].each { |file| File.write(File.join(dir, file), '') }
       File.write("#{dir}/html-minifier-config.json", '{}')
       File.write("#{dir}/judges-probe", "#!/usr/bin/env bash\ntouch \"${@: -1}\"\n")
