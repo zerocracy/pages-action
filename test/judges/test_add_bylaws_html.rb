@@ -35,6 +35,16 @@ class TestAddBylawsHtml < Minitest::Test
     end
   end
 
+  def test_skips_a_formula_that_cannot_be_rendered
+    fb = Factbase.new
+    with_formula(fb)
+    fb.query('(eq what "pmp")').each.first.hr_newer = '(award (frobnicate 5) (give 7 "for something new"))'
+    load_it('add-bylaws-html', fb)
+    html = fb.query('(eq what "bylaws")').each.to_a.first.html
+    assert_includes(html, '<strong>10</strong>', html)
+    refute_includes(html, '<strong>7</strong>', html)
+  end
+
   private
 
   def bylaws(fb)
