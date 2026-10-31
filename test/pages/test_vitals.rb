@@ -307,6 +307,12 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_wraps_the_assessment_in_css
+    f = File.join(__dir__, '../../target/css/main.css')
+    skip("File not found:  #{f}") unless File.exist?(f)
+    assert_includes(File.read(f).gsub(/\s+/, ''), '.assessmentpre{white-space:pre-wrap}')
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', size: 0)
