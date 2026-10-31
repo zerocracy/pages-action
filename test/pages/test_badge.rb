@@ -71,6 +71,18 @@ class TestBadge < Minitest::Test
     refute_includes(xml.xpath("//*[local-name()='text']").map(&:text), '-0.0', xml)
   end
 
+  def test_ignores_an_award_after_today
+    xml = badge_svg(
+      "
+      <fb>
+        <f><award>4</award><when>2023-12-01T00:00:00Z</when></f>
+        <f><award>100</award><when>2024-02-01T00:00:00Z</when></f>
+      </fb>
+      "
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+4.0', xml)
+  end
+
   private
 
   def badge_svg(xml, *params)
