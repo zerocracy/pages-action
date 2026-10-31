@@ -351,10 +351,6 @@ declare -a css_hashes=(
     "QF+7u3GMRHdbU5nzxyNvTNkV0xQtQXEbAraWZcussxwNUsY3zrmDeAKc8jZ5jfTb"
     "p1uPBv+9Vp2mQmUJHUrsDnDVbg88Upi66Gf8uTcVy0I2ZIHbSUIEj3q+S6D7B1Lz"
 )
-if [ "${INPUT_ADLESS}" != 'true' ]; then
-    css_urls+=("https://www.zerocracy.com/css/palette.css")
-    css_hashes+=("qHLQECQpsl5ded8ztb55ayHqxsGIT9cLHxPH1jOszgf/0HsckECmdIgvAp/PgwZ0")
-fi
 css_links=""
 for i in "${!css_urls[@]}"; do
     css="${css_urls[$i]}"
