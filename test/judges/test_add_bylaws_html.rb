@@ -7,14 +7,14 @@ require 'factbase'
 require_relative '../test__helper'
 
 class TestAddBylawsHtml < Minitest::Test
-  def test_keeps_the_bylaws_when_there_is_nothing_to_build
+  def test_refreshes_the_bylaws_after_award_policy_changes
     fb = Factbase.new
     with_formula(fb)
     load_it('add-bylaws-html', fb)
     assert_equal(1, bylaws(fb), fb.to_json)
     without_formula(fb)
     load_it('add-bylaws-html', fb)
-    assert_equal(1, bylaws(fb), fb.to_json)
+    assert_equal(0, bylaws(fb), fb.to_json)
     with_formula(fb)
     load_it('add-bylaws-html', fb)
     assert_equal(1, bylaws(fb), fb.to_json)
