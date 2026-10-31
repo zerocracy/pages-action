@@ -39,4 +39,40 @@ class TestCopyRepoNames < Minitest::Test
     assert_equal('second', details.first.description, fb.to_json)
     assert_equal(9, details.first.stars, fb.to_json)
   end
+
+  def test_keeps_stored_details_when_github_fails
+    [Fbe::OffQuota.new('off-quota'), Faraday::ConnectionFailed.new('no network')].each do |error|
+      fb = Factbase.new
+      (1..2).each do |id|
+        award = fb.insert
+        award.what = 'award'
+        award.repository = id
+      end
+      old = fb.insert
+      old.what = 'repo-details'
+      old.repository = 2
+      old.stars = 7
+      client = Object.new
+      client.define_singleton_method(:repository) do |id|
+        raise(error) if id == 2
+        {
+          full_name: 'yegor256/one', description: 'one', stargazers_count: 1,
+          forks_count: 1, language: 'Ruby', open_issues_count: 1, updated_at: '2024-01-01T00:00:00Z'
+        }
+      end
+      orig = Fbe.method(:octo)
+      Fbe.define_singleton_method(:octo) { client }
+      begin
+        load_it('copy-repo-names', fb)
+      ensure
+        Fbe.define_singleton_method(:octo, orig)
+      end
+      assert_equal(
+        ['yegor256/one'],
+        fb.query('(and (eq what "repo-details") (eq repository 1))').each.map(&:repository_name),
+        error
+      )
+      assert_equal([7], fb.query('(and (eq what "repo-details") (eq repository 2))').each.map(&:stars), error)
+    end
+  end
 end
