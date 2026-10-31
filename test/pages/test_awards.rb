@@ -636,4 +636,18 @@ class TestAwards < Minitest::Test
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
+
+  def test_says_one_awarding_fact_without_a_plural
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award>' \
+      '<when>2024-06-01T00:00:00Z</when></f></fb>',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    assert_equal(
+      'There is 1 awarding fact in the XML, while 1 of them counts',
+      xml.xpath('//tfoot//span/@title').to_s,
+      xml
+    )
+  end
 end
