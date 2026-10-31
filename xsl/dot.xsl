@@ -60,8 +60,8 @@
           <xsl:sort select="." data-type="text"/>
           <xsl:variable name="n" select="."/>
           <tr>
-            <td class="ff">
-              <xsl:value-of select="$n"/>
+            <td title="{$n}">
+              <xsl:value-of select="z:snake-case-to-title($n)"/>
             </td>
             <xsl:for-each select="1 to $weeks">
               <xsl:variable name="week" select="xs:integer(.)"/>
