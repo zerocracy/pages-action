@@ -63,6 +63,16 @@ class TestBadge < Minitest::Test
     assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+12.3', xml)
   end
 
+  def test_shows_minus_for_a_negative_average
+    xml = badge_svg('<fb><f><award>-5</award><when>2023-12-01T00:00:00Z</when></f></fb>')
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '-5.0', xml)
+  end
+
+  def test_caps_a_big_negative_average
+    xml = badge_svg('<fb><f><award>-1500</award><when>2023-12-01T00:00:00Z</when></f></fb>')
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '-999.0', xml)
+  end
+
   def test_shows_no_minus_for_an_average_rounded_to_zero
     awards = Array.new(96) { 8 } + Array.new(97) { -8 }
     xml = badge_svg(
