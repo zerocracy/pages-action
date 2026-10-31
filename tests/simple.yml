@@ -11,9 +11,10 @@
     //span[.="129"]
     //div[@class="assessment"]/h2[.="Assessment"]
     //div[@class="assessment"]/pre
-    //div[@class="assessment"]/pre[contains(., "Last assessed 2024-09-15")]
+    //div[@class="assessment"]/pre[contains(., "Last assessed 2024-07-04")]
+    //div[@class="assessment"]/pre[not(contains(., "after today"))]
     //div[@class="assessment"]/pre/time[@class="relative-time"]
-    //div[@class="assessment"]/pre/time[contains(@title, "2024-09-15")]
+    //div[@class="assessment"]/pre/time[contains(@title, "2024-07-04")]
     //div[@class="assessment"]/p[@class="darkred"]
     //div[@class="assessment"]/p[.="3 assessments on factbase were found"]
     //div[@class="repositories"]/h2[starts-with(., "Repositories where")]
@@ -215,9 +216,15 @@
   name: yegor256
   where: github
 -
-  _id: 24
+  _id: 28
   what: assessment
   when: 2024-09-15T10:00:00.000Z
+  text: |
+    This assessment is written after today, so it is not shown.
+-
+  _id: 24
+  what: assessment
+  when: 2024-07-04T10:00:00.000Z
   text: |
     The project shows steady progress with consistent contributions.
     Code quality metrics are within acceptable ranges.

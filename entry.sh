@@ -282,6 +282,7 @@ else
     fi
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
+options+=("--option=today=${INPUT_TODAY}")
 
 judges "${gopts[@]}" update \
     --shuffle= \
