@@ -330,7 +330,9 @@ url=${INPUT_URL}
 while [[ "${url}" == */ ]]; do
     url="${url%/}"
 done
-if [ -z "${url}" ]; then
+if [ -z "${url}" ] && { [ -z "${GITHUB_REPOSITORY_OWNER}" ] || [ -z "${GITHUB_REPOSITORY}" ]; }; then
+    echo "The 'url' parameter is empty and GITHUB_REPOSITORY is not known, the page will have no absolute links"
+elif [ -z "${url}" ]; then
     url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
     repo=${GITHUB_REPOSITORY#*/}
     owner=${GITHUB_REPOSITORY_OWNER}
