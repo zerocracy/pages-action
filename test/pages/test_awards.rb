@@ -636,4 +636,24 @@ class TestAwards < Minitest::Test
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
+
+  def test_puts_this_week_over_the_last_week_column
+    award = '<f><is_human>1</is_human><who>7</who><who_name>dude</who_name><award>40</award>' \
+            '<when>2024-07-02T00:00:00Z</when></f>'
+    rec = '<f><what>reconciliation</what><when>2024-07-03T00:00:00Z</when><since>2024-06-01T00:00:00Z</since>' \
+          '<who>7</who><who_name>dude</who_name><awarded>100</awarded><payout>70</payout><balance>30</balance></f>'
+    { award => 7, award + rec => 8 }.each do |facts, columns|
+      xml = xslt(
+        "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+        "<fb>#{facts}</fb>",
+        'today' => '2024-07-05T00:00:00Z'
+      )
+      assert_equal(columns, xml.xpath('//table[@id="awards"]/colgroup/col').size, xml)
+      spans = xml.xpath('//table[@id="awards"]/thead/tr[1]/td').map { |td| (td['colspan'] || '1').to_i }
+      assert_equal(columns, spans.sum, xml)
+      head = xml.xpath('//table[@id="awards"]/thead/tr[1]/td[contains(., "This week")]/preceding-sibling::td')
+      weeks = xml.xpath('//table[@id="awards"]/thead/tr[2]/th[normalize-space()="Run"]/preceding-sibling::th')
+      assert_equal(weeks.size - 1, head.sum { |td| (td['colspan'] || '1').to_i }, xml)
+    end
+  end
 end
