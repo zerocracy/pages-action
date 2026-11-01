@@ -239,6 +239,51 @@ class TestVitals < Minitest::Test
     assert_equal('sha384-abc123', link['integrity'])
   end
 
+  def test_js_links_keep_only_lines_with_a_hash
+    xml = xslt(
+      <<~XSL,
+        <r>
+          <xsl:call-template name="js-links">
+            <xsl:with-param name="links"
+              select="'https://cdn.example.com/a.js|abc&#10;https://cdn.example.com/b.js&#10;&#10;https://cdn.example.com/c.js|'"/>
+          </xsl:call-template>
+        </r>
+      XSL
+      '<fb/>'
+    )
+    scripts = xml.xpath('/r/script')
+    assert_equal(1, scripts.size, xml)
+    assert_equal('https://cdn.example.com/a.js', scripts.first['src'], xml)
+    assert_equal('sha384-abc', scripts.first['integrity'], xml)
+  end
+
+  def test_css_links_skip_a_line_without_a_hash
+    xml = xslt(
+      <<~XSL,
+        <r>
+          <xsl:call-template name="css-links">
+            <xsl:with-param name="links" select="'https://cdn.example.com/app.css'"/>
+          </xsl:call-template>
+        </r>
+      XSL
+      '<fb/>'
+    )
+    assert_empty(xml.xpath('/r/link'), xml)
+  end
+
+  def test_page_loads_the_scripts_given_in_js_links
+    xml = xslt(
+      '<xsl:apply-imports/>',
+      '<fb/>',
+      'today' => '2024-09-26T04:04:04Z', 'css' => '', 'js' => '', 'name' => 'test', 'logo' => 'x',
+      'url' => 'https://example.com', 'version' => '0.0.1', 'latest-version' => '0.0.1', 'fbe' => '0.0.50',
+      'adless' => 'false', 'css-links' => '', 'js-links' => 'https://cdn.example.com/jquery.js|xyz'
+    )
+    assert_equal(
+      1, xml.xpath("//head/script[@src='https://cdn.example.com/jquery.js' and @integrity='sha384-xyz']").size, xml
+    )
+  end
+
   def test_adless_page_does_not_name_zerocracy_in_its_description
     html = generate_vitals_html(adless: 'true')
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
