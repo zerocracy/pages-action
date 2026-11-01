@@ -164,6 +164,23 @@ class TestVitals < Minitest::Test
     assert_equal('28', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_fn_pmp_skips_a_fact_of_another_area
+    xml = xslt(
+      '<r><xsl:value-of select="z:pmp(\'hr\', \'days_of_running_balance\', \'28\')"/></r>',
+      '<fb><f><what>pmp</what><area>quality</area><days_of_running_balance>7</days_of_running_balance></f>' \
+      '<f><what>pmp</what><area>hr</area><days_of_running_balance>28</days_of_running_balance></f></fb>'
+    )
+    assert_equal('28', xml.xpath('/r/text()').to_s, xml)
+  end
+
+  def test_fn_pmp_falls_back_to_the_default_for_an_empty_value
+    xml = xslt(
+      '<r><xsl:value-of select="z:pmp(\'hr\', \'days_of_running_balance\', \'28\')"/></r>',
+      '<fb><f><what>pmp</what><area>hr</area><days_of_running_balance></days_of_running_balance></f></fb>'
+    )
+    assert_equal('28', xml.xpath('/r/text()').to_s, xml)
+  end
+
   def test_fn_pmp_reads_a_later_fact_with_the_property
     xml = xslt(
       '<r><xsl:value-of select="z:pmp(\'hr\', \'days_of_running_balance\', \'28\')"/></r>',
