@@ -65,7 +65,7 @@ case "${INPUT_URL}" in
         exit 1
         ;;
 esac
-if [ -n "${INPUT_URL}" ] && ! [[ "${INPUT_URL}" =~ ^https?://[^/:@[:space:]][^[:space:]]*$ ]]; then
+if [ -n "${INPUT_URL}" ] && ! [[ "${INPUT_URL}" =~ ^[hH][tT][tT][pP][sS]?://[^/:@[:space:]][^[:space:]]*$ ]]; then
     echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2
     exit 1
 fi
