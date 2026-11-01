@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 .ONESHELL:
-.PHONY: clean all assets install rake stylelint test entries entry rmi verify
+.PHONY: clean all assets install rake stylelint test entries entry rmi verify FORCE
 .SILENT:
 .SECONDARY:
 .DELETE_ON_ERROR:
@@ -118,10 +118,15 @@ rmi: target/docker-image.txt
 verify:
 	./makes/verify.sh
 
-target/docker-image.txt: Makefile Dockerfile entry.sh $(SOURCES) $(wildcard xsl/*.xsl js/*.js sass/*.scss makes/*.sh) Gemfile Gemfile.lock html-minifier-config.json
+target/docker-image.txt: target/version.txt Makefile Dockerfile entry.sh $(SOURCES) $(wildcard xsl/*.xsl js/*.js sass/*.scss makes/*.sh) Gemfile Gemfile.lock html-minifier-config.json
 	mkdir -p "$$(dirname $@)"
 	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action "$$(pwd)"
 	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action -q "$$(pwd)" > "$@"
+
+target/version.txt: FORCE | target
+	echo "$(PAGES_ACTION_VERSION)" | cmp -s - "$@" || echo "$(PAGES_ACTION_VERSION)" > "$@"
+
+FORCE:
 
 $(DIRS):
 	mkdir -p "$@"
