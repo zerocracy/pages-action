@@ -202,17 +202,6 @@ if [ $((lifetime - timeout)) -lt $((timeout / 10)) ]; then
     exit 1
 fi
 
-for f in yaml xml json html; do
-    judges "${gopts[@]}" print \
-        --format "${f}" \
-        --columns "${INPUT_COLUMNS}" \
-        --highlighted "${INPUT_HIGHLIGHTED}"\
-        --hidden "${INPUT_HIDDEN}" \
-        --title "${name}" \
-        "${INPUT_FACTBASE}" \
-        "${staging}/${name}.${f}"
-done
-
 declare -a options=()
 if [ "${INPUT_VERBOSE}" == 'true' ]; then
     set +x
@@ -292,6 +281,18 @@ judges "${gopts[@]}" update \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
+# Produce downloadable formats from the factbase after this cycle's judges
+# have refreshed its derived facts.
+for f in yaml xml json html; do
+    judges "${gopts[@]}" print \
+        --format "${f}" \
+        --columns "${INPUT_COLUMNS}" \
+        --highlighted "${INPUT_HIGHLIGHTED}"\
+        --hidden "${INPUT_HIDDEN}" \
+        --title "${name}" \
+        "${INPUT_FACTBASE}" \
+        "${staging}/${name}.${f}"
+done
 # @todo #799:30min Hide the properties named in "hidden" from the dumps too.
 #  The "hidden" option only reaches the HTML stylesheet of "judges print", so a
 #  property named there still stands in the XML, the JSON and the YAML, and the
