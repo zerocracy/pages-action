@@ -7,7 +7,8 @@
   <xsl:function name="z:num" as="xs:double?">
     <xsl:param name="property" as="element()*"/>
     <xsl:variable name="value" select="($property/v, $property[not(v)])[1]"/>
-    <xsl:sequence select="if (empty($value) or not(string($value) castable as xs:double)) then () else xs:double($value)"/>
+    <xsl:variable name="number" select="if (empty($value) or not(string($value) castable as xs:double)) then () else xs:double($value)"/>
+    <xsl:sequence select="$number[. = . and abs(.) != xs:double('INF')]"/>
   </xsl:function>
   <xsl:template match="f[what='earned-value']" priority="2">
     <xsl:variable name="ac" select="z:num(ac)"/>
