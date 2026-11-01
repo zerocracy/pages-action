@@ -37,6 +37,38 @@ class TestOutdated < Minitest::Test
     assert_equal('just now', relative('2026-10-04T12:00:30Z', '2026-10-04T12:00:00Z'))
   end
 
+  def test_counts_minutes_within_the_first_hour
+    assert_equal('one minute ago', relative('2026-10-04T12:00:00Z', '2026-10-04T12:01:00Z'))
+    assert_equal('5 minutes ago', relative('2026-10-04T12:00:00Z', '2026-10-04T12:05:00Z'))
+    assert_equal('59 minutes ago', relative('2026-10-04T12:00:00Z', '2026-10-04T12:59:00Z'))
+  end
+
+  def test_shows_a_moment_minutes_ahead_in_minutes
+    assert_equal('in 5 minutes', relative('2026-10-04T12:05:00Z', '2026-10-04T12:00:00Z'))
+    assert_equal(
+      'in 59 minutes', relative('2026-10-04T12:59:00Z', '2026-10-04T12:00:00Z'),
+      'a moment just under an hour ahead must read in minutes'
+    )
+  end
+
+  def test_shows_one_minute_ahead_as_a_single_minute
+    assert_equal(
+      'in one minute', relative('2026-10-04T12:01:00Z', '2026-10-04T12:00:00Z'),
+      'a moment one minute ahead must not read as just now'
+    )
+  end
+
+  def test_switches_from_minutes_to_hours_at_sixty_minutes
+    assert_equal(
+      'one hour ago', relative('2026-10-04T12:00:00Z', '2026-10-04T13:00:00Z'),
+      'sixty minutes must read as one hour'
+    )
+    assert_equal(
+      '59 minutes ago', relative('2026-10-04T12:00:00Z', '2026-10-04T12:59:59Z'),
+      'a moment just under an hour must still read in minutes'
+    )
+  end
+
   def test_tells_the_age_of_an_outdated_page_in_relative_time
     script = [
       "let message = ''; global.$ = (s) => (s === 'footer' ? { prepend: (m) => { message = m; } } : " \
