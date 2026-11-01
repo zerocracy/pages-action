@@ -88,7 +88,7 @@ $(JS): js/*.js Makefile | target/js
 $(JS_TEST): $(JS) tests/symbols.js | target/js
 	cat $^ > "$@"
 
-entries: assets
+entries: assets $(SAXON)
 	./makes/entries.sh
 
 clean:
