@@ -46,6 +46,21 @@ class TestQoSection < Minitest::Test
     assert_equal(15, hues.uniq.size, xml)
   end
 
+  def test_skips_facts_older_than_the_window
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-03-29T04:04:04Z</when><what>quality-of-service</what><n_old>0.1</n_old></f>' \
+      '<f><when>2024-04-01T04:04:04Z</when><what>quality-of-service</what><n_composite>0.5</n_composite></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    script = xml.xpath('//script').map(&:content).join
+    assert_includes(script, "labels:['4/1']", xml)
+    refute_includes(script, "label:'Old'", xml)
+  end
+
   def test_snake_case_to_title
     xml = xslt(
       '<r><xsl:value-of select="z:snake-case-to-title(\'average_issue_lifetime\')"/></r>',
