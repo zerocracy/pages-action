@@ -5,6 +5,7 @@
 
 require 'nokogiri'
 require 'online'
+require 'open3'
 require 'w3c_validators'
 require 'webmock/minitest'
 require_relative '../test__helper'
@@ -307,9 +308,24 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_renders_scripts_that_parse_with_the_xml_symbols_intact
+    js = File.read(File.join(__dir__, '../../tests/symbols.js'))
+    html = generate_vitals_html(js:)
+    scripts = Nokogiri::HTML.parse(html).xpath('//script[not(@src)]').map(&:text)
+    assert_includes(scripts.join, 'var a = 1 < 2 && 3 > 2 && (1 & 1);', html)
+    Dir.mktmpdir do |dir|
+      scripts.each_with_index do |script, idx|
+        file = File.join(dir, "script-#{idx}.js")
+        File.write(file, script)
+        out, status = Open3.capture2e('node', '--check', file)
+        assert_predicate(status, :success?, "#{out}\n#{script}")
+      end
+    end
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false', size: 0)
+  def generate_vitals_html(adless: 'false', size: 0, js: '')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -360,8 +376,7 @@ class TestVitals < Minitest::Test
           css-links=
           js-links=
           css=body{}
-          js=
-        ].push("adless=#{adless}").map { |p| Shellwords.escape(p) },
+        ].push("js=#{js}", "adless=#{adless}").map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
       File.read(output)
