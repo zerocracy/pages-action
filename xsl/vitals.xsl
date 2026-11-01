@@ -18,6 +18,7 @@
   <xsl:param name="version" as="xs:string"/>
   <xsl:param name="latest-version" as="xs:string"/>
   <xsl:param name="fbe" as="xs:string"/>
+  <xsl:param name="factbase-bytes" as="xs:integer?" select="()"/>
   <xsl:param name="adless" as="xs:string"/>
   <xsl:variable name="ads" as="xs:boolean" select="$adless != 'true'"/>
   <xsl:param name="css-links" as="xs:string"/>
@@ -314,23 +315,25 @@
               <xsl:if test="count(fb/f) != 1">
                 <xsl:text>s</xsl:text>
               </xsl:if>
-              <xsl:text>, </xsl:text>
-              <span title="{fb/@size} bytes">
-                <xsl:choose>
-                  <xsl:when test="fb/@size &gt; 10000000">
-                    <xsl:value-of select="xs:integer(round(fb/@size div 1000000))"/>
-                    <xsl:text>MB</xsl:text>
-                  </xsl:when>
-                  <xsl:when test="fb/@size &gt; 10000">
-                    <xsl:value-of select="xs:integer(round(fb/@size div 1000))"/>
-                    <xsl:text>kB</xsl:text>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="fb/@size"/>
-                    <xsl:text> bytes</xsl:text>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </span>
+              <xsl:if test="exists($factbase-bytes)">
+                <xsl:text>, </xsl:text>
+                <span title="{$factbase-bytes} bytes">
+                  <xsl:choose>
+                    <xsl:when test="$factbase-bytes &gt; 10000000">
+                      <xsl:value-of select="xs:integer(round($factbase-bytes div 1000000))"/>
+                      <xsl:text>MB</xsl:text>
+                    </xsl:when>
+                    <xsl:when test="$factbase-bytes &gt; 10000">
+                      <xsl:value-of select="xs:integer(round($factbase-bytes div 1000))"/>
+                      <xsl:text>kB</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="$factbase-bytes"/>
+                      <xsl:text> bytes</xsl:text>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </span>
+              </xsl:if>
               <xsl:text>, version </xsl:text>
               <xsl:value-of select="fb/@version"/>
               <xsl:text>; </xsl:text>
@@ -356,7 +359,7 @@
               <a href="{$name}.html">
                 <xsl:text>here</xsl:text>
               </a>
-              <xsl:if test="fb/@size &gt; 1000000">
+              <xsl:if test="$factbase-bytes &gt; 1000000">
                 <xsl:text> (they're big)</xsl:text>
               </xsl:if>
               <xsl:text>.</xsl:text>

@@ -293,8 +293,22 @@ class TestVitals < Minitest::Test
     {
       10_000_001 => '10MB', 25_600_000 => '26MB', 10_001 => '10kB', 12_499 => '12kB', 10_000 => '10000 bytes'
     }.each do |size, text|
-      assert_includes(generate_vitals_html(size:), "#{text}</span>", "#{size} bytes must be shown as #{text}")
+      html = generate_vitals_html(bytes: size)
+      assert_includes(html, "#{text}</span>", "#{size} bytes must be shown as #{text}")
+      assert_includes(html, "title=\"#{size} bytes\"", 'The tooltip must use the supplied byte size')
     end
+  end
+
+  def test_does_not_interpret_the_xml_fact_count_as_bytes_without_a_size_parameter
+    html = generate_vitals_html
+    assert_includes(html, '3 facts, version')
+    refute_match(/title="\d+ bytes"/, html)
+    refute_includes(html, "(they're big)")
+  end
+
+  def test_uses_the_byte_size_for_the_large_file_note
+    refute_includes(generate_vitals_html(bytes: 1_000_000), "(they're big)")
+    assert_includes(generate_vitals_html(bytes: 1_000_001), "(they're big)")
   end
 
   def test_says_there_is_no_dot_information_without_dimensions
@@ -309,14 +323,14 @@ class TestVitals < Minitest::Test
 
   private
 
-  def generate_vitals_html(adless: 'false', size: 0)
+  def generate_vitals_html(adless: 'false', bytes: nil)
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
       input = File.join(dir, 'input.xml')
       File.write(input, <<~XML)
         <?xml version="1.0" encoding="UTF-8"?>
-        <fb size="#{size}">
+        <fb size="3">
           <f>
             <when>2024-07-03T22:22:22Z</when>
             <what>quality-of-service</what>
@@ -361,7 +375,8 @@ class TestVitals < Minitest::Test
           js-links=
           css=body{}
           js=
-        ].push("adless=#{adless}").map { |p| Shellwords.escape(p) },
+        ].push("adless=#{adless}")
+          .concat(bytes.nil? ? [] : ["factbase-bytes=#{bytes}"]).map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
       File.read(output)
