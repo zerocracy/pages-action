@@ -9,9 +9,12 @@
     Rounds a value to the given factor (10 for one decimal, 100 for two),
     with a half going away from zero. The page and the badge both use it,
     so they show the same number for the same average.
+    A finite value whose scaled intermediate overflows keeps its original
+    double: the rounding step is smaller than its floating-point precision.
     -->
     <xsl:param name="value" as="xs:double"/>
     <xsl:param name="factor" as="xs:integer"/>
-    <xsl:sequence select="if ($value lt 0) then -(round(-$value * $factor) div $factor) else round($value * $factor) div $factor"/>
+    <xsl:variable name="scaled" select="$value * $factor"/>
+    <xsl:sequence select="if (abs($scaled) = xs:double('INF')) then $value else if ($value lt 0) then -(round(-$scaled) div $factor) else round($scaled) div $factor"/>
   </xsl:function>
 </xsl:stylesheet>
