@@ -636,4 +636,35 @@ class TestAwards < Minitest::Test
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
+
+  def test_dates_payouts_in_the_time_zone_of_today
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2026-10-11T22:30:00Z</when>
+          <since>2026-09-20T00:00:00Z</since>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <awarded>40</awarded>
+          <payout>40</payout>
+          <balance>0</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>7</who>
+          <who_name>dude</who_name>
+          <award>40</award>
+          <when>2026-10-11T22:30:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2026-10-14T12:00:00+03:00'
+    )
+    titles = xml.xpath('//*[contains(@title, "has been made on")]/@title').map(&:to_s)
+    assert_equal(2, titles.size, xml)
+    titles.each { |t| assert_includes(t, 'has been made on 2026-10-12,', xml) }
+  end
 end
