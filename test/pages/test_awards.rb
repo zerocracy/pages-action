@@ -418,6 +418,17 @@ class TestAwards < Minitest::Test
     assert_includes(text, 'there is 1 award in total', xml)
   end
 
+  def test_starts_awards_with_a_heading
+    [
+      '<fb/>',
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award>' \
+      '<when>2024-07-02T00:00:00Z</when></f></fb>'
+    ].each do |fb|
+      xml = xslt("<r><xsl:apply-templates select='/' mode='awards'/></r>", fb, 'today' => '2024-07-05T00:00:00Z')
+      assert_equal('Awards', xml.xpath('/r/*[1][self::h2]').text.strip, xml)
+    end
+  end
+
   def test_says_awards_for_zero_and_award_for_one
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='awards'/></r>",

@@ -150,6 +150,9 @@
     <xsl:apply-templates select="/fb" mode="awards"/>
   </xsl:template>
   <xsl:template match="/fb" mode="awards">
+    <h2>
+      <xsl:text>Awards</xsl:text>
+    </h2>
     <xsl:choose>
       <xsl:when test="empty($facts)">
         <p class="darkred">
