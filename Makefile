@@ -78,7 +78,11 @@ rake: $(SAXON) $(HTMLS)
 stylelint: sass/*.scss
 	stylelint sass/*.scss
 
-$(CSS): sass/*.scss stylelint Makefile | target/css
+target/stylelint.txt: sass/*.scss | target
+	stylelint sass/*.scss
+	touch "$@"
+
+$(CSS): sass/*.scss target/stylelint.txt Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
 
 $(JS): js/*.js Makefile | target/js
