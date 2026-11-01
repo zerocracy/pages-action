@@ -115,7 +115,7 @@ rmi: target/docker-image.txt
 	docker rmi "$${img}"
 	rm "$<"
 
-verify:
+verify: entry
 	./makes/verify.sh
 
 target/docker-image.txt: Makefile Dockerfile entry.sh $(SOURCES) $(wildcard xsl/*.xsl js/*.js sass/*.scss makes/*.sh) Gemfile Gemfile.lock html-minifier-config.json
