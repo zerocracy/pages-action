@@ -244,6 +244,26 @@ class TestVitals < Minitest::Test
     refute_match(/zerocracy/i, html[%r{<meta name="description".*?/>}m].to_s, html)
   end
 
+  def test_counts_the_contributors_in_the_description_by_who
+    {
+      '<who>1</who></f><f><when>2024-09-01T00:00:00Z</when><award>5</award><who>2</who>' => '2 contributors',
+      '<who>1</who><who_name>old</who_name></f><f><when>2024-09-01T00:00:00Z</when><award>5</award><who>1</who>' \
+      '<who_name>new</who_name>' => '1 contributor'
+    }.each do |tail, people|
+      xml = xslt(
+        '<xsl:apply-imports/>',
+        "<fb><f><when>2024-09-01T00:00:00Z</when><award>10</award>#{tail}</f></fb>",
+        'today' => '2024-09-26T04:04:04Z', 'name' => 'test', 'logo' => 'x', 'url' => 'https://example.com',
+        'version' => '0.0.1', 'latest-version' => '0.0.1', 'fbe' => '0.0.50', 'adless' => 'false',
+        'css-links' => '', 'js-links' => '', 'css' => '', 'js' => ''
+      )
+      assert_includes(
+        xml.xpath('//meta[@name="description"]/@content').to_s, ", #{people}.",
+        "The awards of #{tail} must be counted as #{people}"
+      )
+    end
+  end
+
   def test_uses_the_supplied_logo_as_the_favicon
     assert_match(/<link rel="icon"\s+href="x"/, generate_vitals_html(adless: 'true'))
   end

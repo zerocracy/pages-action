@@ -23,12 +23,12 @@ permissions:
 jobs:
   bashate:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
-          python-version: 3.14
+          python-version: 3.15
       - run: pip install bashate==2.1.1
       - run: |
           readarray -t files < <(find . -name '*.sh')

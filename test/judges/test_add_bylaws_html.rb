@@ -20,6 +20,21 @@ class TestAddBylawsHtml < Minitest::Test
     assert_equal(1, bylaws(fb), fb.to_json)
   end
 
+  def test_keeps_underscores_inside_a_word_of_a_bylaw
+    {
+      'Penalty for max_hoc_value' => 'max_hoc_value',
+      'Penalty for _large_ pulls' => '<em>large</em>'
+    }.each do |explain, html|
+      fb = Factbase.new
+      f = fb.insert
+      f.what = 'pmp'
+      f.area = 'hr'
+      f.hr_penalty = "(award (explain \"#{explain}\") (give 4 \"x\"))"
+      load_it('add-bylaws-html', fb)
+      assert_includes(fb.query('(eq what "bylaws")').each.to_a.first.html, html, fb.to_json)
+    end
+  end
+
   private
 
   def bylaws(fb)

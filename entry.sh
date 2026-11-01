@@ -65,14 +65,10 @@ case "${INPUT_URL}" in
         exit 1
         ;;
 esac
-case "${INPUT_URL}" in
-    ''|http://[!/]*|https://[!/]*)
-        ;;
-    *)
-        echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2
-        exit 1
-        ;;
-esac
+if [ -n "${INPUT_URL}" ] && ! [[ "${INPUT_URL}" =~ ^https?://[^/:@[:space:]][^[:space:]]*$ ]]; then
+    echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2
+    exit 1
+fi
 echo "The workspace directory is: $(pwd)"
 
 if [ -z "${INPUT_FACTBASE}" ]; then
@@ -212,6 +208,7 @@ for f in yaml xml json html; do
         --columns "${INPUT_COLUMNS}" \
         --highlighted "${INPUT_HIGHLIGHTED}"\
         --hidden "${INPUT_HIDDEN}" \
+        --title "${name}" \
         "${INPUT_FACTBASE}" \
         "${staging}/${name}.${f}"
 done
@@ -414,7 +411,8 @@ java -jar "${SELF}/target/saxon.jar" \
     "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/badge.xsl" \
     "-o:${svg}" \
-    "today=${INPUT_TODAY}"
+    "today=${INPUT_TODAY}" \
+    "adless=${INPUT_ADLESS}"
 echo "SVG badge generated at: ${svg}"
 
 rm "${staging}/${name}.rich.xml"

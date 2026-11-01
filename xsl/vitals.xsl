@@ -166,7 +166,7 @@
           <xsl:text> average points per task, </xsl:text>
           <xsl:value-of select="format-number(sum($facts/award), '0')"/>
           <xsl:text> total points earned, </xsl:text>
-          <xsl:value-of select="z:counted(count(distinct-values($facts/who_name)), 'contributor')"/>
+          <xsl:value-of select="z:counted(count(distinct-values($facts/who)), 'contributor')"/>
           <xsl:text>.</xsl:text>
         </xsl:variable>
         <meta name="description" content="{$description}"/>

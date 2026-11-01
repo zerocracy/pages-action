@@ -13,7 +13,7 @@ inputs:
     description: 'Log as much debug information as possible'
     default: false
   options:
-    description: 'Command line options for the "judges" tool'
+    description: 'Options for the judges, one "key=value" per line'
     required: false
   output:
     description: 'Directory path with YAML, XML, JSON and other files generated'
