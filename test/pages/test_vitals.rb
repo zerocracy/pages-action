@@ -307,9 +307,18 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_takes_the_eva_summary_from_facts_up_to_today
+    html = generate_vitals_html(
+      facts: '<f><what>earned-value</what><when>2024-09-20T10:00:00Z</when><ac>100</ac><ev>90</ev><pv>100</pv></f>' \
+             '<f><what>earned-value</what><when>2024-12-01T10:00:00Z</when><ac>500</ac><ev>900</ev><pv>300</pv></f>'
+    )
+    assert_includes(html, 'AC: 100', html)
+    refute_includes(html, 'AC: 500', html)
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false', size: 0)
+  def generate_vitals_html(adless: 'false', size: 0, facts: '')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -339,6 +348,7 @@ class TestVitals < Minitest::Test
             <where>github</where>
             <when>2024-06-26T22:22:22Z</when>
           </f>
+          #{facts}
         </fb>
       XML
       output = File.join(dir, 'vitals.html')
