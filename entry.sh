@@ -198,7 +198,7 @@ fi
 lifetime=$((lifetime * 60))
 echo "The update will run for up to ${lifetime} seconds"
 if [ $((lifetime - timeout)) -lt $((timeout / 10)) ]; then
-    echo "INPUT_TIMEOUT (${timeout} seconds) must be at least 10 percent smaller than INPUT_LIFETIME (${lifetime} seconds)" >&2
+    echo "INPUT_LIFETIME (${lifetime} seconds) must be at least 10 percent bigger than INPUT_TIMEOUT (${timeout} seconds)" >&2
     exit 1
 fi
 
