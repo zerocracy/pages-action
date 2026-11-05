@@ -307,6 +307,42 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_renders_dot_with_five_digit_and_negative_years
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '
+      <fb size="1" version="0.0.0">
+        <f>
+          <what>dimensions-of-terrain</what>
+          <when>10000-01-05T00:00:00Z</when>
+          <total_issues>1</total_issues>
+        </f>
+      </fb>
+      ',
+      'today' => '10000-01-06T12:00:00Z'
+    )
+    refute_empty(xml.xpath('//table//th[starts-with(text(), "w")]'), xml)
+    assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '10000')
+  end
+
+  def test_renders_dot_with_negative_year
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '
+      <fb size="1" version="0.0.0">
+        <f>
+          <what>dimensions-of-terrain</what>
+          <when>-0001-01-05T00:00:00Z</when>
+          <total_issues>1</total_issues>
+        </f>
+      </fb>
+      ',
+      'today' => '-0001-01-06T12:00:00Z'
+    )
+    refute_empty(xml.xpath('//table//th[starts-with(text(), "w")]'), xml)
+    assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '-0001')
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', size: 0)

@@ -238,12 +238,12 @@
               <xsl:variable name="week" select="xs:integer(.)"/>
               <xsl:variable name="d" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', ($weeks - $week) * 7, 'D'))"/>
               <xsl:variable name="iso" select="z:iso-week($d)"/>
-              <xsl:variable name="w" select="xs:integer(substring($iso, 7))"/>
+              <xsl:variable name="w" select="xs:integer(substring-after($iso, '-W'))"/>
               <xsl:attribute name="title">
                 <xsl:text>Week #</xsl:text>
                 <xsl:value-of select="$w"/>
                 <xsl:text> in </xsl:text>
-                <xsl:value-of select="substring($iso, 1, 4)"/>
+                <xsl:value-of select="substring-before($iso, '-W')"/>
                 <xsl:text>, starting on Monday </xsl:text>
                 <xsl:value-of select="z:day(z:monday($week))"/>
               </xsl:attribute>
