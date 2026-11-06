@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: pmp
+    area: hr
+    first: '(award (explain "Rule one") (give 10 "for one"))'
+    second: '(award (explain "Rule two") (give 20 "for two"))'
+    third: '(award (explain "Rule three") (give 30 "for three"))'
+expected:
+  - /fb[count(f)=2]
+  - /fb/f[what='bylaws' and contains(html, 'Rule one')]
+  - /fb/f[what='bylaws' and contains(html, 'Rule two')]
+  - /fb/f[what='bylaws' and contains(html, 'Rule three')]
