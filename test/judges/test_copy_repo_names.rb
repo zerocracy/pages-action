@@ -39,4 +39,31 @@ class TestCopyRepoNames < Minitest::Test
     assert_equal('second', details.first.description, fb.to_json)
     assert_equal(9, details.first.stars, fb.to_json)
   end
+
+  def test_skips_private_repository
+    fb = Factbase.new
+    award = fb.insert
+    award.what = 'award'
+    award.repository = 777
+    stale = fb.insert
+    stale.what = 'repo-details'
+    stale.repository = 777
+    stale.repository_name = 'acme/secret-plans'
+    client = Object.new
+    client.define_singleton_method(:repository) do |_id|
+      {
+        full_name: 'acme/secret-plans', description: 'Internal payroll engine', private: true,
+        stargazers_count: 0, forks_count: 0, language: 'Ruby', open_issues_count: 0,
+        updated_at: '2024-01-01T00:00:00Z'
+      }
+    end
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it('copy-repo-names', fb)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
+  end
 end

@@ -20,6 +20,7 @@ repos =
 
 repos.each do |id, json|
   Fbe.fb.query("(and (eq what \"repo-details\") (eq repository #{id.inspect}))").delete!
+  next if json[:private]
   d = Fbe.fb.insert
   d.what = 'repo-details'
   d.where = 'github'
