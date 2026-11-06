@@ -636,4 +636,44 @@ class TestAwards < Minitest::Test
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
   end
+
+  def test_renders_awards_header_with_five_digit_and_negative_years
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>future</who_name>
+          <award>10</award>
+          <when>10000-01-05T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '10000-01-06T12:00:00Z'
+    )
+    refute_empty(xml.xpath('//table[@id="awards"]//th[starts-with(text(), "w")]'), xml)
+    assert_includes(xml.xpath('//table[@id="awards"]//th/@title').map(&:text).join(' '), '10000')
+  end
+
+  def test_renders_awards_header_with_negative_year
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>ancient</who_name>
+          <award>10</award>
+          <when>-0001-01-05T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '-0001-01-06T12:00:00Z'
+    )
+    refute_empty(xml.xpath('//table[@id="awards"]//th[starts-with(text(), "w")]'), xml)
+    assert_includes(xml.xpath('//table[@id="awards"]//th/@title').map(&:text).join(' '), '-0001')
+  end
 end
