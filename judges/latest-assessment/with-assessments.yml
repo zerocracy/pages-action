@@ -14,3 +14,4 @@ expected:
   - /fb[count(f)=3]
   - /fb/f[what='latest-assessment' and total=2]
   - /fb/f[what='latest-assessment' and text='Latest assessment.']
+  - /fb/f[what='latest-assessment' and when='2024-09-15T10:00:00Z']
