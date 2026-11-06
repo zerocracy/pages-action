@@ -49,4 +49,100 @@ class TestNormalizeMetrics < Minitest::Test
     load_it('normalize-metrics', fb)
     assert_equal([0.0, 0.0], fb.query('(always)').each.map { |f| f['n_some_issue_lifetime'].first })
   end
+
+  def test_normalizes_composite_metric
+    fb = Factbase.new
+    first = fb.insert
+    first._id = 1
+    first.what = 'quantity-of-deliverables'
+    first.when = Time.utc(2024, 1, 1)
+    first.composite = 50
+    second = fb.insert
+    second._id = 2
+    second.what = 'quantity-of-deliverables'
+    second.when = Time.utc(2024, 1, 2)
+    second.composite = 100
+    load_it('normalize-metrics', fb)
+    target = fb.query('(eq _id 2)').each.to_a.first
+    assert_in_delta(1.0, target['n_composite'].first, 0.0001)
+  end
+
+  def test_ignores_already_normalized_metric_names
+    fb = Factbase.new
+    first = fb.insert
+    first._id = 1
+    first.what = 'quality-of-service'
+    first.when = Time.utc(2024, 1, 1)
+    first.n_custom_metric = 42.0
+    load_it('normalize-metrics', fb)
+    target = fb.query('(eq _id 1)').each.to_a.first
+    assert_nil(target['n_n_custom_metric'])
+  end
+
+  def test_skips_metric_when_baseline_is_zero
+    fb = Factbase.new
+    first = fb.insert
+    first._id = 1
+    first.what = 'quality-of-service'
+    first.when = Time.utc(2024, 1, 1)
+    first.average_latency = 0
+    second = fb.insert
+    second._id = 2
+    second.what = 'quality-of-service'
+    second.when = Time.utc(2024, 1, 2)
+    second.average_latency = 10
+    load_it('normalize-metrics', fb)
+    target = fb.query('(eq _id 2)').each.to_a.first
+    assert_nil(target['n_average_latency'])
+  end
+
+  def test_picks_baseline_from_subsequent_fact_when_earlier_fact_lacks_it
+    fb = Factbase.new
+    first = fb.insert
+    first._id = 1
+    first.what = 'quantity-of-deliverables'
+    first.when = Time.utc(2024, 1, 1)
+    first.total_builds = 10
+    second = fb.insert
+    second._id = 2
+    second.what = 'quantity-of-deliverables'
+    second.when = Time.utc(2024, 1, 2)
+    second.total_builds = 20
+    second.total_releases = 5
+    third = fb.insert
+    third._id = 3
+    third.what = 'quantity-of-deliverables'
+    third.when = Time.utc(2024, 1, 3)
+    third.total_releases = 15
+    load_it('normalize-metrics', fb)
+    target = fb.query('(eq _id 3)').each.to_a.first
+    assert_in_delta(2.0, target['n_total_releases'].first, 0.0001)
+  end
+
+  def test_handles_empty_facts_without_error
+    fb = Factbase.new
+    load_it('normalize-metrics', fb)
+    assert_equal(0, fb.size)
+  end
+
+  def test_ignores_properties_without_underscore
+    fb = Factbase.new
+    f = fb.insert
+    f._id = 1
+    f.what = 'quality-of-service'
+    f.when = Time.utc(2024, 1, 1)
+    f.singleword = 42
+    load_it('normalize-metrics', fb)
+    assert_nil(fb.query('(eq _id 1)').each.to_a.first['n_singleword'])
+  end
+
+  def test_skips_fact_without_matching_properties
+    fb = Factbase.new
+    f = fb.insert
+    f._id = 1
+    f.what = 'quality-of-service'
+    f.when = Time.utc(2024, 1, 1)
+    load_it('normalize-metrics', fb)
+    assert_equal(1, fb.size)
+  end
 end

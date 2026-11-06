@@ -60,6 +60,12 @@ class TestLatestAssessment < Minitest::Test
     assert_equal(1, latest.total)
   end
 
+  def test_does_nothing_when_no_assessments
+    fb = Factbase.new
+    load_it('latest-assessment', fb)
+    assert_empty(fb.query('(eq what "latest-assessment")').each.to_a)
+  end
+
   private
 
   def assessment_factbase
