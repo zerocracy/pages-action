@@ -56,6 +56,14 @@ class TestBadge < Minitest::Test
     assert_includes(texts, '+4.0', xml)
   end
 
+  def test_counts_only_awards_of_the_last_256_days
+    xml = badge_svg(
+      '<fb><f><award>24</award><when>2023-12-01T00:00:00Z</when></f>' \
+      '<f><award>-80</award><when>2023-04-15T00:00:00Z</when></f></fb>'
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+24.0', xml)
+  end
+
   def test_rounds_a_half_away_from_zero
     xml = badge_svg(
       "<fb>#{[12, 13, 12, 12].map { |a| "<f><award>#{a}</award><when>2023-12-01T00:00:00Z</when></f>" }.join}</fb>"
