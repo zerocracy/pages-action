@@ -144,4 +144,25 @@ class TestNormalizeMetrics < Minitest::Test
     load_it('normalize-metrics', fb)
     assert_equal(0, fb.size)
   end
+
+  def test_ignores_properties_without_underscore
+    fb = Factbase.new
+    f = fb.insert
+    f._id = 1
+    f.what = 'quality-of-service'
+    f.when = Time.utc(2024, 1, 1)
+    f.singleword = 42
+    load_it('normalize-metrics', fb)
+    assert_nil(fb.query('(eq _id 1)').each.to_a.first['n_singleword'])
+  end
+
+  def test_skips_fact_without_matching_properties
+    fb = Factbase.new
+    f = fb.insert
+    f._id = 1
+    f.what = 'quality-of-service'
+    f.when = Time.utc(2024, 1, 1)
+    load_it('normalize-metrics', fb)
+    assert_equal(1, fb.size)
+  end
 end

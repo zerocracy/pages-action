@@ -66,4 +66,44 @@ class TestCopyRepoNames < Minitest::Test
     end
     assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
   end
+
+  def test_does_nothing_when_no_repositories
+    fb = Factbase.new
+    load_it('copy-repo-names', fb)
+    assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
+  end
+
+  def test_handles_octokit_error
+    fb = Factbase.new
+    award = fb.insert
+    award.what = 'award'
+    award.repository = 404
+    client = Object.new
+    client.define_singleton_method(:repository) { |_id| raise(Octokit::Error) }
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it('copy-repo-names', fb)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
+  end
+
+  def test_stops_on_off_quota
+    fb = Factbase.new
+    award = fb.insert
+    award.what = 'award'
+    award.repository = 999
+    client = Object.new
+    client.define_singleton_method(:repository) { |_id| raise(Fbe::OffQuota) }
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it('copy-repo-names', fb)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
+  end
 end
