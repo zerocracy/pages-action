@@ -29,6 +29,7 @@ require 'minitest/reporters'
 Minitest::Reporters.use!([Minitest::Reporters::SpecReporter.new])
 Minitest.load(:minitest_reporter)
 
+require 'cgi/escape'
 require 'judges/options'
 require 'loog'
 require 'minitest/autorun'
@@ -37,12 +38,12 @@ require 'qbash'
 require 'shellwords'
 
 class Minitest::Test
-  def load_it(judge, fb)
+  def load_it(judge, fb, options = {})
     $fb = fb
     $global = {}
     $local = {}
     $judge = judge
-    $options = Judges::Options.new({ 'repositories' => 'foo/foo' })
+    $options = Judges::Options.new({ 'repositories' => 'foo/foo' }.merge(options))
     $loog = Loog::NULL
     $compiled ||= {}
     $compiled[judge] ||= compiled(File.expand_path("../judges/#{judge}/#{judge}.rb", __dir__))
@@ -50,7 +51,7 @@ class Minitest::Test
   end
 
   def compiled(file)
-    eval("lambda do\n#{File.read(file)}\nend", TOPLEVEL_BINDING, file, 0) # rubocop:disable Security/Eval, Style/EvalWithLocation
+    -> { load(file, true) }
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
@@ -61,20 +62,21 @@ class Minitest::Test
     ENV['RACK_RUN'] ? Loog::NULL : Loog::VERBOSE
   end
 
-  def xslt(template, xml, vars = {})
-    Dir.mktmpdir do |dir|
-      xsl = File.join(dir, 'foo.xsl')
-      File.write(
-        xsl,
-        "
+  def xsl_document(template, import = File.join(__dir__, '../xsl/vitals.xsl'))
+    "
         <xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform'
           xmlns:xs='http://www.w3.org/2001/XMLSchema' xmlns:z='https://www.zerocracy.com'
           version='2.0' exclude-result-prefixes='xs z'>
-          <xsl:import href='#{File.join(__dir__, '../xsl/vitals.xsl')}'/>
+          <xsl:import href='#{CGI.escapeHTML(import)}'/>
           <xsl:template match='/'>#{template}</xsl:template>
         </xsl:stylesheet>
         "
-      )
+  end
+
+  def xslt(template, xml, vars = {})
+    Dir.mktmpdir do |dir|
+      xsl = File.join(dir, 'foo.xsl')
+      File.write(xsl, xsl_document(template))
       input = File.join(dir, 'input.xml')
       File.write(input, xml)
       output = File.join(dir, 'output.xml')
