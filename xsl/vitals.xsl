@@ -353,13 +353,21 @@
               <xsl:value-of select="$fbe"/>
               <xsl:text>.</xsl:text>
               <br/>
-              <xsl:text>The XML with all data is available </xsl:text>
+              <xsl:text>The data is available as </xsl:text>
               <a href="{$name}.xml">
-                <xsl:text>here</xsl:text>
+                <xsl:text>XML</xsl:text>
               </a>
-              <xsl:text>, and the HTML is available </xsl:text>
+              <xsl:text>, </xsl:text>
+              <a href="{$name}.json">
+                <xsl:text>JSON</xsl:text>
+              </a>
+              <xsl:text>, </xsl:text>
+              <a href="{$name}.yaml">
+                <xsl:text>YAML</xsl:text>
+              </a>
+              <xsl:text> and </xsl:text>
               <a href="{$name}.html">
-                <xsl:text>here</xsl:text>
+                <xsl:text>HTML</xsl:text>
               </a>
               <xsl:if test="$factbase-bytes &gt; 1000000">
                 <xsl:text> (they're big)</xsl:text>
