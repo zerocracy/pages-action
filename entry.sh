@@ -280,6 +280,41 @@ else
     if ! [[ "${INPUT_TODAY}" =~ (Z|[+-][0-9]{2}:[0-9]{2})$ ]]; then
         INPUT_TODAY="${INPUT_TODAY}Z"
     fi
+    # The shape check above counts digits only, while the stylesheets cast this
+    # value with xs:dateTime, so an impossible date must be rejected here, not
+    # after "judges update" has already spent time and quota on the factbase.
+    month=$((10#${INPUT_TODAY:5:2}))
+    day=$((10#${INPUT_TODAY:8:2}))
+    hour=$((10#${INPUT_TODAY:11:2}))
+    minute=$((10#${INPUT_TODAY:14:2}))
+    second=$((10#${INPUT_TODAY:17:2}))
+    case "${month}" in
+        1|3|5|7|8|10|12) last=31 ;;
+        4|6|9|11) last=30 ;;
+        2)
+            year=$((10#${INPUT_TODAY:0:4}))
+            if [ $((year % 4)) -eq 0 ] && { [ $((year % 100)) -ne 0 ] || [ $((year % 400)) -eq 0 ]; }; then
+                last=29
+            else
+                last=28
+            fi
+            ;;
+        *) last=0 ;;
+    esac
+    hour_offset=0
+    minute_offset=0
+    if [ "${INPUT_TODAY: -1}" != 'Z' ]; then
+        offset="${INPUT_TODAY: -5}"
+        hour_offset=$((10#${offset:0:2}))
+        minute_offset=$((10#${offset:3:2}))
+    fi
+    if [ "${day}" -lt 1 ] || [ "${day}" -gt "${last}" ] \
+        || [ "${hour}" -ge 24 ] || [ "${minute}" -ge 60 ] || [ "${second}" -ge 60 ] \
+        || [ "${hour_offset}" -gt 14 ] || [ "${minute_offset}" -ge 60 ] \
+        || { [ "${hour_offset}" -eq 14 ] && [ "${minute_offset}" -ne 0 ]; }; then
+        echo "ERROR: The 'today' input must be an existing date-time, like 2026-09-07T12:00:00Z, but it is: '${INPUT_TODAY}'" >&2
+        exit 1
+    fi
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
 
