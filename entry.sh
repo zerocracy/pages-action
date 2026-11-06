@@ -65,9 +65,22 @@ case "${INPUT_URL}" in
         exit 1
         ;;
 esac
-if [ -n "${INPUT_URL}" ] && ! [[ "${INPUT_URL}" =~ ^[hH][tT][tT][pP][sS]?://[^/:@[:space:]][^[:space:]]*$ ]]; then
-    echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2
-    exit 1
+if [ -n "${INPUT_URL}" ]; then
+    bad=''
+    if ! [[ "${INPUT_URL}" =~ ^[hH][tT][tT][pP][sS]?://([^/[:space:]]+@)?(\[[0-9a-fA-F:.]+\]|[^/:@\[[:space:]][^/:@[:space:]]*)(:([0-9]*))?(/[^[:space:]]*)?$ ]]; then
+        bad=yes
+    else
+        # shortcut: bracketed hosts are checked for shape, not full IPv6 grammar, upgrade when a malformed bracketed host is reported.
+        port="${BASH_REMATCH[4]}"
+        port="${port#"${port%%[!0]*}"}"
+        if [ "${#port}" -gt 5 ] || { [ -n "${port}" ] && [ "${port}" -gt 65535 ]; }; then
+            bad=yes
+        fi
+    fi
+    if [ -n "${bad}" ]; then
+        echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2
+        exit 1
+    fi
 fi
 echo "The workspace directory is: $(pwd)"
 
