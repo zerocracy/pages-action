@@ -4,9 +4,22 @@
 # SPDX-License-Identifier: MIT
 
 require 'English'
+require 'json'
 require_relative '../test__helper'
 
 class TestQoSection < Minitest::Test
+  def test_preserves_finite_scientific_notation_metrics
+    %w[1.0e-06 -1.0E-06 1.0e+20].each do |value|
+      assert_in_delta(Float(value), chart_value(value), Float(value).abs * 0.000001)
+    end
+  end
+
+  def test_rejects_non_finite_metrics
+    %w[NaN INF -INF 1e309].each do |value|
+      assert_nil(chart_value(value), value)
+    end
+  end
+
   def test_metric_colors_do_not_depend_on_fact_order
     facts = [
       '<f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
@@ -221,5 +234,21 @@ class TestQoSection < Minitest::Test
     js = xml.xpath('//script').map(&:content).join
     assert_includes(js, "label:'CPI'", xml)
     assert_includes(js, "label:'SPI'", xml)
+  end
+
+  private
+
+  def chart_value(value)
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
+      "<n_composite>#{value}</n_composite></f></fb>",
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    script = xml.xpath('//script').map(&:content).join
+    JSON.parse(script.match(/data:\[([^\]]+)\]/)[1])
   end
 end
