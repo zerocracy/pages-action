@@ -9,6 +9,145 @@ require 'qbash'
 require_relative '../test__helper'
 
 class TestAwards < Minitest::Test
+  def test_keeps_owed_rows_by_id_after_a_login_change_without_recent_awards
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb>' \
+      '<f><what>who-has-name</what><who>42</who><name>new-login</name>' \
+      '<when>2024-05-21T00:00:00Z</when></f>' \
+      '<f><what>reconciliation</what><who>42</who><who_name>old-login</who_name>' \
+      '<when>2024-05-20T00:00:00Z</when><since>2024-05-01T00:00:00Z</since>' \
+      '<awarded>0</awarded><payout>0</payout><balance>30</balance></f>' \
+      '<f><what>reconciliation</what><who_name>new-login</who_name>' \
+      '<when>2024-05-20T00:00:00Z</when><since>2024-05-01T00:00:00Z</since>' \
+      '<awarded>0</awarded><payout>0</payout><balance>50</balance></f>' \
+      '<f><is_human>1</is_human><who>7</who><who_name>active</who_name>' \
+      '<when>2024-06-30T00:00:00Z</when><award>1</award></f></fb>',
+      'today' => '2024-07-01T00:00:00Z'
+    )
+    rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
+    assert_equal(3, rows.size, xml)
+    renamed = rows.find { |row| row.at_xpath('./td[1]')['title'] == '42' }
+    assert_equal('@new-login', renamed.at_xpath('./td[2]/span/a').text, xml)
+    assert_equal('30', renamed.at_xpath('./td[last()]').text.strip, xml)
+    fallback = rows.find { |row| row.at_xpath('./td[1]')['title'] == '' }
+    assert_equal('50', fallback.at_xpath('./td[last()]').text.strip, xml)
+  end
+
+  def test_groups_awards_by_user_id_and_shows_latest_login
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>who-has-name</what>
+          <who>42</who>
+          <name>old-login</name>
+          <when>2024-05-01T00:00:00Z</when>
+        </f>
+        <f>
+          <what>who-has-name</what>
+          <who>42</who>
+          <name>new-login</name>
+          <when>2024-05-30T00:00:00Z</when>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <who>42</who>
+          <who_name>old-login</who_name>
+          <when>2024-05-29T00:00:00Z</when>
+          <since>2024-05-01T00:00:00Z</since>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>10</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>old-login</who_name>
+          <when>2024-05-30T00:00:00Z</when>
+          <award>40</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>new-login</who_name>
+          <when>2024-06-01T00:00:00Z</when>
+          <award>60</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
+    assert_equal(1, rows.size, xml)
+    assert_equal('@new-login', rows.first.at_xpath('./td[2]/span/a').text, xml)
+    assert_equal('110', rows.first.at_xpath('./td[last()]').text.strip, xml)
+  end
+
+  def test_keeps_idless_awards_separate_from_a_reused_login
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>shared-login</who_name>
+          <when>2024-06-01T00:00:00Z</when>
+          <award>40</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who_name>shared-login</who_name>
+          <when>2024-06-01T00:00:00Z</when>
+          <award>60</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
+    assert_equal(2, rows.size, xml)
+    assert_equal([40, 60], rows.map { |row| row.at_xpath('./td[last()]').text.to_i }.sort, xml)
+  end
+
+  def test_keeps_reconciliations_separate_when_only_one_user_has_an_id
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what><who>42</who><who_name>shared-login</who_name>
+          <when>2024-05-31T00:00:00Z</when><since>2024-05-01T00:00:00Z</since>
+          <awarded>0</awarded><payout>0</payout><balance>10</balance>
+        </f>
+        <f>
+          <what>reconciliation</what><who_name>shared-login</who_name>
+          <when>2024-05-31T00:00:00Z</when><since>2024-05-01T00:00:00Z</since>
+          <awarded>0</awarded><payout>0</payout><balance>20</balance>
+        </f>
+        <f>
+          <is_human>1</is_human><who>42</who><who_name>shared-login</who_name>
+          <when>2024-06-01T00:00:00Z</when><award>40</award>
+        </f>
+        <f>
+          <is_human>1</is_human><who_name>shared-login</who_name>
+          <when>2024-06-01T00:00:00Z</when><award>60</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    rows = xml.xpath('//table[@id="awards"]/tbody/tr[not(contains(@class, "sub"))]')
+    assert_equal(2, rows.size, xml)
+    assert_equal(
+      [[40, 50], [60, 80]],
+      rows.map { |row| row.xpath('./td[position() >= last() - 1]').map { |cell| cell.text.to_i } }.sort,
+      xml
+    )
+  end
+
   def test_fn_payables
     xml = xslt(
       "<xsl:copy-of select=\"z:payables('dude')\"/>",
@@ -295,11 +434,11 @@ class TestAwards < Minitest::Test
 
   def test_sorts_programmers_by_their_total_awards
     facts = [
-      ['alpha', '1', '2024-06-01T00:00:00Z'],
-      ['alpha', '100', '2024-05-31T00:00:00Z'],
-      ['beta', '50', '2024-05-30T00:00:00Z']
-    ].map do |name, amount, timestamp|
-      "<f><is_human>1</is_human><who>1</who><who_name>#{name}</who_name>" \
+      [1, 'alpha', '1', '2024-06-01T00:00:00Z'],
+      [1, 'alpha', '100', '2024-05-31T00:00:00Z'],
+      [2, 'beta', '50', '2024-05-30T00:00:00Z']
+    ].map do |id, name, amount, timestamp|
+      "<f><is_human>1</is_human><who>#{id}</who><who_name>#{name}</who_name>" \
         "<award>#{amount}</award><when>#{timestamp}</when></f>"
     end.join
     xml = xslt(
@@ -352,6 +491,7 @@ class TestAwards < Minitest::Test
         <f>
           <is_human>1</is_human>
           <when>#{now}</when>
+          <who>x</who>
           <who_name>dude</who_name>
           <award>25</award>
           <why>evil</why>
