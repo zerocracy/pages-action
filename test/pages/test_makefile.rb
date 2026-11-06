@@ -85,7 +85,10 @@ class TestMakefile < Minitest::Test
     Dir.mktmpdir do |dir|
       FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
       FileUtils.mkdir_p(%w[xsl target].map { |path| File.join(dir, path) })
-      %w[Dockerfile entry.sh xsl/vitals.xsl Gemfile Gemfile.lock html-minifier-config.json].each do |file|
+      %w[
+        Dockerfile entry.sh xsl/vitals.xsl Gemfile Gemfile.lock html-minifier-config.json
+        eslint.config.js .stylelintrc.json
+      ].each do |file|
         File.write(File.join(dir, file), '')
         File.utime(Time.now - 100, Time.now - 100, File.join(dir, file))
       end
@@ -95,6 +98,45 @@ class TestMakefile < Minitest::Test
       assert(system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL), 'unchanged')
       File.utime(Time.now, Time.now, File.join(dir, 'xsl/vitals.xsl'))
       refute(system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL))
+    end
+  end
+
+  def test_lints_the_scripts_again_after_the_eslint_configuration_changes
+    Dir.mktmpdir do |dir|
+      FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+      FileUtils.mkdir_p(%w[js target/js].map { |path| File.join(dir, path) })
+      %w[Makefile js/main.js eslint.config.js].each do |file|
+        File.write(File.join(dir, file), '') unless file == 'Makefile'
+        File.utime(Time.now - 100, Time.now - 100, File.join(dir, file))
+      end
+      File.write(File.join(dir, 'target/js/main.js'), 'x')
+      File.utime(Time.now - 50, Time.now - 50, File.join(dir, 'target/js/main.js'))
+      assert(system('make', '-C', dir, '-q', 'target/js/main.js', out: File::NULL, err: File::NULL), 'unchanged')
+      File.utime(Time.now, Time.now, File.join(dir, 'eslint.config.js'))
+      refute(system('make', '-C', dir, '-q', 'target/js/main.js', out: File::NULL, err: File::NULL))
+    end
+  end
+
+  def test_rebuilds_the_docker_image_after_a_lint_configuration_changes
+    files = %w[
+      Makefile Dockerfile entry.sh Gemfile Gemfile.lock html-minifier-config.json
+      eslint.config.js .stylelintrc.json
+    ]
+    %w[eslint.config.js .stylelintrc.json].each do |config|
+      Dir.mktmpdir do |dir|
+        FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+        FileUtils.mkdir_p(File.join(dir, 'target'))
+        files.each do |file|
+          File.write(File.join(dir, file), '') unless file == 'Makefile'
+          File.utime(Time.now - 100, Time.now - 100, File.join(dir, file))
+        end
+        File.write(File.join(dir, 'target/docker-image.txt'), 'x')
+        File.utime(Time.now - 50, Time.now - 50, File.join(dir, 'target/docker-image.txt'))
+        fresh = -> { system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL) }
+        assert(fresh.call, "the image is stale before #{config} changes")
+        File.utime(Time.now, Time.now, File.join(dir, config))
+        refute(fresh.call, "the image is not rebuilt after #{config} changes")
+      end
     end
   end
 end
