@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: MIT
 
 require 'fileutils'
+require 'open3'
 require 'tmpdir'
 require_relative '../test__helper'
 
@@ -46,6 +47,14 @@ class TestMakefile < Minitest::Test
       File.utime(before + 60, before + 60, "#{dir}/html-minifier-config.json")
       qbash(command, stdout: fake_loog)
       assert_equal('{"collapseWhitespace":true}', File.read("#{output}/used-config.json"))
+    end
+  end
+
+  def test_downloads_saxon_before_running_the_entries
+    Dir.mktmpdir do |dir|
+      FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+      stdout, = Open3.capture2('make', '-n', '-C', dir, 'entries', '-o', 'assets')
+      assert_includes(stdout, 'Saxon-HE', stdout)
     end
   end
 
