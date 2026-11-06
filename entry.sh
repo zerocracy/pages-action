@@ -229,18 +229,18 @@ while IFS= read -r o; do
         x="${v#*=}"
         x="${x#"${x%%[![:space:]]*}"}"
         v="${k}=${x}"
-    fi
-    if [[ "${v}" == "github_token="* ]]; then
-        if [ "${v}" = "github_token=" ]; then
-            echo "The 'github_token' option is empty, ignoring it"
-            continue
-        fi
-        if [ "${INPUT_VERBOSE}" == 'true' ]; then
-            set +x
-        fi
-        echo "::add-mask::${v#github_token=}"
-        if [ "${INPUT_VERBOSE}" == 'true' ]; then
-            set -x
+        if [[ "${k,,}" == "github_token" ]]; then
+            if [ -z "${x}" ]; then
+                echo "The 'github_token' option is empty, ignoring it"
+                continue
+            fi
+            if [ "${INPUT_VERBOSE}" == 'true' ]; then
+                set +x
+            fi
+            echo "::add-mask::${x}"
+            if [ "${INPUT_VERBOSE}" == 'true' ]; then
+                set -x
+            fi
         fi
     fi
     options+=("--option=${v}")
