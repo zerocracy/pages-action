@@ -37,12 +37,12 @@ require 'qbash'
 require 'shellwords'
 
 class Minitest::Test
-  def load_it(judge, fb)
+  def load_it(judge, fb, options = {})
     $fb = fb
     $global = {}
     $local = {}
     $judge = judge
-    $options = Judges::Options.new({ 'repositories' => 'foo/foo' })
+    $options = Judges::Options.new({ 'repositories' => 'foo/foo' }.merge(options))
     $loog = Loog::NULL
     $compiled ||= {}
     $compiled[judge] ||= compiled(File.expand_path("../judges/#{judge}/#{judge}.rb", __dir__))
