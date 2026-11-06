@@ -50,7 +50,7 @@ class Minitest::Test
   end
 
   def compiled(file)
-    eval("lambda do\n#{File.read(file)}\nend", TOPLEVEL_BINDING, file, 0) # rubocop:disable Security/Eval, Style/EvalWithLocation
+    -> { load(file, true) }
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
