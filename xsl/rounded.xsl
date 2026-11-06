@@ -12,6 +12,12 @@
     -->
     <xsl:param name="value" as="xs:double"/>
     <xsl:param name="factor" as="xs:integer"/>
-    <xsl:sequence select="if ($value lt 0) then -(round(-$value * $factor) div $factor) else round($value * $factor) div $factor"/>
+    <!--
+    A direct decimal cast preserves the binary fraction. Format it first;
+    340 optional places cover a double's decimal digits without exponent notation.
+    -->
+    <xsl:variable name="picture" select="concat('0.', string-join(for $n in 1 to 340 return '#', ''))"/>
+    <xsl:variable name="product" select="if (abs($value) lt xs:double('INF') and $factor ne 0) then xs:decimal(format-number($value, $picture)) * $factor else $value * $factor"/>
+    <xsl:sequence select="if ($value lt 0) then -(round(-$product) div $factor) else round($product) div $factor"/>
   </xsl:function>
 </xsl:stylesheet>
