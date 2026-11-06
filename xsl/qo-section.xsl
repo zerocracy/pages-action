@@ -27,12 +27,17 @@
     <xsl:variable name="raw" select="/fb/f[what=$what and z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D')) and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="facts">
       <xsl:for-each-group select="$raw" group-by="z:iso-week(z:when(when))">
-        <xsl:for-each select="current-group()">
-          <xsl:sort select="z:when(when)" order="ascending"/>
-          <xsl:if test="position() = last()">
-            <xsl:copy-of select="."/>
-          </xsl:if>
-        </xsl:for-each>
+        <xsl:variable name="week" select="current-group()"/>
+        <xsl:variable name="latest" select="max(for $x in $week return z:when($x/when))"/>
+        <f>
+          <xsl:copy-of select="$week[z:when(when) = $latest][last()]/when"/>
+          <xsl:for-each select="distinct-values($week/*[starts-with(name(), 'n_')]/name())">
+            <xsl:variable name="n" select="."/>
+            <xsl:variable name="has" select="$week[*[name()=$n]]"/>
+            <xsl:variable name="last" select="max(for $x in $has return z:when($x/when))"/>
+            <xsl:copy-of select="$has[z:when(when) = $last][last()]/*[name()=$n]"/>
+          </xsl:for-each>
+        </f>
       </xsl:for-each-group>
     </xsl:variable>
     <h2>

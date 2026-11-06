@@ -46,6 +46,27 @@ class TestQoSection < Minitest::Test
     assert_equal(15, hues.uniq.size, xml)
   end
 
+  def test_takes_the_latest_value_of_each_metric_within_a_week
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-01T10:00:00Z</when><what>quality-of-service</what>' \
+      '<n_composite>0.5</n_composite><n_average_issue_lifetime>0.2</n_average_issue_lifetime></f>' \
+      '<f><when>2024-07-03T10:00:00Z</when><what>quality-of-service</what>' \
+      '<n_average_pull_lifetime>0.3</n_average_pull_lifetime></f>' \
+      '<f><when>2024-07-10T10:00:00Z</when><what>quality-of-service</what>' \
+      '<n_composite>0.6</n_composite></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    script = xml.xpath('//script').map(&:content).join
+    assert_includes(script, "labels:['7/3','7/10']", xml)
+    assert_includes(script, "label:'Composite',borderColor:'orange',data:[0.5,0.6]", xml)
+    assert_match(/label:'Average Issue Lifetime',[^}]*data:\[0\.2,null\]/, script, xml)
+    assert_match(/label:'Average Pull Lifetime',[^}]*data:\[0\.3,null\]/, script, xml)
+  end
+
   def test_snake_case_to_title
     xml = xslt(
       '<r><xsl:value-of select="z:snake-case-to-title(\'average_issue_lifetime\')"/></r>',
