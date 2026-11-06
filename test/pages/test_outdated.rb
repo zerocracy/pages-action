@@ -3,10 +3,40 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
+require 'json'
 require 'open3'
 require_relative '../test__helper'
 
 class TestOutdated < Minitest::Test
+  def test_writes_relative_time_to_each_timestamp_element
+    script = [
+      'const OriginalDate = Date;',
+      'global.Date = class extends OriginalDate {',
+      "  constructor(...args) { super(...(args.length ? args : ['2026-10-04T12:00:00Z'])); }",
+      '};',
+      'const elements = [',
+      "  { datetime: '2026-10-02T12:00:00Z', text: 'first timestamp' },",
+      "  { datetime: '2026-10-04T11:00:00Z', text: 'second timestamp' }",
+      '];',
+      'global.$ = (arg) => {',
+      "  if (typeof arg === 'function') { return; }",
+      "  if (arg === 'time.relative-time[datetime]') {",
+      '    return { each: (callback) => elements.forEach((element, index) => callback(index, element)) };',
+      '  }',
+      '  return {',
+      "    attr: (name) => name === 'datetime' ? arg.datetime : undefined,",
+      '    text: (value) => { arg.text = value; }',
+      '  };',
+      '};',
+      File.read(File.join(__dir__, '../../js/outdated.js')),
+      'updateTimeDisplay();',
+      'process.stdout.write(JSON.stringify(elements.map(element => element.text)));'
+    ].join("\n")
+    out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
+    assert_predicate(status, :success?, out)
+    assert_equal(['2 days ago', 'one hour ago'], JSON.parse(out))
+  end
+
   def test_counts_a_month_that_ends_on_the_last_day_of_a_shorter_month
     {
       '2026-01-31T00:00:00Z' => '2026-02-28T00:00:00Z',
