@@ -393,6 +393,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "today=${INPUT_TODAY}" \
     "version=${VERSION}" \
     "latest-version=${LATEST_VERSION}" \
+    "factbase-bytes=$(wc -c < "${INPUT_FACTBASE}")" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
     "logo=${logo}" \
