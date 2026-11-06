@@ -16,8 +16,8 @@ f&.all_properties&.each do |prop|
   md = Fbe::Award.new(q).bylaw.markdown
   htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(escape_html: true), no_intra_emphasis: true).render(md)
 end
-return if htmls.empty?
 Fbe.fb.query('(eq what "bylaws")').delete!
+return if htmls.empty?
 s = Fbe.fb.insert
 s.what = 'bylaws'
 s.html = htmls.join
