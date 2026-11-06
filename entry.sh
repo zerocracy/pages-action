@@ -280,6 +280,18 @@ else
     if ! [[ "${INPUT_TODAY}" =~ (Z|[+-][0-9]{2}:[0-9]{2})$ ]]; then
         INPUT_TODAY="${INPUT_TODAY}Z"
     fi
+    if ! ruby -rdate -e 'DateTime.iso8601(ARGV.fetch(0))' "${INPUT_TODAY}" >/dev/null 2>&1; then
+        echo "ERROR: The 'today' input must be a valid ISO-8601 date-time, but it is: '${INPUT_TODAY}'" >&2
+        exit 1
+    fi
+    if [[ "${INPUT_TODAY}" =~ [+-]([0-9]{2}):([0-9]{2})$ ]]; then
+        zone_hours=$((10#${BASH_REMATCH[1]}))
+        zone_minutes=$((10#${BASH_REMATCH[2]}))
+        if (( zone_hours > 14 || zone_minutes > 59 || (zone_hours == 14 && zone_minutes != 0) )); then
+            echo "ERROR: The 'today' timezone must be between -14:00 and +14:00, but it is: '${INPUT_TODAY}'" >&2
+            exit 1
+        fi
+    fi
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
 
