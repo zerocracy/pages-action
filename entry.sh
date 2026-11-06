@@ -155,7 +155,7 @@ trap 'stop 143' TERM
 trap 'stop 130' INT
 echo "The staging directory is: ${staging}"
 
-name=$(basename "${INPUT_FACTBASE}")
+name=$(basename -- "${INPUT_FACTBASE}")
 name="${name%.*}"
 while [[ "${name}" == .* ]]; do
     name="${name#.}"
