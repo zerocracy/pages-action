@@ -10,6 +10,15 @@ BUNDLE_GEMFILE="${SELF}/Gemfile"
 export BUNDLE_GEMFILE
 bundle exec judges eval test.fb "\$fb.insert" > /dev/null
 
+# A probe in front of "judges" records the arguments it gets, one per line.
+args="${PWD}/judges-args.txt"
+cat > judges-probe <<PROBE
+#!/usr/bin/env bash
+printf '%s\n' "\$@" >> '${args}'
+exec bundle exec judges "\$@"
+PROBE
+chmod +x judges-probe
+
 # Set INPUT_OPTIONS with leading/trailing whitespace and special characters
 # The old echo|xargs approach would strip double quotes from key="value",
 # producing key=value instead (xargs treats " as quoting characters).
@@ -24,9 +33,13 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_OUTPUT=output' \
   'INPUT_VERBOSE=false' \
   "INPUT_OPTIONS=${INPUT_OPTIONS}" \
+  "JUDGES=${PWD}/judges-probe" \
   "${SELF}/entry.sh" 2>&1 | tee log.txt
 
 grep "The 'github-token' plugin parameter is not set" log.txt
+
+grep -Fx -- '--option=testing=yes' "${args}"
+grep -Fx -- '--option=key="value"' "${args}"
 
 [ -e 'output/test.yaml' ]
 [ -e 'output/test.xml' ]
