@@ -133,6 +133,27 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//tr[td[1]="total_stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
   end
 
+  def test_dot_prints_week_numbers_and_mondays_across_new_year
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2026-01-06T00:00:00Z</when>' \
+      '<total_stars>7</total_stars></f></fb>',
+      'today' => '2026-01-08T12:00:00Z'
+    )
+    th = xml.xpath('//th[@class="right"]')
+    assert_equal(%w[w51 w52 w1 w2], th.map { |h| h.text.strip }, xml)
+    assert_equal(
+      [
+        'Week #51 in 2025, starting on Monday 2025-12-15',
+        'Week #52 in 2025, starting on Monday 2025-12-22',
+        'Week #1 in 2026, starting on Monday 2025-12-29',
+        'Week #2 in 2026, starting on Monday 2026-01-05'
+      ],
+      th.map { |h| h['title'] },
+      xml
+    )
+  end
+
   def test_dot_shows_one_of_many_values
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
