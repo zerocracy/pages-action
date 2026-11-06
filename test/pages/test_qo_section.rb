@@ -169,6 +169,7 @@ class TestQoSection < Minitest::Test
       'today' => '2024-09-26T04:04:04Z'
     )
     assert_empty(xml.xpath('//p//p'), xml)
+    assert_equal(1, xml.xpath('//p[.="Nope."]').size, xml)
   end
 
   def test_inline_js_syntax_in_generated_html
