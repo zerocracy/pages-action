@@ -3,6 +3,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
+require 'fbe/delete'
 require 'fbe/fb'
 require 'fbe/overwrite'
 
@@ -37,6 +38,16 @@ end
     end
   end
   facts.each do |f|
+    obsolete = []
+    f.all_properties.each do |prop|
+      next unless prop.start_with?('n_some_')
+      avg = "average_#{prop.delete_prefix('n_some_')}"
+      obsolete << prop unless f[avg].nil?
+    end
+    unless obsolete.empty?
+      Fbe.delete(f, *obsolete)
+      f = Fbe.fb.query("(eq _id #{f._id})").each.to_a.first
+    end
     fresh = {}
     f.all_properties.each do |prop|
       next unless fits?(f, prop)
