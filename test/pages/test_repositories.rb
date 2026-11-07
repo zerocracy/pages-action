@@ -43,6 +43,16 @@ class TestRepositories < Minitest::Test
     assert_empty(xml.xpath('//li'), xml)
   end
 
+  def test_omits_only_archived_repositories
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='repositories'/></r>",
+      '<fb><f><what>repo-details</what><repository_name>foo/bar</repository_name></f>' \
+      '<f><what>repo-details</what><repository_name>baz/qux</repository_name>' \
+      '<archived>true</archived></f></fb>'
+    )
+    assert_equal(['foo/bar'], xml.xpath('//li/a').map(&:text), xml)
+  end
+
   def test_keeps_an_active_repository
     xml = list('<archived>false</archived>')
     assert_equal('foo/bar', xml.xpath('//li/a').text, xml)
