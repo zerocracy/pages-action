@@ -276,6 +276,7 @@ class TestVitals < Minitest::Test
     rule = css[/header\s+h1\s*\{([^}]*)\}/, 1].to_s.split(';').map { |d| d.gsub(/\s*:\s*/, ':').strip }
     refute(rule.any? { |d| d.start_with?('margin-left') }, css)
     assert_includes(rule, 'border-radius:.2em', css)
+    assert_includes(rule, 'display:inline', css)
     assert_includes(rule, 'font-size:2em', css)
     assert_includes(rule, 'font-weight:bolder', css)
     assert_includes(rule, 'padding:0 .2em', css)
