@@ -13,8 +13,8 @@
     <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
     <xsl:apply-templates select="node()"/>
   </xsl:template>
-  <xsl:template match="link[contains(@href, 'zerocracy.com')]"/>
-  <xsl:template match="a[contains(@href, 'zerocracy.com')]"/>
+  <xsl:template match="link[@rel='icon' and @href='https://www.zerocracy.com/svg/logo.svg']"/>
+  <xsl:template match="a[@href='https://www.zerocracy.com' and img[@alt='Zerocracy']]"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>

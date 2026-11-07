@@ -36,4 +36,29 @@ class TestEntryAdless < Minitest::Test
       assert_includes(File.read(html), 'probe', File.read(html))
     end
   end
+
+  def test_keeps_a_fact_that_links_to_zerocracy
+    saxon = File.join(__dir__, '../target/saxon.jar')
+    skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
+    Dir.mktmpdir do |dir|
+      html = File.join(dir, 'in.html')
+      File.write(
+        html,
+        '<html><head><link rel="icon" href="https://www.zerocracy.com/svg/logo.svg"/></head><body>' \
+        '<a href="https://www.zerocracy.com"><img src="https://www.zerocracy.com/svg/logo.svg" alt="Zerocracy"/></a>' \
+        '<td><a href="https://www.zerocracy.com/about">about</a></td>' \
+        '<td><a href="https://notzerocracy.com/">other</a></td></body></html>'
+      )
+      out = File.join(dir, 'out.html')
+      qbash(
+        "java -jar #{Shellwords.escape(saxon)} -s:#{Shellwords.escape(html)} " \
+        "-xsl:#{Shellwords.escape(File.join(__dir__, '../xsl/adless.xsl'))} -o:#{Shellwords.escape(out)}"
+      )
+      got = File.read(out)
+      refute_includes(got, 'svg/logo.svg', got)
+      assert_includes(got, 'https://www.zerocracy.com/about', got)
+      assert_includes(got, '>about<', got)
+      assert_includes(got, 'https://notzerocracy.com/', got)
+    end
+  end
 end
