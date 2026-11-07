@@ -455,6 +455,14 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '-0001')
   end
 
+  def test_loads_the_palette_without_cors_mode
+    palette = Nokogiri::HTML.parse(generate_vitals_html).at_xpath('//link[contains(@href, "palette.css")]')
+    refute_nil(palette, 'the palette is not linked')
+    assert_nil(palette['crossorigin'], palette.to_html)
+    assert_nil(palette['integrity'], palette.to_html)
+    refute_includes(generate_vitals_html(adless: 'true'), 'palette.css')
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', bytes: nil)
