@@ -211,18 +211,16 @@
       <body>
         <section>
           <header>
-            <p>
-              <xsl:if test="$logo != ''">
-                <img alt="logo">
-                  <xsl:attribute name="src">
-                    <xsl:value-of select="$logo"/>
-                  </xsl:attribute>
-                </img>
-              </xsl:if>
-              <span>
-                <xsl:value-of select="$name"/>
-              </span>
-            </p>
+            <xsl:if test="$logo != ''">
+              <img alt="logo">
+                <xsl:attribute name="src">
+                  <xsl:value-of select="$logo"/>
+                </xsl:attribute>
+              </img>
+            </xsl:if>
+            <h1>
+              <xsl:value-of select="$name"/>
+            </h1>
             <xsl:if test="$ads">
               <p class="smaller gray">
                 <xsl:text>You can get a </xsl:text>

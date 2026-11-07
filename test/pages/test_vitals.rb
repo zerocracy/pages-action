@@ -270,9 +270,31 @@ class TestVitals < Minitest::Test
   def test_moves_the_project_name_away_only_from_the_logo
     f = File.join(__dir__, '../../target/css/main.css')
     skip("File not found:  #{f}") unless File.exist?(f)
-    css = File.read(f).gsub(/\s+/, '')
-    assert_includes(css, 'headerimg+span{margin-left:1em}', css)
-    refute_match(/headerspan\{[^}]*margin-left/, css, css)
+    css = File.read(f)
+    assert_match(/header\s+img\s*\+\s*h1\s*\{[^}]*margin-left:\s*1em/, css)
+    refute_match(/header\s+span\s*\{/, css, css)
+    rule = css[/header\s+h1\s*\{([^}]*)\}/, 1].to_s.split(';').map { |d| d.gsub(/\s*:\s*/, ':').strip }
+    refute(rule.any? { |d| d.start_with?('margin-left') }, css)
+    assert_includes(rule, 'border-radius:.2em', css)
+    assert_includes(rule, 'display:inline', css)
+    assert_includes(rule, 'font-size:2em', css)
+    assert_includes(rule, 'font-weight:bolder', css)
+    assert_includes(rule, 'padding:0 .2em', css)
+    assert_includes(rule, 'vertical-align:middle', css)
+  end
+
+  def test_prints_the_project_name_as_the_only_h1
+    html = Nokogiri::HTML(generate_vitals_html)
+    assert_equal(1, html.xpath('//h1').size, html.to_s)
+    assert_equal('test', html.xpath('//header/h1').text.strip, html.to_s)
+    assert_empty(html.xpath('//p/h1'), html.to_s)
+    assert_equal('similar report', html.xpath('//header/h1/following-sibling::p/a').text, html.to_s)
+  end
+
+  def test_renders_the_heading_without_a_logo
+    html = Nokogiri::HTML(generate_vitals_html(logo: ''))
+    assert_equal('test', html.xpath('//header/h1').text.strip, html.to_s)
+    assert_empty(html.xpath('//header/img'), html.to_s)
   end
 
   def test_css_links_allow_pipe_in_url
@@ -457,7 +479,7 @@ class TestVitals < Minitest::Test
 
   private
 
-  def generate_vitals_html(adless: 'false', bytes: nil)
+  def generate_vitals_html(adless: 'false', bytes: nil, logo: 'x')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -496,10 +518,10 @@ class TestVitals < Minitest::Test
           "-s:#{Shellwords.escape(input)}",
           "-xsl:#{Shellwords.escape(File.join(__dir__, '../../xsl/vitals.xsl'))}",
           "-o:#{Shellwords.escape(output)}"
-        ] + %w[
+        ] + %W[
           today=2024-09-26T04:04:04Z
           name=test
-          logo=x
+          logo=#{logo}
           palette=classic
           url=https://example.com
           version=0.0.1

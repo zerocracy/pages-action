@@ -33,15 +33,16 @@ header {
         vertical-align: middle;
     }
 
-    span {
+    h1 {
         border-radius: .2em;
+        display: inline;
         font-size: 2em;
         font-weight: bolder;
         padding: 0 .2em;
         vertical-align: middle;
     }
 
-    img + span {
+    img + h1 {
         margin-left: 1em;
     }
 }
