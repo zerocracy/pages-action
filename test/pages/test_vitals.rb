@@ -409,6 +409,13 @@ class TestVitals < Minitest::Test
     assert_includes(generate_vitals_html(bytes: 1_000_001), "(they're big)")
   end
 
+  def test_links_every_dumped_format
+    html = generate_vitals_html
+    %w[xml json yaml html].each do |format|
+      assert_includes(html, %(<a href="test.#{format}">), "The #{format} file must be linked")
+    end
+  end
+
   def test_says_there_is_no_dot_information_without_dimensions
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
