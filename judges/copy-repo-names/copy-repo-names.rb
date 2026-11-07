@@ -32,4 +32,5 @@ repos.each do |id, json|
   d.language = json[:language].to_s
   d.open_issues = json[:open_issues_count]
   d.updated_at = json[:updated_at]
+  d.archived = (json[:archived] == true).to_s
 end
