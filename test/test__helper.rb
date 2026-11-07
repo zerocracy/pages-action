@@ -50,7 +50,10 @@ class Minitest::Test
   end
 
   def compiled(file)
-    -> { load(file, true) }
+    source = File.read(file)
+    magic = source[/\A#\s*frozen_string_literal:\s*(?:true|false)\s*\n/] || ''
+    body = magic.empty? ? source : source.delete_prefix(magic)
+    eval("#{magic}lambda do\n#{body}\nend", TOPLEVEL_BINDING, file, 0) # rubocop:disable Security/Eval, Style/EvalWithLocation
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
