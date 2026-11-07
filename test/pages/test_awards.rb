@@ -714,8 +714,8 @@ class TestAwards < Minitest::Test
   end
 
   def test_names_every_week_header_across_new_year
-    ths = award_week_headers('2024-12-30T00:00:00Z', '2025-01-10T00:00:00Z')
-    assert_equal(%w[w51 w52 w1 w2], ths.map { |th| th.text.strip }, 'the week numbers are wrong')
+    headers = award_week_headers('2024-12-30T00:00:00Z', '2025-01-10T00:00:00Z')
+    assert_equal(%w[w51 w52 w1 w2], headers.map { |th| th.text.strip }, 'the week numbers are wrong')
     assert_equal(
       [
         'Week #51 in 2024, starting on Monday 2024-12-16',
@@ -723,21 +723,21 @@ class TestAwards < Minitest::Test
         'Week #1 in 2025, starting on Monday 2024-12-30',
         'Week #2 in 2025, starting on Monday 2025-01-06'
       ],
-      ths.map { |th| th['title'] },
+      headers.map { |th| th['title'] },
       'the week titles are wrong'
     )
   end
 
   def test_names_two_digit_weeks_in_autumn
-    ths = award_week_headers('2024-10-21T00:00:00Z', '2024-10-25T00:00:00Z')
-    assert_equal(%w[w40 w41 w42 w43], ths.map { |th| th.text.strip }, 'two digit weeks lost a digit')
-    assert_equal('Week #43 in 2024, starting on Monday 2024-10-21', ths.last['title'], 'the last title is wrong')
+    headers = award_week_headers('2024-10-21T00:00:00Z', '2024-10-25T00:00:00Z')
+    assert_equal(%w[w40 w41 w42 w43], headers.map { |th| th.text.strip }, 'two digit weeks lost a digit')
+    assert_equal('Week #43 in 2024, starting on Monday 2024-10-21', headers.last['title'], 'the last title is wrong')
   end
 
   def test_names_week_fifty_three
-    ths = award_week_headers('2026-12-31T00:00:00Z', '2027-01-08T00:00:00Z')
-    assert_equal(%w[w51 w52 w53 w1], ths.map { |th| th.text.strip }, 'the week 53 is not shown')
-    assert_equal('Week #53 in 2026, starting on Monday 2026-12-28', ths[2]['title'], 'the title of week 53 is wrong')
+    headers = award_week_headers('2026-12-31T00:00:00Z', '2027-01-08T00:00:00Z')
+    assert_equal(%w[w51 w52 w53 w1], headers.map { |th| th.text.strip }, 'the week 53 is not shown')
+    assert_equal('Week #53 in 2026, starting on Monday 2026-12-28', headers[2]['title'], 'week 53 has a wrong title')
   end
 
   private
