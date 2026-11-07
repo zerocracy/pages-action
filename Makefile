@@ -10,6 +10,7 @@
 SHELL := bash
 
 SOURCES = $(foreach dir,$(wildcard judges lib),$(shell find $(dir) -type f -name '*.rb'))
+SOURCE_DIRS = $(foreach dir,$(wildcard judges lib xsl js sass makes),$(shell find $(dir) -type d))
 YAMLS = $(wildcard tests/*.yml)
 FBS = $(subst tests/,target/fb/,${YAMLS:.yml=.fb})
 HTMLS = $(subst fb/,html/,${FBS:.fb=.html})
@@ -118,7 +119,7 @@ rmi: target/docker-image.txt
 verify: entry
 	./makes/verify.sh
 
-target/docker-image.txt: Makefile Dockerfile entry.sh $(SOURCES) $(wildcard xsl/*.xsl js/*.js sass/*.scss makes/*.sh) Gemfile Gemfile.lock html-minifier-config.json eslint.config.js .stylelintrc.json
+target/docker-image.txt: Makefile Dockerfile entry.sh $(SOURCES) $(SOURCE_DIRS) $(wildcard xsl/*.xsl js/*.js sass/*.scss makes/*.sh) Gemfile Gemfile.lock html-minifier-config.json eslint.config.js .stylelintrc.json
 	mkdir -p "$$(dirname $@)"
 	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action "$$(pwd)"
 	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action -q "$$(pwd)" > "$@"
