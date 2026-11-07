@@ -29,3 +29,5 @@ grep "The 'github-token' plugin parameter is set" 'log.txt'
 
 diff <(find output -mindepth 1 -printf "%P\n" | LC_ALL=C sort) \
   <(printf '%s\n' test.yaml test.xml test.json test.html test-vitals.html test-badge.svg | LC_ALL=C sort)
+grep -F 'HTML generated at: output/test-vitals.html' 'log.txt'
+grep -F 'SVG badge generated at: output/test-badge.svg' 'log.txt'
