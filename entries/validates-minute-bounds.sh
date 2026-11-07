@@ -123,7 +123,7 @@ if run_case barely-close 20 21; then
     echo "ERROR: script should reject a lifetime that is less than 10 percent above the timeout"
     exit 1
 fi
-if ! grep -Fxq "INPUT_TIMEOUT (1200 seconds) must be at least 10 percent smaller than INPUT_LIFETIME (1260 seconds)" "${tmp}/barely-close/log.txt"; then
+if ! grep -Fxq "INPUT_LIFETIME (1260 seconds) must be at least 10 percent bigger than INPUT_TIMEOUT (1200 seconds)" "${tmp}/barely-close/log.txt"; then
     echo "ERROR: expected an error about timeout and lifetime for 20 and 21 minutes"
     cat "${tmp}/barely-close/log.txt"
     exit 1
@@ -137,7 +137,7 @@ if run_case long-but-close 30 32; then
     echo "ERROR: script should reject 30 and 32 minutes, two minutes is less than 10 percent of 30"
     exit 1
 fi
-if ! grep -Fxq "INPUT_TIMEOUT (1800 seconds) must be at least 10 percent smaller than INPUT_LIFETIME (1920 seconds)" "${tmp}/long-but-close/log.txt"; then
+if ! grep -Fxq "INPUT_LIFETIME (1920 seconds) must be at least 10 percent bigger than INPUT_TIMEOUT (1800 seconds)" "${tmp}/long-but-close/log.txt"; then
     echo "ERROR: expected an error about timeout and lifetime for 30 and 32 minutes"
     cat "${tmp}/long-but-close/log.txt"
     exit 1
