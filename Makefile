@@ -78,7 +78,7 @@ rake: $(SAXON) $(HTMLS)
 stylelint: sass/*.scss
 	stylelint sass/*.scss
 
-target/stylelint.txt: sass/*.scss | target
+target/stylelint.txt: sass/*.scss .stylelintrc.json | target
 	stylelint sass/*.scss
 	touch "$@"
 
