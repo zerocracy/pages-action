@@ -38,7 +38,48 @@ class TestRepositories < Minitest::Test
     refute_includes(xml.xpath('//li').text, 'updated', 'the word updated was printed without a date')
   end
 
+  def test_omits_an_archived_repository
+    xml = list('<archived>true</archived>')
+    assert_empty(xml.xpath('//li'), xml)
+  end
+
+  def test_omits_only_archived_repositories
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='repositories'/></r>",
+      '<fb><f><what>repo-details</what><repository_name>foo/bar</repository_name></f>' \
+      '<f><what>repo-details</what><repository_name>baz/qux</repository_name>' \
+      '<archived>true</archived></f></fb>'
+    )
+    assert_equal(['foo/bar'], xml.xpath('//li/a').map(&:text), xml)
+  end
+
+  def test_keeps_an_active_repository
+    xml = list('<archived>false</archived>')
+    assert_equal('foo/bar', xml.xpath('//li/a').text, xml)
+  end
+
+  def test_keeps_a_repository_without_the_archived_field
+    xml = list('')
+    assert_equal('foo/bar', xml.xpath('//li/a').text, xml)
+  end
+
+  def test_renders_nothing_when_every_repository_is_archived
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='repositories'/></r>",
+      '<fb><f><what>repo-details</what><repository_name>foo/bar</repository_name>' \
+      '<archived>true</archived></f></fb>'
+    )
+    assert_empty(xml.xpath('//div[@class="repositories"]'), xml)
+  end
+
   private
+
+  def list(archived)
+    xslt(
+      "<r><xsl:apply-templates select='/' mode='repositories'/></r>",
+      "<fb><f><what>repo-details</what><repository_name>foo/bar</repository_name>#{archived}</f></fb>"
+    )
+  end
 
   def updated(stamp)
     xslt(
