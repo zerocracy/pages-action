@@ -7,7 +7,7 @@
   <xsl:include href="script-with-cdata.xsl"/>
   <xsl:include href="when.xsl"/>
   <xsl:include href="rounded.xsl"/>
-  <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
+  <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes" suppress-indentation="pre"/>
   <xsl:param name="today" as="xs:string"/>
   <xsl:param name="css" as="xs:string"/>
   <xsl:param name="js" as="xs:string"/>
