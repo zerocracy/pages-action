@@ -5,6 +5,8 @@
   xpaths: |
     /html
     //div[@class="qo-section"]
+    //script[contains(., "labels:['1/29','3/31','4/3']")]
+    //script[contains(., "deliverables',{labels:['1/15']")]
 -
   _id: 1
   what: pmp
@@ -17,39 +19,41 @@
   where: github
   when: 2024-06-26T22:22:22Z
 -
-  # Week 2024-W01: 3 facts in SAME week, document order = newest
+  # Week 2024-W14: 3 facts in SAME week, document order = newest
   # first. With sort-by-when-asc + position()=last(): picks
-  # _id:10 (2024-01-03, composite=100) as chronologically latest.
+  # _id:10 (2024-04-03, composite=100) as chronologically latest.
+  # All the dates stay inside the 180 days before the 'today'
+  # of the Makefile (2024-07-05), so they all reach the chart.
   _id: 10
-  when: 2024-01-03T10:00:00Z
+  when: 2024-04-03T10:00:00Z
   what: quality-of-service
   composite: 100
   average_issue_lifetime: 100
   average_pull_lifetime: 200
 -
   _id: 11
-  when: 2024-01-02T15:00:00Z
+  when: 2024-04-02T15:00:00Z
   what: quality-of-service
   composite: 150
   average_issue_lifetime: 120
   average_pull_lifetime: 210
 -
   _id: 12
-  when: 2024-01-01T08:00:00Z
+  when: 2024-04-01T08:00:00Z
   what: quality-of-service
   composite: 200
   average_issue_lifetime: 130
   average_pull_lifetime: 220
 -
-  # Week 2023-W52: one fact before new year
+  # Week 2024-W13: Monday of the week
   _id: 13
-  when: 2023-12-25T10:00:00Z
+  when: 2024-03-25T10:00:00Z
   what: quality-of-service
   composite: 80
   average_issue_lifetime: 90
   average_pull_lifetime: 180
 -
-  # Week 2024-W05: one fact mid-january
+  # Week 2024-W05: one fact at the end of January
   _id: 14
   when: 2024-01-29T14:00:00Z
   what: quality-of-service
@@ -57,10 +61,10 @@
   average_issue_lifetime: 200
   average_pull_lifetime: 350
 -
-  # Dec 31 2023 (Sun) = ISO 2023-W52, same week as _id:13 (Dec 25)
-  # This is the latest fact in 2023-W52, so it becomes the week representative
+  # Mar 31 2024 (Sun) = ISO 2024-W13, same week as _id:13 (Mar 25)
+  # This is the latest fact in 2024-W13, so it becomes the week representative
   _id: 15
-  when: 2023-12-31T22:00:00Z
+  when: 2024-03-31T22:00:00Z
   what: quality-of-service
   composite: 70
   average_issue_lifetime: 60

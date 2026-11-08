@@ -37,12 +37,12 @@ require 'qbash'
 require 'shellwords'
 
 class Minitest::Test
-  def load_it(judge, fb)
+  def load_it(judge, fb, options = {})
     $fb = fb
     $global = {}
     $local = {}
     $judge = judge
-    $options = Judges::Options.new({ 'repositories' => 'foo/foo' })
+    $options = Judges::Options.new({ 'repositories' => 'foo/foo' }.merge(options))
     $loog = Loog::NULL
     $compiled ||= {}
     $compiled[judge] ||= compiled(File.expand_path("../judges/#{judge}/#{judge}.rb", __dir__))
@@ -50,7 +50,7 @@ class Minitest::Test
   end
 
   def compiled(file)
-    eval("lambda do\n#{File.read(file)}\nend", TOPLEVEL_BINDING, file, 0) # rubocop:disable Security/Eval, Style/EvalWithLocation
+    -> { load(file, true) }
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })

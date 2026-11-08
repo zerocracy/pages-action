@@ -81,14 +81,14 @@ stylelint: sass/*.scss
 $(CSS): sass/*.scss stylelint Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
 
-$(JS): js/*.js Makefile | target/js
+$(JS): js/*.js eslint.config.js Makefile | target/js
 	eslint js/*.js
 	uglifyjs js/*.js > "$@"
 
 $(JS_TEST): $(JS) tests/symbols.js | target/js
 	cat $^ > "$@"
 
-entries: assets
+entries: assets $(SAXON)
 	./makes/entries.sh
 
 clean:
@@ -115,10 +115,10 @@ rmi: target/docker-image.txt
 	docker rmi "$${img}"
 	rm "$<"
 
-verify:
+verify: entry
 	./makes/verify.sh
 
-target/docker-image.txt: target/version.txt Makefile Dockerfile entry.sh $(SOURCES) $(wildcard xsl/*.xsl js/*.js sass/*.scss makes/*.sh) Gemfile Gemfile.lock html-minifier-config.json
+target/docker-image.txt: target/version.txt Makefile Dockerfile entry.sh $(SOURCES) $(wildcard xsl/*.xsl js/*.js sass/*.scss makes/*.sh) Gemfile Gemfile.lock html-minifier-config.json eslint.config.js .stylelintrc.json
 	mkdir -p "$$(dirname $@)"
 	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action "$$(pwd)"
 	docker build --build-arg "VERSION=$(PAGES_ACTION_VERSION)" -t pages-action -q "$$(pwd)" > "$@"

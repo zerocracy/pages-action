@@ -56,11 +56,29 @@ class TestBadge < Minitest::Test
     assert_includes(texts, '+4.0', xml)
   end
 
+  def test_counts_only_awards_of_the_last_256_days
+    xml = badge_svg(
+      '<fb><f><award>24</award><when>2023-12-01T00:00:00Z</when></f>' \
+      '<f><award>-80</award><when>2023-04-15T00:00:00Z</when></f></fb>'
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+24.0', xml)
+  end
+
   def test_rounds_a_half_away_from_zero
     xml = badge_svg(
       "<fb>#{[12, 13, 12, 12].map { |a| "<f><award>#{a}</award><when>2023-12-01T00:00:00Z</when></f>" }.join}</fb>"
     )
     assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+12.3', xml)
+  end
+
+  def test_shows_minus_for_a_negative_average
+    xml = badge_svg('<fb><f><award>-5</award><when>2023-12-01T00:00:00Z</when></f></fb>')
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '-5.0', xml)
+  end
+
+  def test_caps_a_big_negative_average
+    xml = badge_svg('<fb><f><award>-1500</award><when>2023-12-01T00:00:00Z</when></f></fb>')
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '-999.0', xml)
   end
 
   def test_shows_no_minus_for_an_average_rounded_to_zero
@@ -69,6 +87,37 @@ class TestBadge < Minitest::Test
       "<fb>#{awards.map { |a| "<f><award>#{a}</award><when>2023-12-01T00:00:00Z</when></f>" }.join}</fb>"
     )
     refute_includes(xml.xpath("//*[local-name()='text']").map(&:text), '-0.0', xml)
+  end
+
+  def test_counts_an_award_made_exactly_at_today
+    xml = badge_svg('<fb><f><award>9</award><when>2024-01-01T00:00:00</when></f></fb>')
+    texts = xml.xpath("//*[local-name()='text']").map(&:text)
+    refute_includes(texts, '+0.0', xml)
+    assert_includes(texts, '+9.0', xml)
+  end
+
+  def test_skips_an_award_made_after_today
+    xml = badge_svg(
+      '<fb><f><award>9</award><when>2024-01-01T00:00:01</when></f>' \
+      '<f><award>3</award><when>2023-12-31T00:00:00Z</when></f></fb>'
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+3.0', xml)
+  end
+
+  def test_rounds_an_average_that_is_not_a_multiple_of_five_hundredths
+    awards = [1, 0, 0, 0, 0, 0, 0]
+    xml = badge_svg(
+      "<fb>#{awards.map { |a| "<f><award>#{a}</award><when>2023-12-01T00:00:00Z</when></f>" }.join}</fb>"
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+0.1', xml)
+  end
+
+  def test_rounds_an_average_of_two_thirds
+    awards = [1, 1, 0]
+    xml = badge_svg(
+      "<fb>#{awards.map { |a| "<f><award>#{a}</award><when>2023-12-01T00:00:00Z</when></f>" }.join}</fb>"
+    )
+    assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+0.7', xml)
   end
 
   private

@@ -16,8 +16,8 @@ end
 
 def value(fact, name)
   vv = fact[name]
-  return vv.first.to_f unless name.start_with?('some_')
-  vv.sum(&:to_f) / vv.size
+  return vv.first.to_r unless name.start_with?('some_')
+  vv.sum(&:to_r) / vv.size
 end
 
 %w[quantity-of-deliverables quality-of-service].each do |qo|
@@ -42,7 +42,7 @@ end
       next unless fits?(f, prop)
       next if start[prop].zero?
       s = start[prop]
-      fresh["n_#{prop}"] = (value(f, prop) - s) / s
+      fresh["n_#{prop}"] = ((value(f, prop) - s) / s).to_f
     end
     next if fresh.empty?
     Fbe.overwrite(f, fresh)

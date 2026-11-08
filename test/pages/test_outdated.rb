@@ -3,10 +3,40 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
+require 'json'
 require 'open3'
 require_relative '../test__helper'
 
 class TestOutdated < Minitest::Test
+  def test_writes_relative_time_to_each_timestamp_element
+    script = [
+      'const OriginalDate = Date;',
+      'global.Date = class extends OriginalDate {',
+      "  constructor(...args) { super(...(args.length ? args : ['2026-10-04T12:00:00Z'])); }",
+      '};',
+      'const elements = [',
+      "  { datetime: '2026-10-02T12:00:00Z', text: 'first timestamp' },",
+      "  { datetime: '2026-10-04T11:00:00Z', text: 'second timestamp' }",
+      '];',
+      'global.$ = (arg) => {',
+      "  if (typeof arg === 'function') { return; }",
+      "  if (arg === 'time.relative-time[datetime]') {",
+      '    return { each: (callback) => elements.forEach((element, index) => callback(index, element)) };',
+      '  }',
+      '  return {',
+      "    attr: (name) => name === 'datetime' ? arg.datetime : undefined,",
+      '    text: (value) => { arg.text = value; }',
+      '  };',
+      '};',
+      File.read(File.join(__dir__, '../../js/outdated.js')),
+      'updateTimeDisplay();',
+      'process.stdout.write(JSON.stringify(elements.map(element => element.text)));'
+    ].join("\n")
+    out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
+    assert_predicate(status, :success?, out)
+    assert_equal(['2 days ago', 'one hour ago'], JSON.parse(out))
+  end
+
   def test_counts_a_month_that_ends_on_the_last_day_of_a_shorter_month
     {
       '2026-01-31T00:00:00Z' => '2026-02-28T00:00:00Z',
@@ -37,6 +67,38 @@ class TestOutdated < Minitest::Test
     assert_equal('just now', relative('2026-10-04T12:00:30Z', '2026-10-04T12:00:00Z'))
   end
 
+  def test_counts_minutes_within_the_first_hour
+    assert_equal('one minute ago', relative('2026-10-04T12:00:00Z', '2026-10-04T12:01:00Z'))
+    assert_equal('5 minutes ago', relative('2026-10-04T12:00:00Z', '2026-10-04T12:05:00Z'))
+    assert_equal('59 minutes ago', relative('2026-10-04T12:00:00Z', '2026-10-04T12:59:00Z'))
+  end
+
+  def test_shows_a_moment_minutes_ahead_in_minutes
+    assert_equal('in 5 minutes', relative('2026-10-04T12:05:00Z', '2026-10-04T12:00:00Z'))
+    assert_equal(
+      'in 59 minutes', relative('2026-10-04T12:59:00Z', '2026-10-04T12:00:00Z'),
+      'a moment just under an hour ahead must read in minutes'
+    )
+  end
+
+  def test_shows_one_minute_ahead_as_a_single_minute
+    assert_equal(
+      'in one minute', relative('2026-10-04T12:01:00Z', '2026-10-04T12:00:00Z'),
+      'a moment one minute ahead must not read as just now'
+    )
+  end
+
+  def test_switches_from_minutes_to_hours_at_sixty_minutes
+    assert_equal(
+      'one hour ago', relative('2026-10-04T12:00:00Z', '2026-10-04T13:00:00Z'),
+      'sixty minutes must read as one hour'
+    )
+    assert_equal(
+      '59 minutes ago', relative('2026-10-04T12:00:00Z', '2026-10-04T12:59:59Z'),
+      'a moment just under an hour must still read in minutes'
+    )
+  end
+
   def test_tells_the_age_of_an_outdated_page_in_relative_time
     script = [
       "let message = ''; global.$ = (s) => (s === 'footer' ? { prepend: (m) => { message = m; } } : " \
@@ -47,6 +109,17 @@ class TestOutdated < Minitest::Test
     out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
     assert_predicate(status, :success?, out)
     assert_includes(out, 'This page was generated 7 days ago.', out)
+  end
+
+  def test_warns_about_a_page_older_than_a_day
+    calls = warn_about(((24 * 60) + 30) * 60, 0)
+    assert_equal(1, calls.size, calls)
+    assert_includes(calls.first, 'prepend: <p id="page-outdated-warning"', calls)
+    assert_includes(calls.first, 'The information is most probably outdated.', calls)
+  end
+
+  def test_removes_the_warning_from_a_page_younger_than_a_day
+    assert_equal(['remove'], warn_about(23 * 60 * 60, 1))
   end
 
   private
@@ -61,5 +134,29 @@ class TestOutdated < Minitest::Test
     out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
     assert_predicate(status, :success?, out)
     out
+  end
+
+  def warn_about(age, warnings)
+    script = [
+      'const calls = [];',
+      'global.$ = (s) => {',
+      "  if (s === '#generated-time') {",
+      "    return { attr: () => new Date(Date.now() - #{age * 1000}).toISOString() };",
+      '  }',
+      "  if (s === '#page-outdated-warning') {",
+      "    return { length: #{warnings}, text: (t) => calls.push(`text: ${t}`), remove: () => calls.push('remove') };",
+      '  }',
+      "  if (s === 'footer') {",
+      '    return { prepend: (h) => calls.push(`prepend: ${h}`) };',
+      '  }',
+      '  return {};',
+      '};',
+      File.read(File.join(__dir__, '../../js/outdated.js')),
+      'displayOutdatedWarning();',
+      'process.stdout.write(JSON.stringify(calls));'
+    ].join("\n")
+    out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
+    assert_predicate(status, :success?, out)
+    JSON.parse(out)
   end
 end

@@ -449,6 +449,42 @@ class TestAwards < Minitest::Test
     assert_includes(cells, '@dave (0 awards)', xml)
   end
 
+  def test_ties_the_awards_link_to_the_hidden_rows_of_each_programmer
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>20</award>' \
+      '<when>2026-10-13T10:00:00Z</when></f>' \
+      '<f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>15</award>' \
+      '<when>2026-10-14T10:00:00Z</when></f>' \
+      '<f><is_human>1</is_human><who>2</who><who_name>bob</who_name><award>10</award>' \
+      '<when>2026-10-14T11:00:00Z</when></f></fb>',
+      'today' => '2026-10-16T12:00:00Z'
+    )
+    { 'alice' => 2, 'bob' => 1 }.each do |name, count|
+      link = xml.xpath("//tbody/tr[td[2][starts-with(normalize-space(.), '@#{name} (')]]/td[2]/a[@onclick]")
+      assert_equal(1, link.size, xml)
+      assert_equal("$('.p_#{name}').toggle(); return false;", link.first['onclick'], xml)
+      assert_equal(count, xml.xpath("//tbody/tr[contains(concat(' ', @class, ' '), ' p_#{name} ')]").size, xml)
+    end
+  end
+
+  def test_hides_the_payouts_row_behind_the_same_link
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>alice</who_name><award>20</award>' \
+      '<when>2026-10-14T10:00:00Z</when></f>' \
+      '<f><what>reconciliation</what><who>1</who><who_name>alice</who_name><when>2026-10-06T00:00:00Z</when>' \
+      '<since>2026-08-01T00:00:00Z</since><awarded>100</awarded><balance>130</balance><payout>70</payout></f></fb>',
+      'today' => '2026-10-16T12:00:00Z'
+    )
+    link = xml.xpath("//tbody/tr[td[2][starts-with(normalize-space(.), '@alice (')]]/td[2]/a[@onclick]").first
+    assert_equal("$('.p_alice').toggle(); return false;", link['onclick'], xml)
+    rows = xml.xpath("//tbody/tr[contains(concat(' ', @class, ' '), ' p_alice ')]")
+    assert_equal(2, rows.size, xml)
+    assert_includes(rows.map { |tr| tr.xpath('td[2]').text.strip }, 'Payouts:', xml)
+    assert_equal(['display: none;'] * 2, rows.map { |tr| tr['style'] }, xml)
+  end
+
   def test_renders_a_payout_without_since
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='awards'/></r>",
@@ -635,5 +671,45 @@ class TestAwards < Minitest::Test
     )
     assert_empty(xml.xpath("//tbody/tr[contains(., '@later')]"), xml)
     assert_equal(1, xml.xpath("//tbody/tr[contains(., '@jeff')]").size, xml)
+  end
+
+  def test_renders_awards_header_with_five_digit_and_negative_years
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>future</who_name>
+          <award>10</award>
+          <when>10000-01-05T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '10000-01-06T12:00:00Z'
+    )
+    refute_empty(xml.xpath('//table[@id="awards"]//th[starts-with(text(), "w")]'), xml)
+    assert_includes(xml.xpath('//table[@id="awards"]//th/@title').map(&:text).join(' '), '10000')
+  end
+
+  def test_renders_awards_header_with_negative_year
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>ancient</who_name>
+          <award>10</award>
+          <when>-0001-01-05T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '-0001-01-06T12:00:00Z'
+    )
+    refute_empty(xml.xpath('//table[@id="awards"]//th[starts-with(text(), "w")]'), xml)
+    assert_includes(xml.xpath('//table[@id="awards"]//th/@title').map(&:text).join(' '), '-0001')
   end
 end

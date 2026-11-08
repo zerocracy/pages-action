@@ -133,6 +133,27 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//tr[td[1]="total_stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
   end
 
+  def test_dot_prints_week_numbers_and_mondays_across_new_year
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2026-01-06T00:00:00Z</when>' \
+      '<total_stars>7</total_stars></f></fb>',
+      'today' => '2026-01-08T12:00:00Z'
+    )
+    th = xml.xpath('//th[@class="right"]')
+    assert_equal(%w[w51 w52 w1 w2], th.map { |h| h.text.strip }, xml)
+    assert_equal(
+      [
+        'Week #51 in 2025, starting on Monday 2025-12-15',
+        'Week #52 in 2025, starting on Monday 2025-12-22',
+        'Week #1 in 2026, starting on Monday 2025-12-29',
+        'Week #2 in 2026, starting on Monday 2026-01-05'
+      ],
+      th.map { |h| h['title'] },
+      xml
+    )
+  end
+
   def test_dot_shows_one_of_many_values
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
@@ -198,11 +219,35 @@ class TestVitals < Minitest::Test
       0.0 => ['0.0', '+0.0'],
       10.5 => ['0.00', '+10.50'],
       -7.8 => ['0.00', '-7.80'],
-      10.6 => ['0.00', '+10.60']
+      10.6 => ['0.00', '+10.60'],
+      1.005 => ['0.00', '+1.01'],
+      0.145 => ['0.00', '+0.15'],
+      -1.005 => ['0.00', '-1.01'],
+      -0.145 => ['0.00', '-0.15'],
+      1.0049 => ['0.00', '+1.00'],
+      -1.0049 => ['0.00', '-1.00'],
+      1.0051 => ['0.00', '+1.01'],
+      -1.0051 => ['0.00', '-1.01'],
+      1_000_000.065 => ['0.00', '+1000000.07'],
+      -1_000_000.065 => ['0.00', '-1000000.07'],
+      1.0e-7 => ['0.00', '+0.00'],
+      -1.0e-7 => ['0.00', '0.00'],
+      1.0e20 => ['0.00', '+100000000000000000000.00'],
+      0.14499999999999996 => ['0.00', '+0.14'],
+      1.0049999999999997 => ['0.00', '+1.00']
     }.each do |value, (format, expected)|
       xml = xslt("<r><xsl:value-of select=\"z:format-signed(#{value}, '#{format}')\"/></r>", '<fb/>')
       assert_equal(expected, xml.xpath('/r/text()').to_s, "Failed for value #{value} with format #{format}: #{xml}")
     end
+  end
+
+  def test_fn_rounded_preserves_nonfinite_values
+    %w[NaN INF -INF].each do |value|
+      xml = xslt("<r><xsl:value-of select=\"z:rounded(xs:double('#{value}'), 100)\"/></r>", '<fb/>')
+      assert_equal(value, xml.xpath('/r/text()').to_s, xml)
+    end
+    xml = xslt('<r><xsl:value-of select="z:rounded(1, 0)"/></r>', '<fb/>')
+    assert_equal('NaN', xml.xpath('/r/text()').to_s, xml)
   end
 
   def test_fn_format_signed_invalid_formats
@@ -216,10 +261,18 @@ class TestVitals < Minitest::Test
   def test_bylaws_responsive_columns_in_css
     f = File.join(__dir__, '../../target/css/main.css')
     skip("File not found:  #{f}") unless File.exist?(f)
+    css = File.read(f).gsub(/\s+/, ' ').gsub(/\s*([{}:;()])\s*/, '\\1')
+    assert_includes(css, '.bylaws .columns{column-count:5}', 'Desktop layout broken')
+    assert_includes(css, '@media(max-width:1280px){.bylaws .columns{column-count:2}}', 'Tablet layout broken')
+    assert_includes(css, '@media(max-width:768px){.bylaws .columns{column-count:1}}', 'Phone layout broken')
+  end
+
+  def test_moves_the_project_name_away_only_from_the_logo
+    f = File.join(__dir__, '../../target/css/main.css')
+    skip("File not found:  #{f}") unless File.exist?(f)
     css = File.read(f).gsub(/\s+/, '')
-    assert_includes(css, '.bylaws.columns{column-count:5}', 'Desktop layout broken')
-    assert_includes(css, '@media(max-width:1280px){.bylaws.columns{column-count:2}}', 'Tablet layout broken')
-    assert_includes(css, '@media(max-width:768px){.bylaws.columns{column-count:1}}', 'Phone layout broken')
+    assert_includes(css, 'headerimg+span{margin-left:1em}', css)
+    refute_match(/headerspan\{[^}]*margin-left/, css, css)
   end
 
   def test_css_links_allow_pipe_in_url
@@ -237,6 +290,51 @@ class TestVitals < Minitest::Test
     refute_nil(link, xml)
     assert_equal('https://cdn.example.com/app.css?next=a|b', link['href'])
     assert_equal('sha384-abc123', link['integrity'])
+  end
+
+  def test_js_links_keep_only_lines_with_a_hash
+    xml = xslt(
+      <<~XSL,
+        <r>
+          <xsl:call-template name="js-links">
+            <xsl:with-param name="links"
+              select="'https://cdn.example.com/a.js|abc&#10;https://cdn.example.com/b.js&#10;&#10;https://cdn.example.com/c.js|'"/>
+          </xsl:call-template>
+        </r>
+      XSL
+      '<fb/>'
+    )
+    scripts = xml.xpath('/r/script')
+    assert_equal(1, scripts.size, xml)
+    assert_equal('https://cdn.example.com/a.js', scripts.first['src'], xml)
+    assert_equal('sha384-abc', scripts.first['integrity'], xml)
+  end
+
+  def test_css_links_skip_a_line_without_a_hash
+    xml = xslt(
+      <<~XSL,
+        <r>
+          <xsl:call-template name="css-links">
+            <xsl:with-param name="links" select="'https://cdn.example.com/app.css'"/>
+          </xsl:call-template>
+        </r>
+      XSL
+      '<fb/>'
+    )
+    assert_empty(xml.xpath('/r/link'), xml)
+  end
+
+  def test_page_loads_the_scripts_given_in_js_links
+    xml = xslt(
+      '<xsl:apply-imports/>',
+      '<fb/>',
+      'today' => '2024-09-26T04:04:04Z', 'css' => '', 'js' => '', 'name' => 'test', 'logo' => 'x',
+      'url' => 'https://example.com', 'version' => '0.0.1', 'latest-version' => '0.0.1', 'fbe' => '0.0.50',
+      'adless' => 'false', 'css-links' => '', 'js-links' => 'https://cdn.example.com/jquery.js|xyz'
+    )
+    assert_equal(
+      1, xml.xpath("//head/script[@src='https://cdn.example.com/jquery.js' and @integrity='sha384-xyz']").size, xml
+    )
   end
 
   def test_adless_page_does_not_name_zerocracy_in_its_description
@@ -293,8 +391,22 @@ class TestVitals < Minitest::Test
     {
       10_000_001 => '10MB', 25_600_000 => '26MB', 10_001 => '10kB', 12_499 => '12kB', 10_000 => '10000 bytes'
     }.each do |size, text|
-      assert_includes(generate_vitals_html(size:), "#{text}</span>", "#{size} bytes must be shown as #{text}")
+      html = generate_vitals_html(bytes: size)
+      assert_includes(html, "#{text}</span>", "#{size} bytes must be shown as #{text}")
+      assert_includes(html, "title=\"#{size} bytes\"", 'The tooltip must use the supplied byte size')
     end
+  end
+
+  def test_does_not_interpret_the_xml_fact_count_as_bytes_without_a_size_parameter
+    html = generate_vitals_html
+    assert_includes(html, '3 facts, version')
+    refute_match(/title="\d+ bytes"/, html)
+    refute_includes(html, "(they're big)")
+  end
+
+  def test_uses_the_byte_size_for_the_large_file_note
+    refute_includes(generate_vitals_html(bytes: 1_000_000), "(they're big)")
+    assert_includes(generate_vitals_html(bytes: 1_000_001), "(they're big)")
   end
 
   def test_says_there_is_no_dot_information_without_dimensions
@@ -307,16 +419,52 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//p').text, 'There is no information about the dimensions of terrain.', xml)
   end
 
+  def test_renders_dot_with_five_digit_and_negative_years
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '
+      <fb size="1" version="0.0.0">
+        <f>
+          <what>dimensions-of-terrain</what>
+          <when>10000-01-05T00:00:00Z</when>
+          <total_issues>1</total_issues>
+        </f>
+      </fb>
+      ',
+      'today' => '10000-01-06T12:00:00Z'
+    )
+    refute_empty(xml.xpath('//table//th[starts-with(text(), "w")]'), xml)
+    assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '10000')
+  end
+
+  def test_renders_dot_with_negative_year
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '
+      <fb size="1" version="0.0.0">
+        <f>
+          <what>dimensions-of-terrain</what>
+          <when>-0001-01-05T00:00:00Z</when>
+          <total_issues>1</total_issues>
+        </f>
+      </fb>
+      ',
+      'today' => '-0001-01-06T12:00:00Z'
+    )
+    refute_empty(xml.xpath('//table//th[starts-with(text(), "w")]'), xml)
+    assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '-0001')
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false', size: 0)
+  def generate_vitals_html(adless: 'false', bytes: nil)
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
       input = File.join(dir, 'input.xml')
       File.write(input, <<~XML)
         <?xml version="1.0" encoding="UTF-8"?>
-        <fb size="#{size}">
+        <fb size="3">
           <f>
             <when>2024-07-03T22:22:22Z</when>
             <what>quality-of-service</what>
@@ -361,7 +509,8 @@ class TestVitals < Minitest::Test
           js-links=
           css=body{}
           js=
-        ].push("adless=#{adless}").map { |p| Shellwords.escape(p) },
+        ].push("adless=#{adless}")
+          .concat(bytes.nil? ? [] : ["factbase-bytes=#{bytes}"]).map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
       File.read(output)

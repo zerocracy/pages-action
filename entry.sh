@@ -65,7 +65,7 @@ case "${INPUT_URL}" in
         exit 1
         ;;
 esac
-if [ -n "${INPUT_URL}" ] && ! [[ "${INPUT_URL}" =~ ^https?://[^/:@[:space:]][^[:space:]]*$ ]]; then
+if [ -n "${INPUT_URL}" ] && ! [[ "${INPUT_URL}" =~ ^[hH][tT][tT][pP][sS]?://[^/:@[:space:]][^[:space:]]*$ ]]; then
     echo 'INPUT_URL must be an absolute URL that starts with http:// or https://' >&2
     exit 1
 fi
@@ -74,7 +74,7 @@ echo "The workspace directory is: $(pwd)"
 if [ -z "${INPUT_FACTBASE}" ]; then
     echo "No factbase parameter provided, looking for *.fb files in current directory..."
     fb_files=()
-    for candidate in *.fb; do
+    for candidate in *.fb .*.fb; do
         if [ -f "${candidate}" ]; then
             fb_files+=("${candidate}")
         fi
@@ -138,7 +138,7 @@ trap cleanup EXIT
 # INT from a cancelled job reaches "judges" at once, and the script waits for
 # it to stop before cleaning up and exiting with the status of that signal.
 child=''
-judges() {
+run_judges() {
     ${JUDGES} "$@" &
     child=$!
     wait "${child}"
@@ -198,12 +198,21 @@ fi
 lifetime=$((lifetime * 60))
 echo "The update will run for up to ${lifetime} seconds"
 if [ $((lifetime - timeout)) -lt $((timeout / 10)) ]; then
-    echo "INPUT_TIMEOUT (${timeout} seconds) must be at least 10 percent smaller than INPUT_LIFETIME (${lifetime} seconds)" >&2
+    echo "INPUT_LIFETIME (${lifetime} seconds) must be at least 10 percent bigger than INPUT_TIMEOUT (${timeout} seconds)" >&2
     exit 1
 fi
 
+# The "judges" splits these lists on commas and keeps the spaces around each
+# name, so "when, what" would mean the columns "when" and " what".
+trimmed() {
+    sed -E 's/[[:space:]]*,[[:space:]]*/,/g; s/^[[:space:]]+//; s/[[:space:]]+$//' <<< "$1"
+}
+INPUT_COLUMNS=$(trimmed "${INPUT_COLUMNS}")
+INPUT_HIGHLIGHTED=$(trimmed "${INPUT_HIGHLIGHTED}")
+INPUT_HIDDEN=$(trimmed "${INPUT_HIDDEN}")
+
 for f in yaml xml json html; do
-    judges "${gopts[@]}" print \
+    run_judges "${gopts[@]}" print \
         --format "${f}" \
         --columns "${INPUT_COLUMNS}" \
         --highlighted "${INPUT_HIGHLIGHTED}"\
@@ -230,24 +239,15 @@ while IFS= read -r o; do
         x="${x#"${x%%[![:space:]]*}"}"
         v="${k}=${x}"
     fi
-    if [[ "${v}" == "github_token="* ]]; then
-        if [ "${v}" = "github_token=" ]; then
+    if [[ "${v,,}" == "github_token="* ]]; then
+        if [ "${v,,}" = "github_token=" ]; then
             echo "The 'github_token' option is empty, ignoring it"
             continue
         fi
-        if [ "${INPUT_VERBOSE}" == 'true' ]; then
-            set +x
-        fi
-        echo "::add-mask::${v#github_token=}"
-        if [ "${INPUT_VERBOSE}" == 'true' ]; then
-            set -x
-        fi
+        echo "::add-mask::${v#*=}"
     fi
     options+=("--option=${v}")
 done <<< "${INPUT_OPTIONS}"
-if [ "${INPUT_VERBOSE}" == 'true' ]; then
-    set -x
-fi
 github_token_found=false
 for opt in "${options[@]}"; do
     if [[ "${opt,,}" == "--option=github_token="* ]]; then
@@ -255,6 +255,9 @@ for opt in "${options[@]}"; do
         break
     fi
 done
+if [ "${INPUT_VERBOSE}" == 'true' ]; then
+    set -x
+fi
 if [ "${github_token_found}" == "true" ]; then
     echo "The 'github_token' option is set, using it"
 fi
@@ -282,8 +285,9 @@ else
     fi
     echo "The 'today' is set to: '${INPUT_TODAY}'"
 fi
+options+=("--option=today=${INPUT_TODAY}")
 
-judges "${gopts[@]}" update \
+run_judges "${gopts[@]}" update \
     --shuffle= \
     --no-log \
     --summary=off \
@@ -298,7 +302,7 @@ judges "${gopts[@]}" update \
 #  HTML keeps its value in a title attribute. Until "judges" drops such a
 #  property from every format, passing the option here only keeps the page and
 #  the badge reading the same view of the factbase, it does not hide anything.
-judges "${gopts[@]}" print \
+run_judges "${gopts[@]}" print \
     --format xml \
     --columns "${INPUT_COLUMNS}" \
     --highlighted "${INPUT_HIGHLIGHTED}" \
@@ -330,7 +334,9 @@ url=${INPUT_URL}
 while [[ "${url}" == */ ]]; do
     url="${url%/}"
 done
-if [ -z "${url}" ]; then
+if [ -z "${url}" ] && { [ -z "${GITHUB_REPOSITORY_OWNER}" ] || [ -z "${GITHUB_REPOSITORY}" ]; }; then
+    echo "The 'url' parameter is empty and GITHUB_REPOSITORY is not known, the page will have no absolute links"
+elif [ -z "${url}" ]; then
     url=https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}
     repo=${GITHUB_REPOSITORY#*/}
     owner=${GITHUB_REPOSITORY_OWNER}
@@ -393,6 +399,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "today=${INPUT_TODAY}" \
     "version=${VERSION}" \
     "latest-version=${LATEST_VERSION}" \
+    "factbase-bytes=$(wc -c < "${INPUT_FACTBASE}")" \
     "fbe=$(cd "${SELF}" && bundle info fbe | head -1 | cut -f5 -d' ' | sed s/[\(\)]//g)" \
     "name=${name}" \
     "logo=${logo}" \

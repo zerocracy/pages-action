@@ -109,7 +109,7 @@ if run_case too-close 5 5; then
     echo "ERROR: script should reject a timeout that is not smaller than lifetime"
     exit 1
 fi
-if ! grep -Fxq "INPUT_TIMEOUT (300 seconds) must be at least 10 percent smaller than INPUT_LIFETIME (300 seconds)" "${tmp}/too-close/log.txt"; then
+if ! grep -Fxq "INPUT_LIFETIME (300 seconds) must be at least 10 percent bigger than INPUT_TIMEOUT (300 seconds)" "${tmp}/too-close/log.txt"; then
     echo "ERROR: expected an error about timeout and lifetime"
     cat "${tmp}/too-close/log.txt"
     exit 1
