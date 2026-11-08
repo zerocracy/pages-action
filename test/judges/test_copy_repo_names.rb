@@ -66,4 +66,31 @@ class TestCopyRepoNames < Minitest::Test
     end
     assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
   end
+
+  def test_handles_repository_with_nil_description_and_language
+    fb = Factbase.new
+    award = fb.insert
+    award.what = 'award'
+    award.repository = 12_345
+    client = Object.new
+    client.define_singleton_method(:repository) do |_id|
+      {
+        full_name: 'zerocracy/.github', description: nil,
+        stargazers_count: 5, forks_count: 1, language: nil,
+        open_issues_count: 0, updated_at: '2024-01-01T00:00:00Z'
+      }
+    end
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it('copy-repo-names', fb)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    details = fb.query('(eq what "repo-details")').each.to_a
+    assert_equal(1, details.length, fb.to_json)
+    assert_nil(details.first['description'], fb.to_json)
+    assert_nil(details.first['language'], fb.to_json)
+    assert_equal('zerocracy/.github', details.first.repository_name, fb.to_json)
+  end
 end

@@ -26,10 +26,10 @@ repos.each do |id, json|
   d.where = 'github'
   d.repository = id
   d.repository_name = json[:full_name]
-  d.description = json[:description].to_s
+  d.description = json[:description] unless json[:description].to_s.empty?
   d.stars = json[:stargazers_count]
   d.forks = json[:forks_count]
-  d.language = json[:language].to_s
+  d.language = json[:language] unless json[:language].to_s.empty?
   d.open_issues = json[:open_issues_count]
   d.updated_at = json[:updated_at]
 end
