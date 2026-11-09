@@ -350,11 +350,11 @@ html=${staging}/${name}-vitals.html
 
 echo "Calculating integrity hashes for CSS files..."
 declare -a css_urls=(
-    "https://cdn.jsdelivr.net/npm/tacit-css@1.9.5/dist/tacit-css.min.css"
+    "https://cdn.jsdelivr.net/npm/tacit-css@1.9.7/dist/tacit-css.min.css"
     "https://cdn.jsdelivr.net/npm/drops@0.3.2/dist/drops-0.3.2.min.css"
 )
 declare -a css_hashes=(
-    "QF+7u3GMRHdbU5nzxyNvTNkV0xQtQXEbAraWZcussxwNUsY3zrmDeAKc8jZ5jfTb"
+    "D/LLHCkqHnoJ7y04sSEBX95s7wMjBn45wtHneRfp03QBgt6+a6Pz2eLUC4N1CAI0"
     "p1uPBv+9Vp2mQmUJHUrsDnDVbg88Upi66Gf8uTcVy0I2ZIHbSUIEj3q+S6D7B1Lz"
 )
 if [ "${INPUT_ADLESS}" != 'true' ]; then
@@ -371,17 +371,19 @@ done
 css_links="${css_links%$'\n'}"
 
 echo "Calculating integrity hashes for JS files..."
+# Tablesorter 2.32.0 uses $.trim and $.isFunction, removed in jQuery 4.
+# UNPKG serves Chroma's .cjs bundle with a browser-compatible JavaScript MIME type.
 declare -a js_urls=(
-    "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
-    "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js"
-    "https://cdn.jsdelivr.net/npm/chart.js@4.5.1"
-    "https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"
+    "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+    "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.32.0/js/jquery.tablesorter.min.js"
+    "https://cdn.jsdelivr.net/npm/chart.js@4.6.1"
+    "https://unpkg.com/chroma-js@3.2.0/dist/chroma.min.cjs"
 )
 declare -a js_hashes=(
-    "vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK"
-    "+PEWXCk8F17zxsQsEjkuHjUN4yFMHv03eKxKLrqwDql8FJQM0NeSvHRZFVLfXyn7"
-    "jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ"
-    "VRhlkYEqoAXsWzoORIQL0gHdX0BvQoQG89GxEj7I4xlffttgMvoMsQr7E/IWGK9T"
+    "1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+    "ArwQRauoLx1SFi62tbVaz0/5G73uk4P9LSFlRxe0JBRcw1DuzgAFIt0EG8XNtHXp"
+    "Emf5ZVIUiarAdhkgtqK+5/Z5qIvM6QoVrS+qAVtfyZVuD5lIHrac0me485+Antp0"
+    "r8cXlFAps0e3Nzi0QOPFhhjZOCsr+0vMu/HAECigYk5MY9E8LY/L2wlqlwUDK05S"
 )
 js_links=""
 for i in "${!js_urls[@]}"; do
