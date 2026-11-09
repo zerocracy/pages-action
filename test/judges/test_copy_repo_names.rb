@@ -6,6 +6,7 @@
 require 'factbase'
 require 'fbe/fb'
 require 'fbe/octo'
+require 'octokit'
 require_relative '../test__helper'
 
 class TestCopyRepoNames < Minitest::Test
@@ -65,5 +66,48 @@ class TestCopyRepoNames < Minitest::Test
       Fbe.define_singleton_method(:octo, orig)
     end
     assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
+  end
+
+  def test_stops_when_the_github_quota_runs_out
+    fb = Factbase.new
+    award = fb.insert
+    award.what = 'award'
+    award.repository = 11
+    client = Object.new
+    client.define_singleton_method(:repository) { |_id| raise(Fbe::OffQuota, 'off quota') }
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it('copy-repo-names', fb)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
+  end
+
+  def test_skips_a_repository_that_github_cannot_load
+    fb = Factbase.new
+    [11, 22].each do |id|
+      award = fb.insert
+      award.what = 'award'
+      award.repository = id
+    end
+    client = Object.new
+    client.define_singleton_method(:repository) do |id|
+      raise(Octokit::NotFound) if id == 11
+      {
+        full_name: 'acme/public', description: 'shown', stargazers_count: 4,
+        forks_count: 1, language: 'Ruby', open_issues_count: 0, updated_at: '2024-01-01T00:00:00Z'
+      }
+    end
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it('copy-repo-names', fb)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    names = fb.query('(eq what "repo-details")').each.map(&:repository)
+    assert_equal([22], names, fb.to_json)
   end
 end

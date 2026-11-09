@@ -38,6 +38,19 @@ class TestNormalizeMetrics < Minitest::Test
     assert_equal([0.0, 0.0], fb.query('(always)').each.map { |f| f['n_total_issues'].first })
   end
 
+  def test_normalizes_a_composite_metric
+    fb = Factbase.new
+    [100, 120].each_with_index do |value, day|
+      f = fb.insert
+      f.what = 'quality-of-service'
+      f.when = Time.parse("2024-05-1#{8 + day}T22:22:22Z")
+      f.composite = value
+    end
+    load_it('normalize-metrics', fb)
+    later = fb.query('(eq composite 120)').each.to_a.first
+    assert_in_delta(0.2, later['n_composite'].first, 0.0001, fb.to_json)
+  end
+
   def test_keeps_zero_for_equal_raw_samples_beyond_float_range
     fb = Factbase.new
     2.times do |day|

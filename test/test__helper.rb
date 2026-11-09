@@ -25,6 +25,46 @@ unless SimpleCov.running || ARGV.include?('--no-cov')
   end
 end
 
+module JudgeReloadCoverage
+  @hits = {}
+
+  def self.remember(path)
+    return unless SimpleCov.running
+    lines = Coverage.peek_result.dig(path, :lines)
+    return unless lines
+    acc = (@hits[path] ||= [])
+    lines.each_with_index do |hit, idx|
+      next if hit.nil?
+      acc[idx] = [acc[idx].to_i, hit].max
+    end
+  end
+
+  def self.apply(result)
+    @hits.each do |path, hits|
+      entry = result[path]
+      next unless entry.is_a?(Hash)
+      key = entry.key?(:lines) ? :lines : 'lines'
+      lines = entry[key]
+      next unless lines.is_a?(Array)
+      lines = lines.dup
+      entry[key] = lines
+      hits.each_with_index do |hit, idx|
+        next if hit.nil? || lines[idx].nil?
+        lines[idx] = [lines[idx].to_i, hit].max
+      end
+    end
+    result
+  end
+end
+
+module ApplyJudgeReloadCoverage
+  def result_with_not_loaded_files
+    JudgeReloadCoverage.apply(@result)
+    super
+  end
+end
+SimpleCov.singleton_class.prepend(ApplyJudgeReloadCoverage) unless ARGV.include?('--no-cov')
+
 require 'minitest/reporters'
 Minitest::Reporters.use!([Minitest::Reporters::SpecReporter.new])
 Minitest.load(:minitest_reporter)
@@ -51,7 +91,10 @@ class Minitest::Test
   end
 
   def compiled(file)
-    -> { load(file, true) }
+    lambda {
+      load(file, true)
+      JudgeReloadCoverage.remember(file)
+    }
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
