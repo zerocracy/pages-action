@@ -712,4 +712,29 @@ class TestAwards < Minitest::Test
     refute_empty(xml.xpath('//table[@id="awards"]//th[starts-with(text(), "w")]'), xml)
     assert_includes(xml.xpath('//table[@id="awards"]//th/@title').map(&:text).join(' '), '-0001')
   end
+
+  def test_hides_awards_of_bots
+    fb =
+      '<fb><f><is_human>1</is_human><who>1</who><who_name>jeff</who_name><award>10</award>' \
+      '<when>2024-07-02T00:00:00Z</when></f>' \
+      '<f><is_human>0</is_human><who>2</who><who_name>rultor</who_name><award>500</award>' \
+      '<when>2024-07-02T00:00:00Z</when></f></fb>'
+    xml = xslt("<r><xsl:apply-templates select='/' mode='awards'/></r>", fb, 'today' => '2024-07-05T00:00:00Z')
+    assert_empty(xml.xpath('//a[@href="https://github.com/rultor"]'), xml)
+    refute_match(/500/, xml.to_s, xml)
+    assert_equal(['+10'], xml.xpath('//tfoot//td[last()]/span/text()').map(&:to_s), xml)
+  end
+
+  def test_fn_payables_ignores_awards_of_bots
+    xml = xslt(
+      "<xsl:copy-of select=\"z:payables('rultor')\"/>",
+      '<fb><f><what>reconciliation</what><who>2</who><who_name>rultor</who_name>' \
+      '<when>2024-07-01T00:00:00Z</when><since>2024-06-01T00:00:00Z</since>' \
+      '<awarded>0</awarded><payout>0</payout><balance>0</balance></f>' \
+      '<f><is_human>0</is_human><who>2</who><who_name>rultor</who_name><award>500</award>' \
+      '<when>2024-07-02T00:00:00Z</when></f></fb>',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    assert_equal('0', xml.xpath('/td/text()').to_s, xml)
+  end
 end
