@@ -38,6 +38,42 @@ class TestBadge < Minitest::Test
     assert_empty(xml.xpath("//*[local-name()='g'][@transform]"), xml)
   end
 
+  def test_centers_avg_label_when_adless
+    xml = badge_svg('<fb/>', 'adless=true')
+    labels = xml.xpath("//*[local-name()='text'][text()='avg']")
+    refute_empty(labels, 'Badge must contain avg text elements')
+    labels.each do |label|
+      assert_equal('25', label['x'], "In adless mode, avg text must be centered at x=25:\n#{xml}")
+    end
+  end
+
+  def test_offsets_avg_label_for_logo_when_not_adless
+    xml = badge_svg('<fb/>', 'adless=false')
+    labels = xml.xpath("//*[local-name()='text'][text()='avg']")
+    refute_empty(labels, 'Badge must contain avg text elements')
+    labels.each do |label|
+      assert_equal('35', label['x'], "In normal mode with logo, avg text must be at x=35:\n#{xml}")
+    end
+  end
+
+  def test_offsets_avg_label_by_default_without_adless_param
+    xml = badge_svg('<fb/>')
+    labels = xml.xpath("//*[local-name()='text'][text()='avg']")
+    refute_empty(labels, 'Badge must contain avg text elements')
+    labels.each do |label|
+      assert_equal('35', label['x'], "By default with logo, avg text must be at x=35:\n#{xml}")
+    end
+  end
+
+  def test_centers_avg_label_when_adless_with_awards
+    xml = badge_svg('<fb><f><award>10</award><when>2023-12-01T00:00:00Z</when></f></fb>', 'adless=true')
+    labels = xml.xpath("//*[local-name()='text'][text()='avg']")
+    refute_empty(labels)
+    labels.each do |label|
+      assert_equal('25', label['x'], "In adless mode with awards, avg text must be centered at x=25:\n#{xml}")
+    end
+  end
+
   def test_shows_logo_when_not_adless
     xml = badge_svg('<fb/>', 'adless=false')
     refute_empty(xml.xpath("//*[local-name()='g'][@transform]"), xml)
