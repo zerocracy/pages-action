@@ -492,7 +492,7 @@ class TestVitals < Minitest::Test
       output = File.join(dir, 'vitals.html')
       qbash(
         [
-          "java -jar #{Shellwords.escape(saxon)}",
+          "java -cp #{Shellwords.escape(File.join(File.dirname(saxon), '*'))} net.sf.saxon.Transform",
           "-s:#{Shellwords.escape(input)}",
           "-xsl:#{Shellwords.escape(File.join(__dir__, '../../xsl/vitals.xsl'))}",
           "-o:#{Shellwords.escape(output)}"
