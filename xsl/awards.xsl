@@ -322,7 +322,7 @@
     <tr>
       <td class="avatar" title="{$id}">
         <a href="https://github.com/{$name}">
-          <img src="https://github.com/{$name}.png" width="64" height="64" alt="@{$name}"/>
+          <img src="https://github.com/{$name}.png?size=64" width="64" height="64" alt="@{$name}" loading="lazy"/>
         </a>
       </td>
       <td>
