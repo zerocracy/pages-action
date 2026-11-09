@@ -7,7 +7,7 @@
   <xsl:variable name="days" select="z:pmp('hr', 'days_of_running_balance', '28')"/>
   <xsl:variable name="weeks" select="xs:integer(ceiling(xs:float($days) div 7))"/>
   <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration(concat('P', $days, 'D'))"/>
-  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today) and is_human = 1]"/>
+  <xsl:variable name="facts" select="$fb/f[award and z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today) and not(is_human = 0)]"/>
   <xsl:function name="z:monday" as="xs:date">
     <!--
     Takes week number (e.g. 4) and returns ISO-8601 date of the
@@ -43,7 +43,7 @@
     <xsl:variable name="recs" select="$fb/f[what='reconciliation' and who_name=$name and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
     <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
-    <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
+    <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and not(is_human = 0) and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
   </xsl:function>
   <xsl:function name="z:payables">
     <!--
@@ -67,7 +67,7 @@
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
+          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and not(is_human = 0) and who_name=$name and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer(z:value($rec/awarded))"/>
           <xsl:variable name="payable" select="$accumulated - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance))"/>
           <xsl:attribute name="title">
