@@ -26,4 +26,9 @@ grep -q 'width="93"' "${badge}"
 grep -q 'height="20"' "${badge}"
 grep -q 'fill="#e05d44"' "${badge}"
 grep -q ">avg<" "${badge}"
+grep -q 'x="25"' "${badge}"
+if grep -q 'x="35"' "${badge}"; then
+  echo 'Found x="35" in adless badge'
+  exit 1
+fi
 grep -qE ">[+]0(\.0)?<" "${badge}"

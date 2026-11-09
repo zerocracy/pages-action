@@ -25,7 +25,16 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:variable name="badgeHeight" select="20"/>
-    <xsl:variable name="logoWidth" select="20"/>
+    <xsl:variable name="logoWidth">
+      <xsl:choose>
+        <xsl:when test="$adless = 'true'">
+          <xsl:value-of select="0"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="20"/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
     <xsl:variable name="fontSize" select="11"/>
     <xsl:variable name="leftWidth" select="50"/>
     <xsl:variable name="rightWidth">
