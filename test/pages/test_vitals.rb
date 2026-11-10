@@ -409,6 +409,26 @@ class TestVitals < Minitest::Test
     assert_includes(generate_vitals_html(bytes: 1_000_001), "(they're big)")
   end
 
+  def test_links_every_dumped_format
+    html = generate_vitals_html
+    %w[xml json yaml html].each do |format|
+      assert_includes(html, %(<a href="test.#{format}">), "The #{format} file must be linked")
+    end
+  end
+
+  def test_links_every_dumped_format_under_the_factbase_name
+    html = generate_vitals_html(name: 'stats')
+    %w[xml json yaml html].each do |format|
+      assert_includes(html, %(<a href="stats.#{format}">), "The #{format} file must follow the factbase name")
+    end
+    refute_includes(html, 'href="test.', 'No link may keep the default name')
+  end
+
+  def test_keeps_the_large_file_note_after_every_format_link
+    html = generate_vitals_html(bytes: 1_000_001)
+    assert_match(%r{href="test\.html">HTML</a> \(they're big\)}, html)
+  end
+
   def test_says_there_is_no_dot_information_without_dimensions
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
@@ -457,7 +477,7 @@ class TestVitals < Minitest::Test
 
   private
 
-  def generate_vitals_html(adless: 'false', bytes: nil)
+  def generate_vitals_html(adless: 'false', bytes: nil, name: 'test')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -496,9 +516,9 @@ class TestVitals < Minitest::Test
           "-s:#{Shellwords.escape(input)}",
           "-xsl:#{Shellwords.escape(File.join(__dir__, '../../xsl/vitals.xsl'))}",
           "-o:#{Shellwords.escape(output)}"
-        ] + %w[
+        ] + %W[
           today=2024-09-26T04:04:04Z
-          name=test
+          name=#{name}
           logo=x
           palette=classic
           url=https://example.com
