@@ -453,11 +453,15 @@ class TestVitals < Minitest::Test
     )
     refute_empty(xml.xpath('//table//th[starts-with(text(), "w")]'), xml)
     assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '-0001')
+  def test_encodes_the_name_in_urls
+    html = generate_vitals_html(name: 'my team')
+    assert_includes(html, 'https://example.com/my%20team-vitals.html', html)
+    refute_includes(html, 'https://example.com/my team-', html)
   end
 
   private
 
-  def generate_vitals_html(adless: 'false', bytes: nil)
+  def generate_vitals_html(adless: 'false', bytes: nil, name: 'test')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -498,7 +502,6 @@ class TestVitals < Minitest::Test
           "-o:#{Shellwords.escape(output)}"
         ] + %w[
           today=2024-09-26T04:04:04Z
-          name=test
           logo=x
           palette=classic
           url=https://example.com
@@ -509,7 +512,7 @@ class TestVitals < Minitest::Test
           js-links=
           css=body{}
           js=
-        ].push("adless=#{adless}")
+        ].push("adless=#{adless}", "name=#{name}")
           .concat(bytes.nil? ? [] : ["factbase-bytes=#{bytes}"]).map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
