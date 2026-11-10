@@ -455,6 +455,10 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '-0001')
   end
 
+  def test_names_the_vitals_page_in_the_title
+    assert_includes(generate_vitals_html, '<title>Vitals page of the "test" project</title>')
+  end
+
   private
 
   def generate_vitals_html(adless: 'false', bytes: nil)
