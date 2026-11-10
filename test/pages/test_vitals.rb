@@ -409,6 +409,15 @@ class TestVitals < Minitest::Test
     assert_includes(generate_vitals_html(bytes: 1_000_001), "(they're big)")
   end
 
+  def test_counts_facts_in_plural_in_the_footer
+    assert_includes(generate_vitals_html, ': 3 facts, ')
+  end
+
+  def test_paints_zero_version_red_in_the_footer
+    assert_match(%r{darkred[^>]*>0\.0\.0</span>}, generate_vitals_html(version: '0.0.0'))
+    refute_match(%r{darkred[^>]*>0\.0\.1</span>}, generate_vitals_html)
+  end
+
   def test_says_there_is_no_dot_information_without_dimensions
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
@@ -457,7 +466,7 @@ class TestVitals < Minitest::Test
 
   private
 
-  def generate_vitals_html(adless: 'false', bytes: nil)
+  def generate_vitals_html(adless: 'false', bytes: nil, version: '0.0.1')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -502,14 +511,13 @@ class TestVitals < Minitest::Test
           logo=x
           palette=classic
           url=https://example.com
-          version=0.0.1
           latest-version=0.0.2
           fbe=0.0.50
           css-links=
           js-links=
           css=body{}
           js=
-        ].push("adless=#{adless}")
+        ].push("adless=#{adless}", "version=#{version}")
           .concat(bytes.nil? ? [] : ["factbase-bytes=#{bytes}"]).map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
