@@ -11,7 +11,7 @@
   <xsl:param name="adless" as="xs:string" select="'false'"/>
   <xsl:template match="/fb">
     <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration('P256D')" as="xs:dateTime"/>
-    <xsl:variable name="facts" select=".//f[z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today) and award]"/>
+    <xsl:variable name="facts" select=".//f[z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today) and award and not(is_human = 0)]"/>
     <xsl:variable name="sum" select="sum($facts/award)" as="xs:double"/>
     <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
     <xsl:variable name="avg">
