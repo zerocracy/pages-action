@@ -130,7 +130,7 @@ class TestVitals < Minitest::Test
       '<f><what>dimensions-of-terrain</what><when>2024-07-04T00:00:00Z</when><total_files>2380</total_files></f></fb>',
       'today' => '2024-07-05T00:00:00Z'
     )
-    assert_includes(xml.xpath('//tr[td[1]="total_stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
+    assert_includes(xml.xpath('//tr[td[1]="Total Stars"]/td[@class="ff right"]').map { |td| td.text.strip }, '140', xml)
   end
 
   def test_dot_prints_week_numbers_and_mondays_across_new_year
@@ -453,6 +453,16 @@ class TestVitals < Minitest::Test
     )
     refute_empty(xml.xpath('//table//th[starts-with(text(), "w")]'), xml)
     assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '-0001')
+  end
+
+  def test_shows_dot_dimensions_as_titles
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='dot'/></r>",
+      '<fb><f><what>dimensions-of-terrain</what><when>2024-10-13T12:30:55Z</when>' \
+      '<total_commits>5</total_commits></f></fb>',
+      'today' => '2024-10-14T12:00:00Z'
+    )
+    assert_equal('Total Commits', xml.xpath('//tbody/tr/td[1]').text, xml)
   end
 
   private
