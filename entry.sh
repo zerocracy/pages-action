@@ -211,6 +211,53 @@ INPUT_COLUMNS=$(trimmed "${INPUT_COLUMNS}")
 INPUT_HIGHLIGHTED=$(trimmed "${INPUT_HIGHLIGHTED}")
 INPUT_HIDDEN=$(trimmed "${INPUT_HIDDEN}")
 
+# "judges print --hidden" only reaches the HTML stylesheet, which keeps the
+# value in a title attribute. XML, JSON and YAML ignore it, and the vitals
+# page reads every property back from rich.xml. Print the published files
+# from a copy that omits the named properties. The original factbase stays
+# intact for "judges update". A file that is not a factbase (the entry tests
+# stub one) is printed unchanged.
+printed=${INPUT_FACTBASE}
+refresh_printed() {
+    printed=${INPUT_FACTBASE}
+    if [ -z "${INPUT_HIDDEN}" ]; then
+        return 0
+    fi
+    local status=0
+    HIDDEN_PROPERTIES="${INPUT_HIDDEN}" \
+        BUNDLE_GEMFILE="${SELF}/Gemfile" \
+        bundle exec ruby -rfactbase - "${INPUT_FACTBASE}" "${staging}/.public.fb" <<'RUBY' || status=$?
+bytes = File.binread(ARGV[0])
+exit 2 if bytes.empty?
+source = Factbase.new
+begin
+  source.import(bytes)
+rescue StandardError
+  exit 2
+end
+hidden = ENV.fetch('HIDDEN_PROPERTIES', '').split(',').reject(&:empty?)
+visible = Factbase.new
+source.each do |fact|
+  copy = visible.insert
+  fact.each do |name, values|
+    next if hidden.include?(name)
+    Array(values).each { |value| copy.public_send(:"#{name}=", value) }
+  end
+end
+File.binwrite(ARGV[1], visible.export)
+RUBY
+    if [ "${status}" -eq 0 ]; then
+        printed="${staging}/.public.fb"
+        return 0
+    fi
+    if [ "${status}" -eq 2 ]; then
+        return 0
+    fi
+    echo "Failed to exclude hidden properties (exit ${status})" >&2
+    exit "${status}"
+}
+refresh_printed
+
 for f in yaml xml json html; do
     run_judges "${gopts[@]}" print \
         --format "${f}" \
@@ -218,7 +265,7 @@ for f in yaml xml json html; do
         --highlighted "${INPUT_HIGHLIGHTED}"\
         --hidden "${INPUT_HIDDEN}" \
         --title "${name}" \
-        "${INPUT_FACTBASE}" \
+        "${printed}" \
         "${staging}/${name}.${f}"
 done
 
@@ -296,18 +343,13 @@ run_judges "${gopts[@]}" update \
     --max-cycles 1 \
     "${options[@]}" \
     "${SELF}/judges/" "${INPUT_FACTBASE}"
-# @todo #799:30min Hide the properties named in "hidden" from the dumps too.
-#  The "hidden" option only reaches the HTML stylesheet of "judges print", so a
-#  property named there still stands in the XML, the JSON and the YAML, and the
-#  HTML keeps its value in a title attribute. Until "judges" drops such a
-#  property from every format, passing the option here only keeps the page and
-#  the badge reading the same view of the factbase, it does not hide anything.
+refresh_printed
 run_judges "${gopts[@]}" print \
     --format xml \
     --columns "${INPUT_COLUMNS}" \
     --highlighted "${INPUT_HIGHLIGHTED}" \
     --hidden "${INPUT_HIDDEN}" \
-    "${INPUT_FACTBASE}" \
+    "${printed}" \
     "${staging}/${name}.rich.xml"
 
 logo=${INPUT_LOGO}
