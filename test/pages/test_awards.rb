@@ -311,6 +311,42 @@ class TestAwards < Minitest::Test
     assert_equal(%w[alpha beta], rows.map { |row| row.at_xpath('./td[2]/span/a').text.delete_prefix('@') })
   end
 
+  def test_gives_a_row_to_an_award_with_no_name
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>10</award>
+          <when>2024-07-01T00:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>5</award>
+          <when>2024-07-02T00:00:00Z</when>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>2</who>
+          <award>25</award>
+          <when>2024-07-03T00:00:00Z</when>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-05T00:00:00Z'
+    )
+    rows =
+      xml.xpath('//tbody/tr[not(@class)]').to_h do |tr|
+        [tr.xpath('td[2]/span/a').text, tr.xpath('td[last()]').text.strip]
+      end
+    assert_equal({ '@2' => '+25', '@jeff' => '+15' }, rows, xml)
+  end
+
   def test_fn_in_week_takes_midnight_of_monday
     xml = xslt(
       '<r><xsl:value-of select="z:in-week(xs:dateTime(\'2024-09-23T00:00:00Z\'), 2)"/></r>',
