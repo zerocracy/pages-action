@@ -293,6 +293,26 @@ class TestAwards < Minitest::Test
     )
   end
 
+  def test_sums_awards_of_everybody_in_the_total_row
+    facts = [
+      ['1', 'alice', '30', '2026-10-14T00:00:00Z'],
+      ['2', 'bob', '20', '2026-10-21T00:00:00Z']
+    ].map do |id, name, amount, timestamp|
+      "<f><is_human>1</is_human><who>#{id}</who><who_name>#{name}</who_name>" \
+        "<award>#{amount}</award><when>#{timestamp}</when></f>"
+    end.join
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      "<fb><f><what>pmp</what><area>hr</area><days_of_running_balance>14</days_of_running_balance></f>#{facts}</fb>",
+      'today' => '2026-10-22T12:00:00Z'
+    )
+    assert_equal(
+      %w[+30 +20 +50],
+      xml.xpath("//table[@id='awards']/tfoot/tr/td[position() > 2]/span").map(&:text),
+      xml
+    )
+  end
+
   def test_sorts_programmers_by_their_total_awards
     facts = [
       ['alpha', '1', '2024-06-01T00:00:00Z'],
