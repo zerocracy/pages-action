@@ -83,4 +83,38 @@ class TestEvaSummary < Minitest::Test
     assert_equal('AC: 4, EV: -3, PV: 6, CPI: -0.75, SPI: -0.50.', texts[1], xml)
     assert_includes(texts[2], 'CPI: 1.00, SPI: 1.00.', xml)
   end
+
+  def test_shows_no_summary_when_ac_is_zero
+    xml = xslt(
+      '<r><xsl:apply-templates select="/fb/f"/></r>',
+      '
+      <fb>
+        <f>
+          <what>earned-value</what>
+          <ac>0</ac>
+          <ev>5</ev>
+          <pv>7</pv>
+        </f>
+      </fb>
+      '
+    )
+    assert_equal('Not enough data in the latest earned-value fact.', xml.xpath('/r').text.strip, xml)
+  end
+
+  def test_shows_no_summary_when_pv_is_zero
+    xml = xslt(
+      '<r><xsl:apply-templates select="/fb/f"/></r>',
+      '
+      <fb>
+        <f>
+          <what>earned-value</what>
+          <ac>5</ac>
+          <ev>5</ev>
+          <pv>0</pv>
+        </f>
+      </fb>
+      '
+    )
+    assert_equal('Not enough data in the latest earned-value fact.', xml.xpath('/r').text.strip, xml)
+  end
 end
