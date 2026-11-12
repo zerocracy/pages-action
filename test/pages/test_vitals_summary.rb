@@ -34,6 +34,15 @@ class TestVitalsSummary < Minitest::Test
     assert_includes(html, '-1.3 average points per task, -4 total points earned, 1 contributor.')
   end
 
+  def test_rounds_fractional_total_points_like_the_page
+    summary, html = render_summary(
+      '<f><when>2026-11-01T00:00:00Z</when><award>1.25</award><who>1</who></f>' \
+      '<f><when>2026-11-02T00:00:00Z</when><award>1.25</award><who>1</who></f>'
+    )
+    assert_equal(2, summary.fetch('total_award'))
+    assert_includes(html, '+1.3 average points per task, 2 total points earned, 1 contributor.')
+  end
+
   def test_summarizes_an_empty_page_without_nonfinite_numbers
     summary, html = render_summary('')
     assert_equal([0, 0, 0, 0], summary.values_at('average_award', 'total_award', 'contributors', 'count'))
