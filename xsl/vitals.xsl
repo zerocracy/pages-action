@@ -180,7 +180,9 @@
         </meta>
         <meta property="og:type" content="website"/>
         <xsl:if test="$url != ''">
-          <meta property="og:url" content="{$url}/{$name}-vitals.html"/>
+          <xsl:variable name="report-url" select="concat($url, '/', $name, '-vitals.html')"/>
+          <meta property="og:url" content="{$report-url}"/>
+          <link rel="canonical" href="{$report-url}"/>
         </xsl:if>
         <xsl:if test="$ads">
           <meta property="og:image" content="https://www.zerocracy.com/og/vitals.png"/>
