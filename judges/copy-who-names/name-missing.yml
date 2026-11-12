@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 input:
-  - what: something
-    award: 1
+  - what: reconciliation
     who: 42
   - what: who-has-name
     who: 42
@@ -11,4 +10,4 @@ input:
     who: 43
     name: jeff
 expected:
-  - /fb[not(f[what='something' and who_name])]
+  - /fb[not(f[what='reconciliation' and who_name])]

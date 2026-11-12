@@ -5,8 +5,7 @@ repeat: 1000
 input:
   -
     where: github
-    what: something
-    award: 1
+    what: reconciliation
     who: 444
 expected:
   - /fb[count(f)=1000]

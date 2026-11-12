@@ -2,17 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 input:
-  - what: something
-    award: 1
+  - what: reconciliation
     who: 444
-  - what: something
-    award: 1
+  - what: reconciliation
     who: 555
   - what: who-has-name
     who: 555
     name: independent
-  - what: something
-    award: 1
+  - what: reconciliation
     who: 444
     who_name: preserved
   - what: who-has-name
@@ -24,7 +21,7 @@ input:
     name: newname
     when: 2024-02-01T00:00:00Z
 expected:
-  - /fb/f[what='something' and who=444 and who_name='newname']
-  - /fb/f[what='something' and who=555 and who_name='independent']
+  - /fb/f[what='reconciliation' and who=444 and who_name='newname']
+  - /fb/f[what='reconciliation' and who=555 and who_name='independent']
   - /fb/f[who_name='preserved']
   - /fb[not(f[what='who-has-name' and who_name])]

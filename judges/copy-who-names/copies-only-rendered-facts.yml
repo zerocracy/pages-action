@@ -8,6 +8,8 @@ input:
   - what: pull-was-merged
     who: 42
     award: 0
+    when: 2024-07-01T00:00:00Z
+    why: already rewarded
   - what: reconciliation
     who: 42
   - what: issue-was-opened
