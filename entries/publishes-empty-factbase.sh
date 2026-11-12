@@ -25,7 +25,17 @@ grep "The 'github-token' plugin parameter is set" 'log.txt'
 [ -e 'output/test.json' ]
 [ -e 'output/test.html' ]
 [ -e 'output/test-vitals.html' ]
+[ -e 'output/test-vitals.json' ]
 [ -e 'output/test-badge.svg' ]
 
 diff <(find output -mindepth 1 -printf "%P\n" | LC_ALL=C sort) \
-  <(printf '%s\n' test.yaml test.xml test.json test.html test-vitals.html test-badge.svg | LC_ALL=C sort)
+  <(printf '%s\n' test.yaml test.xml test.json test.html test-vitals.html test-vitals.json test-badge.svg | LC_ALL=C sort)
+
+node -e '
+const assert = require("node:assert/strict");
+const summary = require("./output/test-vitals.json");
+assert.equal(summary.count, 0);
+assert.equal(summary.average_award, 0);
+assert.equal(summary.total_award, 0);
+assert.equal(summary.contributors, 0);
+'

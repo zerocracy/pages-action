@@ -20,6 +20,9 @@ For the factbase `foo.fb` the action writes these files into the `output`
 
 * `foo.yaml`, `foo.xml`, `foo.json`, and `foo.html` with all the facts;
 * `foo-vitals.html` with the vitals page;
+* `foo-vitals.json` with the page summary (average award, total award, contributor
+  count, counted facts, and the exclusive `since` / inclusive `until` timestamps
+  of its 256-day window);
 * `foo-badge.svg` with a badge, which you may put into your own `README.md`.
 
 The following configuration options are supported here:
