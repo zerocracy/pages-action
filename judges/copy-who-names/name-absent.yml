@@ -5,6 +5,7 @@ input:
   -
     where: github
     what: something
+    award: 1
     who: 444
 expected:
   - /fb[count(f)=1]

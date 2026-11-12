@@ -3,6 +3,7 @@
 ---
 input:
   - what: something
+    award: 1
     who: 42
   - what: who-has-name
     who: 42

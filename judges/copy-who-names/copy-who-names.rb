@@ -19,6 +19,7 @@ names =
 Fbe.fb.query(
   '(and
     (not (eq what "who-has-name"))
+    (or (exists award) (eq what "reconciliation"))
     (exists who)
     (not (exists who_name)))'
 ).each do |f|

@@ -3,13 +3,16 @@
 ---
 input:
   - what: something
+    award: 1
     who: 444
   - what: something
+    award: 1
     who: 555
   - what: who-has-name
     who: 555
     name: independent
   - what: something
+    award: 1
     who: 444
     who_name: preserved
   - what: who-has-name
