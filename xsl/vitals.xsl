@@ -151,14 +151,14 @@
     <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
     <xsl:if test="$summary-output != ''">
       <xsl:result-document href="{$summary-output}" method="json" version="3.0" indent="yes">
-        <xsl:sequence select="map {
-          'average_award': z:rounded($avg, 10),
-          'total_award': sum($facts/award),
-          'contributors': count(distinct-values($facts/who)),
-          'count': $count,
-          'since': string($since),
-          'until': string(xs:dateTime($today))
-        }"/>
+        <xsl:map>
+          <xsl:map-entry key="'average_award'" select="z:rounded($avg, 10)"/>
+          <xsl:map-entry key="'total_award'" select="round-half-to-even(sum($facts/award))"/>
+          <xsl:map-entry key="'contributors'" select="count(distinct-values($facts/who))"/>
+          <xsl:map-entry key="'count'" select="$count"/>
+          <xsl:map-entry key="'since'" select="string($since)"/>
+          <xsl:map-entry key="'until'" select="string(xs:dateTime($today))"/>
+        </xsl:map>
       </xsl:result-document>
     </xsl:if>
     <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
