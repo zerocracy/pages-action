@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: pmp
+    area: scope
+    scope_setting: 42
+  -
+    what: pmp
+    area: hr
+    hr_bonus: '(award (give 18 "for contributing"))'
+expected:
+  - /fb[count(f)=3]
+  - /fb/f[what='bylaws' and contains(html, '<strong>18</strong>')]
