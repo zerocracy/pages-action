@@ -16,8 +16,10 @@ class TestVitalsSummary < Minitest::Test
       '<f><when>2026-11-13T00:00:00Z</when><award>200</award><who>4</who></f>'
     )
     assert_equal(
-      { 'average_award' => 4.3, 'total_award' => 13, 'contributors' => 2, 'count' => 3,
-        'since' => '2026-03-01T00:00:00Z', 'until' => '2026-11-12T00:00:00Z' }, summary
+      {
+        'average_award' => 4.3, 'total_award' => 13, 'contributors' => 2, 'count' => 3,
+        'since' => '2026-03-01T00:00:00Z', 'until' => '2026-11-12T00:00:00Z'
+      }, summary
     )
     assert_includes(html, '+4.3 average points per task, 13 total points earned, 2 contributors.')
   end
@@ -28,7 +30,7 @@ class TestVitalsSummary < Minitest::Test
       '<f><when>2026-11-02T00:00:00Z</when><award>-2</award><who>1</who></f>' \
       '<f><when>2026-11-03T00:00:00Z</when><award>-1</award><who>1</who></f>'
     )
-    assert_equal(-1.3, summary.fetch('average_award'))
+    assert_in_delta(-1.3, summary.fetch('average_award'))
     assert_includes(html, '-1.3 average points per task, -4 total points earned, 1 contributor.')
   end
 
