@@ -188,6 +188,9 @@
           <meta property="og:image:width" content="1200"/>
           <meta property="og:image:height" content="630"/>
         </xsl:if>
+        <xsl:if test="not($ads) and $logo != ''">
+          <meta property="og:image" content="{$logo}"/>
+        </xsl:if>
         <meta property="og:description" content="{$description}"/>
         <title>
           <xsl:value-of select="$name"/>

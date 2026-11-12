@@ -362,6 +362,17 @@ class TestVitals < Minitest::Test
     end
   end
 
+  def test_uses_only_the_supplied_logo_for_an_adless_social_preview
+    doc = Nokogiri::HTML(generate_vitals_html(adless: 'true', logo: 'https://example.org/team.svg'))
+    assert_equal(['https://example.org/team.svg'], doc.xpath('//head/meta[@property="og:image"]/@content').map(&:value))
+    assert_empty(doc.xpath('//head/meta[starts-with(@property, "og:image:")]'))
+  end
+
+  def test_omits_the_social_preview_when_an_adless_page_has_no_logo
+    doc = Nokogiri::HTML(generate_vitals_html(adless: 'true', logo: ''))
+    assert_empty(doc.xpath('//head/meta[starts-with(@property, "og:image")]'))
+  end
+
   def test_uses_the_supplied_logo_as_the_favicon
     assert_match(/<link rel="icon"\s+href="x"/, generate_vitals_html(adless: 'true'))
   end
@@ -468,7 +479,7 @@ class TestVitals < Minitest::Test
 
   private
 
-  def generate_vitals_html(adless: 'false', bytes: nil, latest: '0.0.2')
+  def generate_vitals_html(adless: 'false', bytes: nil, latest: '0.0.2', logo: 'x')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -510,7 +521,6 @@ class TestVitals < Minitest::Test
         ] + %w[
           today=2024-09-26T04:04:04Z
           name=test
-          logo=x
           palette=classic
           url=https://example.com
           version=0.0.1
@@ -519,7 +529,7 @@ class TestVitals < Minitest::Test
           js-links=
           css=body{}
           js=
-        ].push("adless=#{adless}", "latest-version=#{latest}")
+        ].push("adless=#{adless}", "latest-version=#{latest}", "logo=#{logo}")
           .concat(bytes.nil? ? [] : ["factbase-bytes=#{bytes}"]).map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
