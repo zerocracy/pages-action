@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  - what: who-has-name
+    who: 42
+    name: jeff
+  - what: pull-was-merged
+    who: 42
+    award: 0
+  - what: reconciliation
+    who: 42
+  - what: issue-was-opened
+    who: 42
+  - what: label-was-attached
+    who: 42
+    who_name: preserved
+expected:
+  - /fb[count(f)=5]
+  - /fb/f[what='pull-was-merged' and who_name='jeff']
+  - /fb/f[what='reconciliation' and who_name='jeff']
+  - /fb/f[what='issue-was-opened' and not(who_name)]
+  - /fb/f[what='label-was-attached' and who_name='preserved']
+  - /fb/f[what='who-has-name' and not(who_name)]
