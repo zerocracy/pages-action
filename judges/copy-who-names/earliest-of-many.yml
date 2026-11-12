@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 input:
-  - what: something
-    award: 1
+  - what: reconciliation
     who: 42
   - what: who-has-name
     who: 42
@@ -16,4 +15,4 @@ input:
     name: new
     when: 2024-01-01T00:00:00Z
 expected:
-  - /fb/f[what='something' and who=42 and who_name='new']
+  - /fb/f[what='reconciliation' and who=42 and who_name='new']

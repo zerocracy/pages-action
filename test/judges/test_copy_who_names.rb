@@ -17,6 +17,8 @@ class TestCopyWhoNames < Minitest::Test
     f = fb.insert
     f.what = 'award'
     f.award = 1
+    f.when = n.when
+    f.why = 'for contributing'
     f.who = 42
     load_it('copy-who-names', fb)
     assert_equal(['jeff'], fb.query('(eq what "award")').each.first['who_name'], fb.to_json)

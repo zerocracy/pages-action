@@ -4,8 +4,7 @@
 repeat: 1000
 input:
   -
-    what: something
-    award: 1
+    what: reconciliation
     who: 444
     where: github
   -
