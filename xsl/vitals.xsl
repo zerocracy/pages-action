@@ -9,6 +9,7 @@
   <xsl:include href="rounded.xsl"/>
   <xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
   <xsl:param name="today" as="xs:string"/>
+  <xsl:param name="summary-output" as="xs:string" select="''"/>
   <xsl:param name="css" as="xs:string"/>
   <xsl:param name="js" as="xs:string"/>
   <xsl:param name="name" as="xs:string"/>
@@ -144,6 +145,22 @@
     </xsl:for-each>
   </xsl:template>
   <xsl:template match="/">
+    <xsl:variable name="since" select="xs:dateTime($today) - xs:dayTimeDuration('P256D')"/>
+    <xsl:variable name="facts" select="$fb/f[z:when(when) &gt; $since and z:when(when) &lt;= xs:dateTime($today) and award]"/>
+    <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
+    <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
+    <xsl:if test="$summary-output != ''">
+      <xsl:result-document href="{$summary-output}" method="json" version="3.0" indent="yes">
+        <xsl:sequence select="map {
+          'average_award': z:rounded($avg, 10),
+          'total_award': sum($facts/award),
+          'contributors': count(distinct-values($facts/who)),
+          'count': $count,
+          'since': string($since),
+          'until': string(xs:dateTime($today))
+        }"/>
+      </xsl:result-document>
+    </xsl:if>
     <xsl:text disable-output-escaping="yes">&lt;!DOCTYPE html&gt;</xsl:text>
     <html lang="en">
       <xsl:attribute name="class">
@@ -153,9 +170,6 @@
         <meta charset="UTF-8"/>
         <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
         <xsl:variable name="description">
-          <xsl:variable name="facts" select="$fb/f[z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P256D')) and z:when(when) &lt;= xs:dateTime($today) and award]"/>
-          <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
-          <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
           <xsl:text>The "</xsl:text>
           <xsl:value-of select="$name"/>
           <xsl:text>" product</xsl:text>
