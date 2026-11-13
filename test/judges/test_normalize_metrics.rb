@@ -49,4 +49,46 @@ class TestNormalizeMetrics < Minitest::Test
     load_it('normalize-metrics', fb)
     assert_equal([0.0, 0.0], fb.query('(always)').each.map { |f| f['n_some_issue_lifetime'].first })
   end
+
+  def test_removes_raw_sample_series_when_average_becomes_available
+    fb = Factbase.new
+    [10, 20].each_with_index do |val, idx|
+      fact = fb.insert
+      fact._id = idx + 1
+      fact.what = 'quality-of-service'
+      fact.when = Time.utc(2024, 1, idx + 1)
+      fact.some_issue_lifetime = val
+    end
+    load_it('normalize-metrics', fb)
+    fb.query('(always)').each do |fact|
+      fact.average_issue_lifetime = fact.some_issue_lifetime
+    end
+    load_it('normalize-metrics', fb)
+    fb.query('(always)').each do |fact|
+      assert_nil(fact['n_some_issue_lifetime'])
+      refute_nil(fact['n_average_issue_lifetime'])
+    end
+  end
+
+  def test_keeps_unaveraged_raw_sample_series_when_deleting_obsolete_ones
+    fb = Factbase.new
+    [[10, 100], [20, 200]].each_with_index do |(lifetime, review), idx|
+      fact = fb.insert
+      fact._id = idx + 1
+      fact.what = 'quality-of-service'
+      fact.when = Time.utc(2024, 1, idx + 1)
+      fact.some_issue_lifetime = lifetime
+      fact.some_review_time = review
+    end
+    load_it('normalize-metrics', fb)
+    fb.query('(always)').each do |fact|
+      fact.average_issue_lifetime = fact.some_issue_lifetime
+    end
+    load_it('normalize-metrics', fb)
+    fb.query('(always)').each do |fact|
+      assert_nil(fact['n_some_issue_lifetime'])
+      refute_nil(fact['n_average_issue_lifetime'])
+      refute_nil(fact['n_some_review_time'])
+    end
+  end
 end
