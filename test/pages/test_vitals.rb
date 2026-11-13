@@ -387,6 +387,11 @@ class TestVitals < Minitest::Test
     assert_match(%r{github\.com/zerocracy/pages-action/releases}, generate_vitals_html)
   end
 
+  def test_carries_no_update_banner_without_the_latest_version
+    html = generate_vitals_html(latest: '')
+    refute_match(%r{github\.com/zerocracy/pages-action/releases}, html, html)
+  end
+
   def test_shows_the_size_of_the_factbase_rounded_in_its_units
     {
       10_000_001 => '10MB', 25_600_000 => '26MB', 10_001 => '10kB', 12_499 => '12kB', 10_000 => '10000 bytes'
@@ -455,9 +460,15 @@ class TestVitals < Minitest::Test
     assert_includes(xml.xpath('//table//th/@title').map(&:text).join(' '), '-0001')
   end
 
+  def test_wraps_the_assessment_in_css
+    f = File.join(__dir__, '../../target/css/main.css')
+    skip("File not found:  #{f}") unless File.exist?(f)
+    assert_includes(File.read(f).gsub(/\s+/, ''), '.assessmentpre{white-space:pre-wrap}')
+  end
+
   private
 
-  def generate_vitals_html(adless: 'false', bytes: nil)
+  def generate_vitals_html(adless: 'false', bytes: nil, latest: '0.0.2')
     saxon = File.join(__dir__, '../../target/saxon.jar')
     skip("Saxon not built at #{saxon}") unless File.exist?(saxon)
     Dir.mktmpdir do |dir|
@@ -503,13 +514,12 @@ class TestVitals < Minitest::Test
           palette=classic
           url=https://example.com
           version=0.0.1
-          latest-version=0.0.2
           fbe=0.0.50
           css-links=
           js-links=
           css=body{}
           js=
-        ].push("adless=#{adless}")
+        ].push("adless=#{adless}", "latest-version=#{latest}")
           .concat(bytes.nil? ? [] : ["factbase-bytes=#{bytes}"]).map { |p| Shellwords.escape(p) },
         stdout: fake_loog
       )
