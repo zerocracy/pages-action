@@ -51,7 +51,8 @@ class Minitest::Test
   end
 
   def compiled(file)
-    -> { load(file, true) }
+    source = "lambda do\n#{File.read(file)}\nend"
+    Object.new.instance_eval { binding }.eval(source, file, 0)
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
