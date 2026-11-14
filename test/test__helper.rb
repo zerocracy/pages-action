@@ -51,7 +51,10 @@ class Minitest::Test
   end
 
   def compiled(file)
-    -> { load(file, true) }
+    code = "def call\n#{File.read(file)}\nend"
+    judge = Class.new
+    judge.class_eval(code, file, 0)
+    judge.new.method(:call)
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
