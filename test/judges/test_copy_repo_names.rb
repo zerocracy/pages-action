@@ -124,7 +124,7 @@ class TestCopyRepoNames < Minitest::Test
     orig = Fbe.method(:octo)
     Fbe.define_singleton_method(:octo) { client }
     begin
-      load_it_logging('copy-repo-names', fb, logger)
+      load_it('copy-repo-names', fb, {}, logger)
     ensure
       Fbe.define_singleton_method(:octo, orig)
     end
@@ -156,7 +156,7 @@ class TestCopyRepoNames < Minitest::Test
     orig = Fbe.method(:octo)
     Fbe.define_singleton_method(:octo) { client }
     begin
-      load_it_logging('copy-repo-names', fb, logger)
+      load_it('copy-repo-names', fb, {}, logger)
     ensure
       Fbe.define_singleton_method(:octo, orig)
     end
@@ -166,17 +166,5 @@ class TestCopyRepoNames < Minitest::Test
     )
     details = fb.query('(eq what "repo-details")').each.to_a
     assert_equal([12_345], details.map(&:repository), fb.to_json)
-  end
-
-  private
-
-  def load_it_logging(judge, fb, loog)
-    $fb = fb
-    $global = {}
-    $local = {}
-    $judge = judge
-    $options = Judges::Options.new('repositories' => 'foo/foo')
-    $loog = loog
-    load(File.expand_path("../../judges/#{judge}/#{judge}.rb", __dir__), true)
   end
 end
