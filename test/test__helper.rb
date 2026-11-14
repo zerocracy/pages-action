@@ -51,7 +51,27 @@ class Minitest::Test
   end
 
   def compiled(file)
-    -> { load(file, true) }
+    lambda do
+      load(file, true)
+    ensure
+      record_judge_coverage(file) if SimpleCov.running
+    end
+  end
+
+  def self.coverage
+    @coverage ||= {}
+  end
+
+  def record_judge_coverage(file)
+    coverage = Minitest::Test.coverage
+    previous = coverage.fetch(file, {}).fetch('lines', [])
+    lines = Coverage.peek_result.fetch(file).fetch(:lines)
+    coverage[file] = {
+      'lines' => lines.each_with_index.map { |hits, index| hits.nil? ? nil : hits + previous[index].to_i }
+    }
+    SimpleCov::ResultMerger.store_result(
+      SimpleCov::Result.new(coverage.dup, command_name: "#{SimpleCov.command_name} judge loads")
+    )
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
