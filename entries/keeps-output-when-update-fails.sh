@@ -22,7 +22,7 @@ STUB
 chmod a+x judges.sh
 
 mkdir output
-for f in test.yaml test.xml test.json test.html test-vitals.html test-badge.svg; do
+for f in test.yaml test.xml test.json test.html test-vitals.html test-vitals.json test-badge.svg; do
   echo old > "output/${f}"
 done
 
@@ -37,7 +37,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 cat log.txt
 test "${code}" -eq 3
 
-test "$(find output -mindepth 1 | wc -l)" -eq 6
+test "$(find output -mindepth 1 | wc -l)" -eq 7
 for f in output/*; do
   test "$(cat "${f}")" = 'old'
 done

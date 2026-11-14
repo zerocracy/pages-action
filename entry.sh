@@ -398,6 +398,7 @@ java -jar "${SELF}/target/saxon.jar" \
     "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/vitals.xsl" \
     "-o:${html}" \
+    "summary-output=${name}-vitals.json" \
     "today=${INPUT_TODAY}" \
     "version=${VERSION}" \
     "latest-version=${LATEST_VERSION}" \
