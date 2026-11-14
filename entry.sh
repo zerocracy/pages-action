@@ -432,3 +432,8 @@ for file in "${staging}"/*; do
         mv -- "${file}" "${INPUT_OUTPUT}/"
     fi
 done
+
+if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+    BUNDLE_GEMFILE="${SELF}/Gemfile" bundle exec ruby "${SELF}/makes/write-summary.rb" \
+        "${INPUT_OUTPUT}/${name}-vitals.html" "${GITHUB_STEP_SUMMARY}"
+fi
