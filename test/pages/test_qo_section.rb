@@ -243,6 +243,8 @@ class TestQoSection < Minitest::Test
     js = xml.xpath('//script').map(&:content).join
     assert_includes(js, "label:'CPI'", xml)
     assert_includes(js, "label:'SPI'", xml)
+    refute_includes(js[/\{label:'CPI'[^}]*\}/], 'hidden:true', xml)
+    refute_includes(js[/\{label:'SPI'[^}]*\}/], 'hidden:true', xml)
   end
 
   def test_shows_fact_taken_exactly_at_today_as_last_point
@@ -260,6 +262,43 @@ class TestQoSection < Minitest::Test
   def test_gives_each_metric_its_fixed_hue
     hues = qos_two_weeks.scan(/label:'([^']+)',borderColor:chroma\.hsl\((\d+),/).to_h
     assert_equal({ 'Alpha' => '138', 'Beta' => '275', 'Gamma' => '190' }, hues, 'the hues of the lines moved')
+  end
+
+  def test_hides_secondary_metrics_by_default
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
+      '<n_composite>0.5</n_composite><n_average_issue_lifetime>0.2</n_average_issue_lifetime></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    script = xml.xpath('//script').map(&:content).join
+    assert_match(/\{label:'Composite'[^}]*\}/, script, xml)
+    assert_match(/\{label:'Average Issue Lifetime'[^}]*\}/, script, xml)
+    assert_includes(script[/\{label:'Average Issue Lifetime'[^}]*\}/], 'hidden:true', xml)
+    refute_includes(script[/\{label:'Composite'[^}]*\}/], 'hidden:true', xml)
+  end
+
+  def test_hides_a_secondary_metric_even_when_its_color_is_configured
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      "<xsl:with-param name='colors' select=\"'n_average_issue_lifetime:red'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-01T10:00:00Z</when><what>quality-of-service</what>' \
+      '<n_average_issue_lifetime>0.2</n_average_issue_lifetime></f>' \
+      '<f><when>2024-07-09T10:00:00Z</when><what>quality-of-service</what>' \
+      '<n_average_issue_lifetime>0.3</n_average_issue_lifetime></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    series = xml.xpath('//script').map(&:content).join[/\{label:'Average Issue Lifetime'[^}]*\}/]
+    refute_nil(series, xml)
+    assert_includes(series, "borderColor:'red'", xml)
+    assert_includes(series, 'hidden:true', xml)
+    assert_includes(series, 'data:[0.2,0.3]', xml)
   end
 
   private
