@@ -33,7 +33,7 @@ test: rake entries
 target/xsl/%.xsl: xsl/%.xsl | target/xsl
 	cp "$<" "$@"
 
-target/output/%: target/fb/%.fb entry.sh html-minifier-config.json Makefile $(XSLS) $(CSS) $(JS_TEST) $(SAXON) | target/html
+target/output/%: target/fb/%.fb entry.sh html-minifier-config.json Makefile Gemfile Gemfile.lock $(XSLS) $(CSS) $(JS_TEST) $(SAXON) | target/html
 	export INPUT_VERBOSE=true
 	export INPUT_OPTIONS=testing=yes
 	export GITHUB_WORKSPACE=.
