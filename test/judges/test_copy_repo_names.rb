@@ -177,6 +177,8 @@ class TestCopyRepoNames < Minitest::Test
     $judge = judge
     $options = Judges::Options.new('repositories' => 'foo/foo')
     $loog = loog
-    load(File.expand_path("../../judges/#{judge}/#{judge}.rb", __dir__), true)
+    $compiled ||= {}
+    $compiled[judge] ||= compiled(File.expand_path("../../judges/#{judge}/#{judge}.rb", __dir__))
+    $compiled[judge].call
   end
 end
