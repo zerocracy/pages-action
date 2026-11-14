@@ -82,7 +82,7 @@ class Minitest::Test
       output = File.join(dir, 'output.xml')
       qbash(
         [
-          "java -jar #{Shellwords.escape(File.join(__dir__, '../target/saxon.jar'))}",
+          "java -cp #{Shellwords.escape(File.join(__dir__, '../target/*'))} net.sf.saxon.Transform",
           "-s:#{Shellwords.escape(input)}",
           "-xsl:#{Shellwords.escape(xsl)}",
           "-o:#{Shellwords.escape(output)}"

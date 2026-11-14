@@ -16,7 +16,9 @@ class TestEntrySize < Minitest::Test
     Dir.mktmpdir do |dir|
       FileUtils.mkdir_p(%w[bin target/css target/js].map { |path| File.join(dir, path) })
       FileUtils.ln_s(File.join(source, 'xsl'), File.join(dir, 'target/xsl'))
-      FileUtils.ln_s(saxon, File.join(dir, 'target/saxon.jar'))
+      Dir.glob(File.join(source, 'target/*.jar')).each do |jar|
+        FileUtils.ln_s(jar, File.join(dir, 'target', File.basename(jar)))
+      end
       File.write(File.join(dir, 'target/css/main.css'), 'body{}')
       File.write(File.join(dir, 'target/js/main.js'), '')
       input = File.join(dir, 'input facts.fb')
