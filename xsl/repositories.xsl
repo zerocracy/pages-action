@@ -10,13 +10,13 @@
     <xsl:sequence select="concat($n, ' ', $noun, if (string($n) = '1') then '' else 's')"/>
   </xsl:function>
   <xsl:template match="/" mode="repositories">
-    <xsl:if test="/fb/f[what='repo-details']">
+    <xsl:if test="/fb/f[what='repo-details' and not(archived = 'true')]">
       <div class="repositories">
         <h2>
           <xsl:text>Repositories where the work is happening</xsl:text>
         </h2>
         <ul>
-          <xsl:for-each select="/fb/f[what='repo-details']">
+          <xsl:for-each select="/fb/f[what='repo-details' and not(archived = 'true')]">
             <xsl:sort select="lower-case(repository_name)"/>
             <li>
               <a href="https://github.com/{repository_name}">
