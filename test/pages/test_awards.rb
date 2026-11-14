@@ -918,4 +918,24 @@ class TestAwards < Minitest::Test
     assert_equal('@jeff', img['alt'], xml)
     assert_equal('lazy', img['loading'], xml)
   end
+
+  def test_keeps_who_name_when_last_fact_in_group_lacks_it
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '<fb>' \
+      '<f><is_human>1</is_human><who>42</who><who_name>alice</who_name>' \
+      '<award>10</award><when>2024-05-30T00:00:00Z</when></f>' \
+      '<f><is_human>1</is_human><who>42</who><who_name/>' \
+      '<award>5</award><when>2024-06-01T00:00:00Z</when></f>' \
+      '<f><is_human>1</is_human><who>42</who>' \
+      '<award>3</award><when>2024-06-01T12:00:00Z</when></f>' \
+      '</fb>',
+      'today' => '2024-06-02T00:00:00Z'
+    )
+    img = xml.xpath('//td[@class="avatar"]/a[@href="https://github.com/alice"]/img').first
+    refute_nil(img, xml)
+    assert_equal('https://github.com/alice.png?size=64', img['src'], xml)
+    assert_equal('@alice', img['alt'], xml)
+    assert_equal('@alice', xml.at_xpath('//td//a[@href="https://github.com/alice" and text()="@alice"]').text, xml)
+  end
 end

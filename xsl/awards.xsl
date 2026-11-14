@@ -305,7 +305,7 @@
                 </xsl:for-each>
               </xsl:when>
               <xsl:otherwise>
-                <xsl:value-of select="if ($id = '') then substring-after($key, 'name:') else current-group()[last()]/who_name"/>
+                <xsl:value-of select="if ($id = '') then substring-after($key, 'name:') else (current-group()/who_name[normalize-space(.) != ''])[last()]"/>
               </xsl:otherwise>
             </xsl:choose>
           </xsl:variable>
