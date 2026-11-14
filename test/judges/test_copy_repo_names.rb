@@ -97,4 +97,86 @@ class TestCopyRepoNames < Minitest::Test
     end
     assert_empty(fb.query('(eq what "repo-details")').each.to_a, fb.to_json)
   end
+
+  def test_warns_about_a_repository_that_fails
+    fb = Factbase.new
+    broken = fb.insert
+    broken.what = 'award'
+    broken.repository = 404_123
+    ok = fb.insert
+    ok.what = 'award'
+    ok.repository = 12_345
+    error = Octokit::NotFound.new(
+      status: 404, method: 'GET', url: 'https://api.github.com/repos/404123', body: 'Not Found'
+    )
+    client = Object.new
+    client.define_singleton_method(:repository) do |id|
+      raise(error) if id == 404_123
+      {
+        full_name: 'yegor256/test', description: 'first', stargazers_count: 1,
+        forks_count: 2, language: 'Ruby', open_issues_count: 3, updated_at: '2024-01-01T00:00:00Z'
+      }
+    end
+    warnings = []
+    logger = Object.new
+    logger.define_singleton_method(:debug) { |_msg| nil }
+    logger.define_singleton_method(:warn) { |msg| warnings << msg }
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it_logging('copy-repo-names', fb, logger)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    assert_equal(["Can't fetch repository #404123: Octokit::NotFound: #{error.message}"], warnings, fb.to_json)
+    details = fb.query('(eq what "repo-details")').each.to_a
+    assert_equal([12_345], details.map(&:repository), fb.to_json)
+  end
+
+  def test_warns_about_unrefreshed_repositories_off_quota
+    fb = Factbase.new
+    ok = fb.insert
+    ok.what = 'award'
+    ok.repository = 12_345
+    off = fb.insert
+    off.what = 'award'
+    off.repository = 23_456
+    client = Object.new
+    client.define_singleton_method(:repository) do |id|
+      raise(Fbe::OffQuota, 'off quota') if id == 23_456
+      {
+        full_name: 'yegor256/test', description: 'first', stargazers_count: 1,
+        forks_count: 2, language: 'Ruby', open_issues_count: 3, updated_at: '2024-01-01T00:00:00Z'
+      }
+    end
+    warnings = []
+    logger = Object.new
+    logger.define_singleton_method(:debug) { |_msg| nil }
+    logger.define_singleton_method(:warn) { |msg| warnings << msg }
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it_logging('copy-repo-names', fb, logger)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    assert_equal(
+      ["Can't fetch repository #23456: Fbe::OffQuota: off quota, 1 repositories left unrefreshed"],
+      warnings, fb.to_json
+    )
+    details = fb.query('(eq what "repo-details")').each.to_a
+    assert_equal([12_345], details.map(&:repository), fb.to_json)
+  end
+
+  private
+
+  def load_it_logging(judge, fb, loog)
+    $fb = fb
+    $global = {}
+    $local = {}
+    $judge = judge
+    $options = Judges::Options.new('repositories' => 'foo/foo')
+    $loog = loog
+    load(File.expand_path("../../judges/#{judge}/#{judge}.rb", __dir__), true)
+  end
 end
