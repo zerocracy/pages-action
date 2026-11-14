@@ -24,3 +24,5 @@ env "GITHUB_WORKSPACE=$(pwd)" \
 grep 'The output HTML will have links to Zerocracy' 'log.txt'
 
 grep 'The default Zerocracy logo will be used' 'log.txt'
+
+grep -E '<img[^>]* src="https://www.zerocracy.com/svg/logo.svg"' 'output/test-vitals.html'
