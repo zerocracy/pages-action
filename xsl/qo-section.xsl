@@ -54,8 +54,8 @@
           <xsl:copy-of select="$before"/>
         </xsl:if>
         <div class="qo-section">
-          <canvas id="{$what}">
-            <xsl:text> </xsl:text>
+          <canvas id="{$what}" role="img" aria-label="{concat($title, ' chart')}">
+            <xsl:value-of select="concat($title, ' chart')"/>
           </canvas>
         </div>
         <xsl:variable name="js-content">
