@@ -511,7 +511,6 @@ class TestVitals < Minitest::Test
           today=2024-09-26T04:04:04Z
           name=test
           logo=x
-          palette=classic
           url=https://example.com
           version=0.0.1
           fbe=0.0.50
