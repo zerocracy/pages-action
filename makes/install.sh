@@ -13,9 +13,9 @@ if [ "${OS_NAME}" = "darwin" ]; then
 else
     command -v tidy >/dev/null || sudo apt-get install -y tidy
 fi
-npm --no-color install --no-save @eslint/js@9.22.0
-npm --no-color install -g eslint@9.22.0
+npm --no-color install --no-save @eslint/js@10.0.1
+npm --no-color install -g eslint@10.14.0
 npm --no-color install -g uglify-js@3.19.3
-npm --no-color install -g sass@1.77.2
+npm --no-color install -g sass@1.108.1
 npm --no-color install -g stylelint@17.14.0 stylelint-config-standard@40.0.0
-npm --no-color install -g html-minifier@4.0.0
+npm --no-color install -g html-minifier@5.0.1
