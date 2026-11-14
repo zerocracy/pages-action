@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+options:
+  testing: true
+input:
+  -
+    when: 2024-05-18T22:22:22.8492Z
+    what: quality-of-service
+    since: 2024-05-01T00:00:00Z
+    _id: 1
+    budget: 100
+    n_average_issue_lifetime: 0.5
+    average_issue_lifetime: 100
+  -
+    when: 2024-05-19T22:22:22.8492Z
+    what: quality-of-service
+    since: 2024-05-01T00:00:00Z
+    _id: 2
+    budget: 100
+    n_average_issue_lifetime: 0.5
+    average_issue_lifetime: 200
+  -
+    when: 2024-05-18T22:22:22.8492Z
+    what: quantity-of-deliverables
+    since: 2024-05-01T00:00:00Z
+    _id: 3
+    budget: 100
+    pull_requests: 10
+  -
+    when: 2024-05-19T22:22:22.8492Z
+    what: quantity-of-deliverables
+    since: 2024-05-01T00:00:00Z
+    _id: 4
+    budget: 100
+    pull_requests: 20
+expected:
+  - /fb[count(f)=4]
+  - /fb/f[since and _id]
+  - /fb/f[n_average_issue_lifetime='1.0']
+  - /fb/f[n_pull_requests='1.0']
+  - /fb[not(f[n_since or n_when or n__id or n_budget])]
