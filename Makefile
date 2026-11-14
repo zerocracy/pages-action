@@ -76,7 +76,7 @@ rake: $(SAXON) $(HTMLS)
 	bundle exec rake
 
 stylelint: sass/*.scss
-	stylelint sass/*.scss
+	stylelint --config-basedir "$$(npm root -g)" sass/*.scss
 
 $(CSS): sass/*.scss stylelint Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
