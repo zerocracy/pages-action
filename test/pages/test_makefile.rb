@@ -102,6 +102,7 @@ class TestMakefile < Minitest::Test
         File.utime(Time.now - 100, Time.now - 100, File.join(dir, file))
       end
       File.utime(Time.now - 100, Time.now - 100, File.join(dir, 'Makefile'))
+      File.utime(Time.now - 100, Time.now - 100, File.join(dir, 'xsl'))
       File.write(File.join(dir, 'target/docker-image.txt'), 'x')
       File.utime(Time.now - 50, Time.now - 50, File.join(dir, 'target/docker-image.txt'))
       assert(system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL), 'unchanged')
