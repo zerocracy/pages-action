@@ -110,7 +110,7 @@ install: $(SAXON) | target
 entry: target/docker-image.txt target/fb/simple.fb
 	./makes/entry-in-docker.sh "$$(cat target/docker-image.txt)"
 
-rmi: target/docker-image.txt
+rmi: target/docker-image.txt entry
 	img=$$(cat $<)
 	docker rmi "$${img}"
 	rm "$<"
