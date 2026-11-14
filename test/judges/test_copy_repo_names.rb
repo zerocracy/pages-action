@@ -71,6 +71,30 @@ class TestCopyRepoNames < Minitest::Test
     assert_equal('yegor256/first', details.first.repository_name, fb.to_json)
   end
 
+  def test_records_archived_as_a_string
+    fb = Factbase.new
+    award = fb.insert
+    award.what = 'award'
+    award.repository = 12_345
+    client = Object.new
+    client.define_singleton_method(:repository) do |_id|
+      {
+        full_name: 'yegor256/test', description: 'd', archived: true,
+        stargazers_count: 1, forks_count: 2, language: 'Ruby',
+        open_issues_count: 3, updated_at: '2024-01-01T00:00:00Z'
+      }
+    end
+    orig = Fbe.method(:octo)
+    Fbe.define_singleton_method(:octo) { client }
+    begin
+      load_it('copy-repo-names', fb)
+    ensure
+      Fbe.define_singleton_method(:octo, orig)
+    end
+    details = fb.query('(eq what "repo-details")').each.to_a
+    assert_equal('true', details.first.archived.to_s, fb.to_json)
+  end
+
   def test_skips_private_repository
     fb = Factbase.new
     award = fb.insert
