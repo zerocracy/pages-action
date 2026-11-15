@@ -12,9 +12,13 @@ return if ids.empty?
 repos =
   ids.each_with_object({}) do |id, h|
     h[id] = Fbe.octo.repository(id)
-  rescue Fbe::OffQuota
+  rescue Fbe::OffQuota => e
+    $loog.warn(
+      "Can't fetch repository ##{id}: #{e.class}: #{e.message}, #{ids.size - h.size} repositories left unrefreshed"
+    )
     break h
-  rescue Octokit::Error, Faraday::Error
+  rescue Octokit::Error, Faraday::Error => e
+    $loog.warn("Can't fetch repository ##{id}: #{e.class}: #{e.message}")
     next
   end
 
