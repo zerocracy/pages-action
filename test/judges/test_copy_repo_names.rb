@@ -171,14 +171,6 @@ class TestCopyRepoNames < Minitest::Test
   private
 
   def load_it_logging(judge, fb, loog)
-    $fb = fb
-    $global = {}
-    $local = {}
-    $judge = judge
-    $options = Judges::Options.new('repositories' => 'foo/foo')
-    $loog = loog
-    $compiled ||= {}
-    $compiled[judge] ||= compiled(File.expand_path("../../judges/#{judge}/#{judge}.rb", __dir__))
-    $compiled[judge].call
+    load_it(judge, fb, {}, loog)
   end
 end
