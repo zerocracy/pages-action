@@ -38,23 +38,20 @@ require 'qbash'
 require 'shellwords'
 
 class Minitest::Test
-  def load_it(judge, fb, options = {})
+  def load_it(judge, fb, options = {}, loog = Loog::NULL)
     $fb = fb
     $global = {}
     $local = {}
     $judge = judge
     $options = Judges::Options.new({ 'repositories' => 'foo/foo' }.merge(options))
-    $loog = Loog::NULL
+    $loog = loog
     $compiled ||= {}
     $compiled[judge] ||= compiled(File.expand_path("../judges/#{judge}/#{judge}.rb", __dir__))
     $compiled[judge].call
   end
 
   def compiled(file)
-    code = "def call\n#{File.read(file)}\nend"
-    judge = Class.new
-    judge.class_eval(code, file, 0)
-    judge.new.method(:call)
+    RubyVM::InstructionSequence.compile("lambda do\n#{File.read(file)}\nend", file, file, 0).eval
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
