@@ -150,7 +150,7 @@
     <xsl:variable name="count" select="count($facts)" as="xs:integer"/>
     <xsl:variable name="avg" as="xs:double" select="if ($count = 0) then xs:double('0') else sum($facts/award) div $count"/>
     <xsl:if test="$summary-output != ''">
-      <xsl:result-document href="{$summary-output}" method="json" version="3.0" indent="yes">
+      <xsl:result-document href="{encode-for-uri($summary-output)}" method="json" version="3.0" indent="yes">
         <xsl:map>
           <xsl:map-entry key="'average_award'" select="z:rounded($avg, 10)"/>
           <xsl:map-entry key="'total_award'" select="round-half-to-even(sum($facts/award))"/>
