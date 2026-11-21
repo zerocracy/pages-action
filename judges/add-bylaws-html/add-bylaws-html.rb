@@ -24,7 +24,10 @@ props.each do |prop, q|
       $loog.warn("The bylaw '#{prop}' can't be rendered: #{e.message}")
       next
     end
-  htmls << Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(escape_html: true), no_intra_emphasis: true).render(md)
+  htmls << Redcarpet::Markdown.new(
+    Redcarpet::Render::HTML.new(escape_html: true, safe_links_only: true),
+    no_intra_emphasis: true
+  ).render(md)
 end
 return if htmls.empty?
 Fbe.fb.query('(eq what "bylaws")').delete!

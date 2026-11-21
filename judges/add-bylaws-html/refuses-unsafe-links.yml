@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    what: pmp
+    area: hr
+    abc: '(award (explain "See [x](javascript:alert(1))") (give 4 "x"))'
+    xyz: '(award (explain "See [y](https://a.com/)") (give 2 "y"))'
+expected:
+  - /fb[count(f)=2]
+  - /fb/f[what='bylaws' and not(contains(html, 'href="javascript:'))]
+  - /fb/f[what='bylaws' and contains(html, '[x](javascript:alert(1))')]
+  - /fb/f[what='bylaws' and contains(html, '<a href="https://a.com/">y</a>')]
