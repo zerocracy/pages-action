@@ -64,7 +64,7 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-http-cache (2.7.0)
+    faraday-http-cache (2.8.0)
       faraday (>= 0.8)
     faraday-multipart (1.2.0)
       multipart-post (~> 2.0)
