@@ -76,7 +76,7 @@ rake: $(SAXON) $(HTMLS)
 	bundle exec rake
 
 stylelint: sass/*.scss
-	stylelint sass/*.scss
+	stylelint --config-basedir "$$(npm root -g)" sass/*.scss
 
 $(CSS): sass/*.scss stylelint Makefile | target/css
 	sass --no-source-map --style=compressed --no-quiet --stop-on-error --no-charset sass/main.scss "$@"
@@ -100,7 +100,7 @@ $(SAXON): | target
 	if [ -e "$${m2}" ]; then
 		cp "$${m2}" "$(SAXON)"
 	else
-		wget --no-verbose -O "$(SAXON).tmp" "https://repo.maven.apache.org/maven2/$${p}"
+		wget --no-verbose --tries=3 --retry-on-http-error=429,500,502,503,504 -O "$(SAXON).tmp" "https://repo.maven.apache.org/maven2/$${p}"
 		mv "$(SAXON).tmp" "$(SAXON)"
 	fi
 
