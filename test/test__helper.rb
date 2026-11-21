@@ -51,8 +51,8 @@ class Minitest::Test
   end
 
   def compiled(file)
-    source = "lambda do\n#{File.read(file)}\nend"
-    Object.new.instance_eval { binding }.eval(source, file, 0)
+    source = "# frozen_string_literal: true\n-> {\n#{File.read(file)}\n}"
+    Object.new.instance_eval(source, file, -1)
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
