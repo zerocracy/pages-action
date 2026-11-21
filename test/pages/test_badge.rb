@@ -156,7 +156,39 @@ class TestBadge < Minitest::Test
     assert_includes(xml.xpath("//*[local-name()='text']").map(&:text), '+0.7', xml)
   end
 
+  def test_paints_a_high_average_green
+    xml = badge_svg('<fb><f><award>20</award><when>2023-12-01T00:00:00Z</when></f></fb>')
+    assert_equal('#4c1', badge_fill(xml), xml)
+    assert_equal('93', badge_width(xml), xml)
+  end
+
+  def test_paints_a_low_positive_average_orange
+    xml = badge_svg('<fb><f><award>10</award><when>2023-12-01T00:00:00Z</when></f></fb>')
+    assert_equal('#fb8530', badge_fill(xml), xml)
+    assert_equal('93', badge_width(xml), xml)
+  end
+
+  def test_widens_the_badge_for_an_average_above_ninety_nine
+    xml = badge_svg('<fb><f><award>150</award><when>2023-12-01T00:00:00Z</when></f></fb>')
+    assert_equal('109', badge_width(xml), xml)
+    assert_equal('#4c1', badge_fill(xml), xml)
+  end
+
+  def test_widens_the_badge_for_an_average_above_fifty
+    xml = badge_svg('<fb><f><award>60</award><when>2023-12-01T00:00:00Z</when></f></fb>')
+    assert_equal('103', badge_width(xml), xml)
+    assert_equal('#4c1', badge_fill(xml), xml)
+  end
+
   private
+
+  def badge_fill(xml)
+    xml.xpath("//*[local-name()='path'][starts-with(@d, 'M50 0')]").first['fill']
+  end
+
+  def badge_width(xml)
+    xml.xpath("/*[local-name()='svg']").first['width']
+  end
 
   def badge_svg(xml, *params)
     Dir.mktmpdir do |dir|
