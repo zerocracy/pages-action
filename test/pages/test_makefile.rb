@@ -102,11 +102,13 @@ class TestMakefile < Minitest::Test
         File.utime(Time.now - 100, Time.now - 100, File.join(dir, file))
       end
       File.utime(Time.now - 100, Time.now - 100, File.join(dir, 'Makefile'))
+      File.write(File.join(dir, 'target/version.txt'), "0.0.0\n")
+      File.utime(Time.now - 100, Time.now - 100, File.join(dir, 'target/version.txt'))
       File.write(File.join(dir, 'target/docker-image.txt'), 'x')
       File.utime(Time.now - 50, Time.now - 50, File.join(dir, 'target/docker-image.txt'))
-      assert(system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL), 'unchanged')
+      assert_empty(builds(dir, '0.0.0'), 'the image is rebuilt while nothing changes')
       File.utime(Time.now, Time.now, File.join(dir, 'xsl/vitals.xsl'))
-      refute(system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL))
+      refute_empty(builds(dir, '0.0.0'), 'the image is not rebuilt after the stylesheet changes')
     end
   end
 
@@ -139,13 +141,57 @@ class TestMakefile < Minitest::Test
           File.write(File.join(dir, file), '') unless file == 'Makefile'
           File.utime(Time.now - 100, Time.now - 100, File.join(dir, file))
         end
+        File.write(File.join(dir, 'target/version.txt'), "0.0.0\n")
+        File.utime(Time.now - 100, Time.now - 100, File.join(dir, 'target/version.txt'))
         File.write(File.join(dir, 'target/docker-image.txt'), 'x')
         File.utime(Time.now - 50, Time.now - 50, File.join(dir, 'target/docker-image.txt'))
-        fresh = -> { system('make', '-C', dir, '-q', 'target/docker-image.txt', out: File::NULL, err: File::NULL) }
-        assert(fresh.call, "the image is stale before #{config} changes")
+        assert_empty(builds(dir, '0.0.0'), "the image is stale before #{config} changes")
         File.utime(Time.now, Time.now, File.join(dir, config))
-        refute(fresh.call, "the image is not rebuilt after #{config} changes")
+        refute_empty(builds(dir, '0.0.0'), "the image is not rebuilt after #{config} changes")
       end
     end
+  end
+
+  def test_rebuilds_the_docker_image_after_the_version_changes
+    Dir.mktmpdir do |dir|
+      FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+      %w[
+        Dockerfile entry.sh Gemfile Gemfile.lock html-minifier-config.json
+        eslint.config.js .stylelintrc.json
+      ].each do |file|
+        File.write(File.join(dir, file), '')
+      end
+      builds(dir, '1.2.3')
+      assert_includes(builds(dir, '2.0.0'), 'VERSION=2.0.0', 'the image is not rebuilt after the version changes')
+    end
+  end
+
+  def test_keeps_the_docker_image_while_the_version_stays
+    Dir.mktmpdir do |dir|
+      FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+      %w[
+        Dockerfile entry.sh Gemfile Gemfile.lock html-minifier-config.json
+        eslint.config.js .stylelintrc.json
+      ].each do |file|
+        File.write(File.join(dir, file), '')
+      end
+      builds(dir, '1.2.3')
+      assert_empty(builds(dir, '1.2.3'), 'the image is rebuilt while the version stays')
+    end
+  end
+
+  private
+
+  def builds(dir, version)
+    FileUtils.mkdir_p(File.join(dir, 'bin'))
+    File.write(File.join(dir, 'bin/docker'), "#!/usr/bin/env bash\necho \"$3\" >> \"$(dirname \"$0\")/log\"\n")
+    FileUtils.chmod(0o755, File.join(dir, 'bin/docker'))
+    FileUtils.rm_f(File.join(dir, 'bin/log'))
+    _, stderr, status = Open3.capture3(
+      { 'PATH' => "#{dir}/bin:#{ENV.fetch('PATH')}", 'MAKEFLAGS' => nil, 'MAKELEVEL' => nil },
+      'make', '-C', dir, 'target/docker-image.txt', "PAGES_ACTION_VERSION=#{version}"
+    )
+    assert_predicate(status, :success?, stderr)
+    File.exist?(File.join(dir, 'bin/log')) ? File.readlines(File.join(dir, 'bin/log'), chomp: true) : []
   end
 end
