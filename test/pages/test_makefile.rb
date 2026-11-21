@@ -148,4 +148,32 @@ class TestMakefile < Minitest::Test
       end
     end
   end
+
+  def test_keeps_the_css_up_to_date_when_nothing_changed
+    Dir.mktmpdir do |dir|
+      stamped(dir)
+      assert(system('make', '-C', dir, '-q', 'target/css/main.css', out: File::NULL, err: File::NULL))
+    end
+  end
+
+  def test_lints_the_css_again_when_the_lint_rules_change
+    Dir.mktmpdir do |dir|
+      stamped(dir)
+      File.utime(Time.now, Time.now, File.join(dir, '.stylelintrc.json'))
+      refute(system('make', '-C', dir, '-q', 'target/stylelint.txt', out: File::NULL, err: File::NULL))
+      refute(system('make', '-C', dir, '-q', 'target/css/main.css', out: File::NULL, err: File::NULL))
+    end
+  end
+
+  private
+
+  def stamped(dir)
+    FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+    FileUtils.mkdir_p(%w[sass target/css].map { |path| File.join(dir, path) })
+    %w[.stylelintrc.json sass/main.scss target/stylelint.txt target/css/main.css].each_with_index do |file, i|
+      File.write(File.join(dir, file), '')
+      File.utime(Time.now - 100 + i, Time.now - 100 + i, File.join(dir, file))
+    end
+    File.utime(Time.now - 200, Time.now - 200, File.join(dir, 'Makefile'))
+  end
 end
