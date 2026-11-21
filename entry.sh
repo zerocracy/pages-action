@@ -401,7 +401,7 @@ for i in "${!js_urls[@]}"; do
 done
 js_links="${js_links%$'\n'}"
 
-java -jar "${SELF}/target/saxon.jar" \
+java -cp "${SELF}/target/*" net.sf.saxon.Transform \
     "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/vitals.xsl" \
     "-o:${html}" \
@@ -423,7 +423,7 @@ html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${
 echo "HTML generated at: ${html}"
 
 svg=${staging}/${name}-badge.svg
-java -jar "${SELF}/target/saxon.jar" \
+java -cp "${SELF}/target/*" net.sf.saxon.Transform \
     "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/badge.xsl" \
     "-o:${svg}" \
