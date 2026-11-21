@@ -51,7 +51,8 @@ class Minitest::Test
   end
 
   def compiled(file)
-    RubyVM::InstructionSequence.compile("lambda do\n#{File.read(file)}\nend", file, file, 0).eval
+    source = "# frozen_string_literal: true\n-> {\n#{File.read(file)}\n}"
+    Object.new.instance_eval(source, file, -1)
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
