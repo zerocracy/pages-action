@@ -384,13 +384,13 @@ declare -a js_urls=(
     "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
     "https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.32.0/js/jquery.tablesorter.min.js"
     "https://cdn.jsdelivr.net/npm/chart.js@4.6.1"
-    "https://unpkg.com/chroma-js@3.2.0/dist/chroma.min.cjs"
+    "https://unpkg.com/chroma-js@3.3.0/dist/chroma.min.cjs"
 )
 declare -a js_hashes=(
     "1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
     "ArwQRauoLx1SFi62tbVaz0/5G73uk4P9LSFlRxe0JBRcw1DuzgAFIt0EG8XNtHXp"
     "Emf5ZVIUiarAdhkgtqK+5/Z5qIvM6QoVrS+qAVtfyZVuD5lIHrac0me485+Antp0"
-    "r8cXlFAps0e3Nzi0QOPFhhjZOCsr+0vMu/HAECigYk5MY9E8LY/L2wlqlwUDK05S"
+    "nk/jR5bDKx9yxoGjXnZnxJXXfH4DIVbww1bwAPSk31/1Ec/PX0PIKVszDvWMP8A5"
 )
 js_links=""
 for i in "${!js_urls[@]}"; do
@@ -401,7 +401,7 @@ for i in "${!js_urls[@]}"; do
 done
 js_links="${js_links%$'\n'}"
 
-java -jar "${SELF}/target/saxon.jar" \
+java -cp "${SELF}/target/*" net.sf.saxon.Transform \
     "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/vitals.xsl" \
     "-o:${html}" \
@@ -423,7 +423,7 @@ html-minifier "${html}" --config-file "${SELF}/html-minifier-config.json" -o "${
 echo "HTML generated at: ${html}"
 
 svg=${staging}/${name}-badge.svg
-java -jar "${SELF}/target/saxon.jar" \
+java -cp "${SELF}/target/*" net.sf.saxon.Transform \
     "-s:${staging}/${name}.rich.xml" \
     "-xsl:${SELF}/target/xsl/badge.xsl" \
     "-o:${svg}" \
