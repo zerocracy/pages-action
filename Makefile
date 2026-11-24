@@ -108,7 +108,7 @@ $(SAXON) $(XMLRESOLVER): | target
 	if [ -e "$${m2}" ]; then
 		cp "$${m2}" "$@"
 	else
-		wget --no-verbose -O "$@.tmp" "https://repo.maven.apache.org/maven2/$${p}"
+		wget --no-verbose --tries=3 --retry-on-http-error=429,500,502,503,504 -O "$@.tmp" "https://repo.maven.apache.org/maven2/$${p}"
 		mv "$@.tmp" "$@"
 	fi
 
