@@ -38,4 +38,25 @@ class TestLatestAssessment < Minitest::Test
     load_it('latest-assessment', fb)
     assert_empty(fb.query('(eq what "latest-assessment")').each.to_a, fb.to_json)
   end
+
+  def test_ignores_assessments_with_empty_or_whitespace_text
+    fb = Factbase.new
+    valid = fb.insert
+    valid.what = 'assessment'
+    valid.when = Time.parse('2024-07-01T00:00:00Z')
+    valid.text = 'Valid assessment'
+    blank = fb.insert
+    blank.what = 'assessment'
+    blank.when = Time.parse('2024-07-02T00:00:00Z')
+    blank.text = "  \n\t "
+    empty = fb.insert
+    empty.what = 'assessment'
+    empty.when = Time.parse('2024-07-03T00:00:00Z')
+    empty.text = '   '
+    load_it('latest-assessment', fb, 'today' => '2024-07-05T00:00:00Z')
+    summaries = fb.query('(eq what "latest-assessment")').each.to_a
+    assert_equal(1, summaries.size, fb.to_json)
+    assert_equal('Valid assessment', summaries.first.text, fb.to_json)
+    assert_equal(1, summaries.first.total, fb.to_json)
+  end
 end

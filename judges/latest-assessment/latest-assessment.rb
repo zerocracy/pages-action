@@ -10,7 +10,7 @@ Fbe.fb.txn do |fb|
   today = $options.today.nil? ? Time.now : Time.parse($options.today)
   assessments =
     fb.query('(and (eq what "assessment") (exists text) (exists when))').each.to_a.select do |a|
-      a['when'].min <= today
+      a['when'].min <= today && !a.text.to_s.strip.empty?
     end
   fb.query('(eq what "latest-assessment")').delete!
   next if assessments.empty?
