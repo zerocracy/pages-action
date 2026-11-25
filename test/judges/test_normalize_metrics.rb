@@ -49,4 +49,33 @@ class TestNormalizeMetrics < Minitest::Test
     load_it('normalize-metrics', fb)
     assert_equal([0.0, 0.0], fb.query('(always)').each.map { |f| f['n_some_issue_lifetime'].first })
   end
+
+  def test_skips_non_finite_and_non_numeric_metric_values
+    fb = Factbase.new
+    first = fb.insert
+    first.what = 'quality-of-service'
+    first.when = Time.parse('2024-01-01T00:00:00Z')
+    first.average_issue_lifetime = Float::NAN
+    first.some_review_time = Float::INFINITY
+    first.total_issues = 'bad'
+    second = fb.insert
+    second.what = 'quality-of-service'
+    second.when = Time.parse('2024-01-02T00:00:00Z')
+    second.average_issue_lifetime = 10
+    second.some_review_time = 20
+    second.total_issues = 30
+    third = fb.insert
+    third.what = 'quality-of-service'
+    third.when = Time.parse('2024-01-03T00:00:00Z')
+    third.average_issue_lifetime = 10**400
+    third.some_review_time = 40
+    third.total_issues = 60
+    load_it('normalize-metrics', fb)
+    assert_nil(first['n_average_issue_lifetime'], fb.to_json)
+    assert_nil(first['n_some_review_time'], fb.to_json)
+    assert_nil(first['n_total_issues'], fb.to_json)
+    assert_in_delta(0.0, second['n_average_issue_lifetime'].first, 0.0001, fb.to_json)
+    assert_in_delta(1.0, third['n_some_review_time'].first, 0.0001, fb.to_json)
+    assert_nil(third['n_average_issue_lifetime'], fb.to_json)
+  end
 end

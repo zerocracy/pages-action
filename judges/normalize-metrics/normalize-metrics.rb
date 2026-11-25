@@ -6,12 +6,16 @@
 require 'fbe/fb'
 require 'fbe/overwrite'
 
+def finite?(value)
+  value.is_a?(Numeric) && (!value.is_a?(Float) || value.finite?)
+end
+
 def fits?(fact, name)
-  return true if name == 'composite'
-  return false unless name.match?(/^[a-z]+_[a-z]+.*$/)
+  return false unless name == 'composite' || name.match?(/^[a-z]+_[a-z]+.*$/)
   return false if name.start_with?('n_')
   return false if name.start_with?('some_') && !fact["average_#{name.delete_prefix('some_')}"].nil?
-  true
+  vv = fact[name]
+  !vv.nil? && !vv.empty? && vv.all? { |v| finite?(v) }
 end
 
 def value(fact, name)
@@ -42,7 +46,9 @@ end
       next unless fits?(f, prop)
       next if start[prop].zero?
       s = start[prop]
-      fresh["n_#{prop}"] = ((value(f, prop) - s) / s).to_f
+      ratio = ((value(f, prop) - s) / s).to_f
+      next unless ratio.finite?
+      fresh["n_#{prop}"] = ratio
     end
     next if fresh.empty?
     Fbe.overwrite(f, fresh)
