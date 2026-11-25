@@ -160,6 +160,26 @@ class TestQoSection < Minitest::Test
     refute_includes(script, 'alert(document.domain)')
   end
 
+  def test_emits_scientific_notation_metric_values
+    xml = xslt(
+      "<r><xsl:call-template name='qo-section'>" \
+      "<xsl:with-param name='what' select=\"'quality-of-service'\"/>" \
+      "<xsl:with-param name='title' select=\"'QoS'\"/>" \
+      '</xsl:call-template></r>',
+      '<fb><f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
+      '<n_composite>1.0e-05</n_composite><n_alpha>1.5E+3</n_alpha>' \
+      '<n_nan>NaN</n_nan><n_inf>INF</n_inf></f></fb>',
+      'today' => '2024-09-26T04:04:04Z'
+    )
+    script = xml.xpath('//script').map(&:content).join
+    refute_match(/label:'Composite',[^}]*data:\[null\]/, script, script)
+    refute_match(/label:'Alpha',[^}]*data:\[null\]/, script, script)
+    assert_match(/label:'Composite',[^}]*data:\[(?:0\.00001|1\.0[eE]-5)\]/, script, script)
+    assert_match(/label:'Alpha',[^}]*data:\[1500\]/, script, script)
+    assert_match(/label:'Nan',[^}]*data:\[null\]/, script, script)
+    assert_match(/label:'Inf',[^}]*data:\[null\]/, script, script)
+  end
+
   def test_draws_one_value_of_a_multi_valued_metric
     xml = xslt(
       "<r><xsl:call-template name='qo-section'>" \
