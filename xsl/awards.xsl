@@ -399,7 +399,7 @@
         <xsl:copy-of select="z:payables($id, $name)"/>
       </xsl:if>
     </tr>
-    <xsl:if test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name))]">
+    <xsl:if test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &lt;= xs:dateTime($today)]">
       <tr class="sub tablesorter-childRow p-table p_{$name}" style="display: none;">
         <td>
           <!-- Avatar -->
@@ -413,8 +413,8 @@
           <xsl:variable name="week" select="."/>
           <td class="right">
             <xsl:choose>
-              <xsl:when test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:in-week(z:when(when), $week)]">
-                <xsl:for-each select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:in-week(z:when(when), $week)]">
+              <xsl:when test="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &lt;= xs:dateTime($today) and z:in-week(z:when(when), $week)]">
+                <xsl:for-each select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &lt;= xs:dateTime($today) and z:in-week(z:when(when), $week)]">
                   <xsl:if test="position() &gt; 1">
                     <br/>
                   </xsl:if>

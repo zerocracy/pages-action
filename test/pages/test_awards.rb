@@ -918,4 +918,33 @@ class TestAwards < Minitest::Test
     assert_equal('@jeff', img['alt'], xml)
     assert_equal('lazy', img['loading'], xml)
   end
+
+  def test_ignores_future_reconciliations_in_payouts_row
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <is_human>1</is_human>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <award>20</award>
+          <when>2024-07-02T00:00:00Z</when>
+        </f>
+        <f>
+          <what>reconciliation</what>
+          <who>1</who>
+          <who_name>jeff</who_name>
+          <when>2024-07-05T00:00:00Z</when>
+          <since>2024-07-01T00:00:00Z</since>
+          <awarded>20</awarded>
+          <payout>20</payout>
+          <balance>0</balance>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-03T00:00:00Z'
+    )
+    assert_empty(xml.xpath('//table[@id="awards"]/tbody/tr[contains(@class, "sub") and td[2]="Payouts:"]'), xml)
+  end
 end
