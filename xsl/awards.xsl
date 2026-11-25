@@ -48,7 +48,7 @@
     <xsl:variable name="recs" select="$fb/f[what='reconciliation' and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &lt;= xs:dateTime($today)]"/>
     <xsl:variable name="latest" select="max(for $reconciliation in $recs return z:when($reconciliation/when))"/>
     <xsl:variable name="rec" select="$recs[z:when(when) = $latest][1]"/>
-    <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
+    <xsl:sequence select="if ($rec) then xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since)) and z:when(when) &lt;= xs:dateTime($today)]/award)) - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance)) else 0"/>
   </xsl:function>
   <xsl:function name="z:payables">
     <xsl:param name="name" as="xs:string"/>
@@ -89,7 +89,7 @@
           </xsl:if>
         </xsl:for-each>
         <td class="right ff">
-          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since))]/award))"/>
+          <xsl:variable name="accumulated" select="xs:integer(sum($fb/f[award and is_human = 1 and (if ($id != '') then who=$id else (not(who) and who_name=$name)) and z:when(when) &gt; xs:dateTime(z:value($rec/since)) and z:when(when) &lt;= xs:dateTime($today)]/award))"/>
           <xsl:variable name="delta" select="$accumulated - xs:integer(z:value($rec/awarded))"/>
           <xsl:variable name="payable" select="$accumulated - xs:integer(z:value($rec/awarded)) + xs:integer(z:value($rec/balance))"/>
           <xsl:attribute name="title">
