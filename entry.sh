@@ -435,6 +435,13 @@ rm "${staging}/${name}.rich.xml"
 
 echo "Publishing generated files to: ${INPUT_OUTPUT}"
 for file in "${staging}"/*; do
+    destination="${INPUT_OUTPUT}/${file##*/}"
+    if [ -f "${file}" ] && [ -d "${destination}" ]; then
+        echo "Cannot replace a directory with a generated file: ${destination}" >&2
+        exit 1
+    fi
+done
+for file in "${staging}"/*; do
     if [ -f "${file}" ]; then
         mv -- "${file}" "${INPUT_OUTPUT}/"
     fi
