@@ -3,6 +3,16 @@
   "extends": [
     "config:base"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/^Makefile$/"],
+      "matchStrings": ["(?:^|\\n)SAXON_VERSION = (?<currentValue>[^\\s]+)"],
+      "depNameTemplate": "net.sf.saxon:Saxon-HE",
+      "datasourceTemplate": "maven",
+      "versioningTemplate": "maven"
+    }
+  ],
   "automerge": true,
   "platformAutomerge": false
 }

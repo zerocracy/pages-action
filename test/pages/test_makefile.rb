@@ -53,8 +53,8 @@ class TestMakefile < Minitest::Test
   def test_downloads_saxon_before_running_the_entries
     Dir.mktmpdir do |dir|
       FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
-      stdout, = Open3.capture2('make', '-n', '-C', dir, 'entries', '-o', 'assets')
-      assert_includes(stdout, 'Saxon-HE/13.1/Saxon-HE-13.1.jar', stdout)
+      stdout, = Open3.capture2('make', '-n', '-C', dir, 'entries', '-o', 'assets', 'SAXON_VERSION=12.9')
+      assert_includes(stdout, 'Saxon-HE/12.9/Saxon-HE-12.9.jar', stdout)
       assert_includes(stdout, 'xmlresolver/6.1.0/xmlresolver-6.1.0.jar', stdout)
       assert_includes(stdout, 'xmlresolver/6.1.0/xmlresolver-6.1.0-data.jar', stdout)
     end
