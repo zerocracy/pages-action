@@ -6,6 +6,16 @@
 require_relative '../test__helper'
 
 class TestRepositories < Minitest::Test
+  def test_shows_only_available_figures_for_repositories
+    facts =
+      ['', '<stars>0</stars><open_issues>1</open_issues>'].each_with_index.map do |fields, i|
+        "<f><what>repo-details</what><repository_name>org/repo#{i}</repository_name>#{fields}</f>"
+      end
+    xml = xslt("<r><xsl:apply-templates select='/' mode='repositories'/></r>", "<fb>#{facts.join}</fb>")
+    expected = ['org/repo0', 'org/repo1 [ 0 stars · 1 open issue or pull request ]']
+    assert_equal(expected, xml.xpath('//li').map { |item| item.text.strip })
+  end
+
   def test_sorts_repositories_ignoring_case
     names = %w[yegor256/factbase zerocracy/Zerocracy.github.io zerocracy/baza Yegor256/Tacit]
     facts = names.map { |n| "<f><what>repo-details</what><repository_name>#{n}</repository_name></f>" }.join
