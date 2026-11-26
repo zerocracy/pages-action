@@ -25,9 +25,11 @@
     <xsl:param name="colors" as="xs:string" select="'n_composite:orange'"/>
     <xsl:param name="before"/>
     <xsl:variable name="raw" select="/fb/f[what=$what and z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D')) and z:when(when) &lt;= xs:dateTime($today)]"/>
-    <!-- A timestamp can be written in two offsets on opposite sides of Monday.
-         Use one calendar week for those observations and keep the local dates
-         of other samples. The weekly reducer below still selects each metric. -->
+    <!--
+    A timestamp can be written in two offsets on opposite sides of Monday.
+    Use one calendar week for those observations and keep the local dates
+    of other samples. The weekly reducer below still selects each metric.
+    -->
     <xsl:variable name="samples" as="element(f)*">
       <xsl:for-each-group select="$raw" group-by="z:when(when)">
         <xsl:variable name="same" select="current-group()"/>
