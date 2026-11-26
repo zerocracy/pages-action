@@ -9,6 +9,35 @@ require 'tmpdir'
 require_relative '../test__helper'
 
 class TestMakefile < Minitest::Test
+  def test_records_the_image_from_the_same_build_that_tags_it
+    Dir.mktmpdir do |dir|
+      FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
+      FileUtils.mkdir_p(File.join(dir, 'bin'))
+      files = %w[Dockerfile entry.sh Gemfile Gemfile.lock html-minifier-config.json eslint.config.js .stylelintrc.json]
+      files.each do |f|
+        File.write(File.join(dir, f), '')
+      end
+      docker = File.join(dir, 'bin/docker')
+      File.write(docker, <<~SH)
+        #!/usr/bin/env bash
+        echo build >> calls
+        id="sha256:$(wc -l < calls)"
+        while [ "$#" -gt 0 ]; do
+          if [ "$1" = '--iidfile' ]; then echo "$id" > "$2"; fi
+          if [ "$1" = '-q' ]; then echo "$id"; fi
+          shift
+        done
+      SH
+      FileUtils.chmod(0o755, docker)
+      stdout, stderr, status = Open3.capture3(
+        { 'PATH' => "#{dir}/bin:#{ENV.fetch('PATH')}" }, 'make', '-C', dir, 'target/docker-image.txt'
+      )
+      assert_predicate(status, :success?, "#{stdout}\n#{stderr}")
+      assert_equal("sha256:1\n", File.read(File.join(dir, 'target/docker-image.txt')))
+      assert_equal(["build\n"], File.readlines(File.join(dir, 'calls')))
+    end
+  end
+
   def test_regenerates_output_when_minifier_configuration_changes
     Dir.mktmpdir do |dir|
       FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
