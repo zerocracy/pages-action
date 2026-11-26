@@ -291,7 +291,7 @@
           <xsl:sort select="sum(current-group()/award)" data-type="number" order="descending"/>
           <xsl:variable name="key" select="current-grouping-key()"/>
           <xsl:variable name="id" select="if (starts-with($key, 'id:')) then substring-after($key, 'id:') else ''"/>
-          <xsl:variable name="identities" select="$fb/f[what='who-has-name' and who=$id]"/>
+          <xsl:variable name="identities" select="$fb/f[what='who-has-name' and who=$id and normalize-space(name) != '']"/>
           <xsl:variable name="name">
             <xsl:choose>
               <xsl:when test="$id != '' and $identities">
