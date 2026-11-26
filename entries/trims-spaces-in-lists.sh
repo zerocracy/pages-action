@@ -24,7 +24,7 @@ env "GITHUB_WORKSPACE=$(pwd)" \
   'INPUT_FACTBASE=test.fb' \
   'INPUT_OUTPUT=output' \
   'INPUT_VERBOSE=false' \
-  'INPUT_COLUMNS= when, what ,repository ' \
+  $'INPUT_COLUMNS= when,\n what ,repository ' \
   'INPUT_HIGHLIGHTED=what ,  who' \
   'INPUT_HIDDEN=_id, _time,  _version' \
   "${SELF}/entry.sh" "${SELF}" > log.txt 2>&1 || true
