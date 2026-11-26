@@ -25,15 +25,37 @@
     <xsl:param name="colors" as="xs:string" select="'n_composite:orange'"/>
     <xsl:param name="before"/>
     <xsl:variable name="raw" select="/fb/f[what=$what and z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D')) and z:when(when) &lt;= xs:dateTime($today)]"/>
-    <xsl:variable name="zone" select="timezone-from-dateTime(xs:dateTime($today))"/>
+    <!-- A timestamp can be written in two offsets on opposite sides of Monday.
+         Use one calendar week for those observations and keep the local dates
+         of other samples. The weekly reducer below still selects each metric. -->
+    <xsl:variable name="samples" as="element(f)*">
+      <xsl:for-each-group select="$raw" group-by="z:when(when)">
+        <xsl:variable name="same" select="current-group()"/>
+        <xsl:variable name="weeks" select="distinct-values(for $sample in $same return z:iso-week(z:when($sample/when)))"/>
+        <xsl:choose>
+          <xsl:when test="count($weeks) gt 1">
+            <xsl:variable name="time" select="adjust-dateTime-to-timezone(current-grouping-key(), timezone-from-dateTime(xs:dateTime($today)))"/>
+            <xsl:for-each select="$same">
+              <f>
+                <when>
+                  <xsl:value-of select="$time"/>
+                </when>
+                <xsl:copy-of select="*[starts-with(name(), 'n_')]"/>
+              </f>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:sequence select="$same"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:for-each-group>
+    </xsl:variable>
     <xsl:variable name="facts">
-      <xsl:for-each-group select="$raw" group-by="z:iso-week(adjust-dateTime-to-timezone(z:when(when), $zone))">
+      <xsl:for-each-group select="$samples" group-by="z:iso-week(z:when(when))">
         <xsl:variable name="week" select="current-group()"/>
         <xsl:variable name="latest" select="max(for $x in $week return z:when($x/when))"/>
         <f>
-          <when>
-            <xsl:value-of select="adjust-dateTime-to-timezone($latest, $zone)"/>
-          </when>
+          <xsl:copy-of select="$week[z:when(when) = $latest][last()]/when"/>
           <xsl:for-each select="distinct-values($week/*[starts-with(name(), 'n_')]/name())">
             <xsl:variable name="n" select="."/>
             <xsl:variable name="has" select="$week[*[name()=$n]]"/>
