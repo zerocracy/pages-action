@@ -4,6 +4,13 @@
  */
 
 #awards {
+  thead {
+    background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
   tr.sub td {
     padding: 0;
   }
