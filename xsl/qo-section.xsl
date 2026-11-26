@@ -25,12 +25,13 @@
     <xsl:param name="colors" as="xs:string" select="'n_composite:orange'"/>
     <xsl:param name="before"/>
     <xsl:variable name="raw" select="/fb/f[what=$what and z:when(when) &gt; (xs:dateTime($today) - xs:dayTimeDuration('P180D')) and z:when(when) &lt;= xs:dateTime($today)]"/>
+    <xsl:variable name="zone" select="timezone-from-dateTime(xs:dateTime($today))"/>
     <xsl:variable name="facts">
-      <xsl:for-each-group select="$raw" group-by="z:iso-week(z:when(when))">
+      <xsl:for-each-group select="$raw" group-by="z:iso-week(adjust-dateTime-to-timezone(z:when(when), $zone))">
         <xsl:variable name="week" select="current-group()"/>
         <xsl:variable name="latest" select="max(for $x in $week return z:when($x/when))"/>
         <f>
-          <xsl:copy-of select="$week[z:when(when) = $latest][last()]/when"/>
+          <when><xsl:value-of select="adjust-dateTime-to-timezone($latest, $zone)"/></when>
           <xsl:for-each select="distinct-values($week/*[starts-with(name(), 'n_')]/name())">
             <xsl:variable name="n" select="."/>
             <xsl:variable name="has" select="$week[*[name()=$n]]"/>

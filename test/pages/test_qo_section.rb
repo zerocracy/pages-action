@@ -7,6 +7,21 @@ require 'English'
 require_relative '../test__helper'
 
 class TestQoSection < Minitest::Test
+  def test_groups_equivalent_instants_at_a_week_boundary
+    facts =
+      %w[2024-07-07T23:30:00Z 2024-07-08T01:30:00+02:00].each_with_index.map do |stamp, i|
+        "<f><what>quality-of-service</what><when>#{stamp}</when><n_metric>#{i + 1}</n_metric></f>"
+      end
+    template = <<~XSL
+      <r><xsl:call-template name="qo-section">
+        <xsl:with-param name="what" select="'quality-of-service'"/>
+        <xsl:with-param name="title" select="'QoS'"/>
+      </xsl:call-template></r>
+    XSL
+    xml = xslt(template, "<fb>#{facts.join}</fb>", 'today' => '2024-07-09T00:00:00Z')
+    assert_includes(xml.xpath('//script').text, "labels:['7/7'],fullDates:['7 JUL 2024']")
+  end
+
   def test_metric_colors_do_not_depend_on_fact_order
     facts = [
       '<f><when>2024-07-03T22:22:22Z</when><what>quality-of-service</what>' \
