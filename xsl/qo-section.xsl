@@ -31,7 +31,9 @@
         <xsl:variable name="week" select="current-group()"/>
         <xsl:variable name="latest" select="max(for $x in $week return z:when($x/when))"/>
         <f>
-          <when><xsl:value-of select="adjust-dateTime-to-timezone($latest, $zone)"/></when>
+          <when>
+            <xsl:value-of select="adjust-dateTime-to-timezone($latest, $zone)"/>
+          </when>
           <xsl:for-each select="distinct-values($week/*[starts-with(name(), 'n_')]/name())">
             <xsl:variable name="n" select="."/>
             <xsl:variable name="has" select="$week[*[name()=$n]]"/>
