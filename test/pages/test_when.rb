@@ -7,6 +7,10 @@ require 'nokogiri'
 require_relative '../test__helper'
 
 class TestWhen < Minitest::Test
+  def test_keeps_the_valid_timestamp_next_to_malformed_values
+    assert_equal('2024-09-02', day_of('<v>unknown</v><v>2024-09-02T10:00:00Z</v><v/>'))
+  end
+
   def test_prints_a_date_without_a_timezone
     xml = xslt(
       '<r><xsl:value-of select="z:day(xs:date(z:when(/fb/f/when)))"/></r>',
