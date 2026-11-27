@@ -95,6 +95,18 @@ class TestVitals < Minitest::Test
     assert_equal('56', xml.xpath('/r/text()').to_s, xml)
   end
 
+  def test_links_only_published_reports_to_their_canonical_url
+    { 'https://example.org/reports' => ['https://example.org/reports/test-vitals.html'], '' => [] }.each do |url, links|
+      doc = xslt(
+        '<xsl:apply-imports/>', '<fb/>',
+        'today' => '2026-11-12T00:00:00Z', 'name' => 'test', 'logo' => '', 'url' => url,
+        'version' => '0.0.1', 'latest-version' => '0.0.1', 'fbe' => '0.0.50', 'adless' => 'false',
+        'css-links' => '', 'js-links' => '', 'css' => '', 'js' => ''
+      )
+      assert_equal(links, doc.xpath('/html/head/link[@rel="canonical"]/@href').map(&:value), doc.to_xml)
+    end
+  end
+
   def test_dot_shows_the_latest_fact_of_the_week
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='dot'/></r>",
