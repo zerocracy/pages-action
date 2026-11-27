@@ -37,7 +37,7 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    decoor (0.1.0)
+    decoor (0.1.1)
     docile (1.4.1)
     drb (2.2.3)
     elapsed (0.3.2)
