@@ -11,6 +11,7 @@ export BUNDLE_GEMFILE
 bundle exec judges eval test.fb "\$fb.insert" > /dev/null
 
 env "GITHUB_WORKSPACE=$(pwd)" \
+  "GITHUB_STEP_SUMMARY=$(pwd)/summary.md" \
   'INPUT_FACTBASE=test.fb' \
   'INPUT_OUTPUT=output' \
   'INPUT_VERBOSE=false' \
@@ -26,6 +27,8 @@ grep "The 'github-token' plugin parameter is set" 'log.txt'
 [ -e 'output/test.html' ]
 [ -e 'output/test-vitals.html' ]
 [ -e 'output/test-badge.svg' ]
+
+grep -F '+0.0 average points per task, 0 total points earned, 0 contributors.' summary.md
 
 diff <(find output -mindepth 1 -printf "%P\n" | LC_ALL=C sort) \
   <(printf '%s\n' test.yaml test.xml test.json test.html test-vitals.html test-badge.svg | LC_ALL=C sort)
