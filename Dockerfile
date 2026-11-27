@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
 # SPDX-License-Identifier: MIT
 
-FROM ruby:4.0
+FROM ruby:4.0.10@sha256:810d9fa40a86d5673ca5850f071805b4ca1c2a9838a603cbe07f43bc288c0f53
 
 ARG VERSION=0.0.0
 ENV PAGES_ACTION_VERSION="${VERSION}"
@@ -19,7 +19,7 @@ RUN apt-get update -y --fix-missing \
 
 # hadolint ignore=DL3008
 RUN rm -rf /usr/lib/node_modules \
-  && curl -sL -o /tmp/nodesource_setup.sh https://deb.nodesource.com/setup_24.x \
+  && curl -sL -o /tmp/nodesource_setup.sh https://deb.nodesource.com/setup_26.x \
   && bash /tmp/nodesource_setup.sh \
   && apt-get update -y --fix-missing \
   && apt-get -y install --no-install-recommends \

@@ -17,5 +17,5 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-26.04
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
       - uses: crate-ci/typos@v1.52.2
