@@ -55,8 +55,8 @@ class TestMakefile < Minitest::Test
       FileUtils.cp(File.join(__dir__, '../../Makefile'), dir)
       stdout, = Open3.capture2('make', '-n', '-C', dir, 'entries', '-o', 'assets')
       assert_includes(stdout, 'Saxon-HE/13.1/Saxon-HE-13.1.jar', stdout)
-      assert_includes(stdout, 'xmlresolver/6.1.0/xmlresolver-6.1.0.jar', stdout)
-      assert_includes(stdout, 'xmlresolver/6.1.0/xmlresolver-6.1.0-data.jar', stdout)
+      assert_includes(stdout, 'xmlresolver/6.1.1/xmlresolver-6.1.1.jar', stdout)
+      assert_includes(stdout, 'xmlresolver/6.1.1/xmlresolver-6.1.1-data.jar', stdout)
     end
   end
 
