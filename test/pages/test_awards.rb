@@ -918,4 +918,74 @@ class TestAwards < Minitest::Test
     assert_equal('@jeff', img['alt'], xml)
     assert_equal('lazy', img['loading'], xml)
   end
+
+  def test_ignores_future_awards_in_payables_after_reconciliation
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-06-15T00:00:00Z</when>
+          <since>2024-06-01T00:00:00Z</since>
+          <who>42</who>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>10</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>dude</who_name>
+          <when>2024-06-20T00:00:00Z</when>
+          <award>25</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>dude</who_name>
+          <when>2024-07-10T00:00:00Z</when>
+          <award>100</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-01T00:00:00Z'
+    )
+    row = xml.xpath("//table[@id='awards']/tbody/tr[not(contains(@class, 'sub'))]").first
+    assert_equal('35', row.at_xpath('./td[last()]').text.strip, xml)
+    payable = xslt(
+      "<r><xsl:value-of select=\"z:payable('42', 'dude')\"/></r>",
+      '
+      <fb>
+        <f>
+          <what>reconciliation</what>
+          <when>2024-06-15T00:00:00Z</when>
+          <since>2024-06-01T00:00:00Z</since>
+          <who>42</who>
+          <who_name>dude</who_name>
+          <awarded>0</awarded>
+          <payout>0</payout>
+          <balance>10</balance>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>dude</who_name>
+          <when>2024-06-20T00:00:00Z</when>
+          <award>25</award>
+        </f>
+        <f>
+          <is_human>1</is_human>
+          <who>42</who>
+          <who_name>dude</who_name>
+          <when>2024-07-10T00:00:00Z</when>
+          <award>100</award>
+        </f>
+      </fb>
+      ',
+      'today' => '2024-07-01T00:00:00Z'
+    )
+    assert_equal('35', payable.xpath('/r/text()').to_s.strip, payable)
+  end
 end
