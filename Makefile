@@ -20,6 +20,7 @@ CSS = target/css/main.css
 JS = target/js/main.js
 JS_TEST = target/js/test.js
 SAXON = target/saxon.jar
+SAXON_VERSION = 13.1
 XMLRESOLVER = target/xmlresolver-6.1.0.jar target/xmlresolver-6.1.0-data.jar
 PAGES_ACTION_VERSION ?= 0.0.0
 
@@ -96,7 +97,7 @@ clean:
 	rm -rf target
 
 # Saxon 13 requires Java 17+ and both XML Resolver artifacts from its Maven POM.
-$(SAXON): maven_path = net/sf/saxon/Saxon-HE/13.1/Saxon-HE-13.1.jar
+$(SAXON): maven_path = net/sf/saxon/Saxon-HE/$(SAXON_VERSION)/Saxon-HE-$(SAXON_VERSION).jar
 $(SAXON): Makefile $(XMLRESOLVER)
 target/xmlresolver-6.1.0.jar: maven_path = org/xmlresolver/xmlresolver/6.1.0/xmlresolver-6.1.0.jar
 target/xmlresolver-6.1.0-data.jar: maven_path = org/xmlresolver/xmlresolver/6.1.0/xmlresolver-6.1.0-data.jar
