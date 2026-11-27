@@ -51,8 +51,11 @@ class Minitest::Test
   end
 
   def compiled(file)
-    source = "# frozen_string_literal: true\n-> {\n#{File.read(file)}\n}"
-    Object.new.instance_eval(source, file, -1)
+    source = File.read(file)
+    magic = source[/\A#\s*frozen_string_literal:\s*(?:true|false)\s*\n/] || ''
+    body = source.delete_prefix(magic)
+    wrapped = "#{magic}lambda do\n#{body}\nend"
+    Object.new.instance_eval(wrapped, file, 0)
   end
 
   def stub_github(url, body:, method: :get, status: 200, headers: { 'content-type': 'application/json' })
