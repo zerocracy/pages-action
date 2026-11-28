@@ -9,6 +9,24 @@ require 'qbash'
 require_relative '../test__helper'
 
 class TestAwards < Minitest::Test
+  def test_keeps_the_known_login_when_a_newer_identity_has_no_name
+    xml = xslt(
+      "<r><xsl:apply-templates select='/' mode='awards'/></r>",
+      <<~XML,
+        <fb>
+          <f><what>who-has-name</what><who>42</who><name>alice</name><when>2024-06-01T00:00:00Z</when></f>
+          <f><what>who-has-name</what><who>42</who><when>2024-06-02T00:00:00Z</when></f>
+          <f><who>42</who><who_name>alice</who_name><is_human>1</is_human><award>2</award>
+            <when>2024-06-03T00:00:00Z</when></f>
+        </fb>
+      XML
+      'today' => '2024-06-04T00:00:00Z'
+    )
+    link = xml.at_xpath('//tbody/tr/td[2]/span/a')
+    assert_equal('@alice', link.text)
+    assert_equal('https://github.com/alice', link['href'])
+  end
+
   def test_keeps_owed_rows_by_id_after_a_login_change_without_recent_awards
     xml = xslt(
       "<r><xsl:apply-templates select='/' mode='awards'/></r>",
