@@ -6,6 +6,15 @@
 require_relative '../test__helper'
 
 class TestEvaSummary < Minitest::Test
+  def test_treats_an_overflowing_performance_index_as_unavailable
+    metrics =
+      [%w[1e-308 1e308 1e308], %w[1e308 1e308 1e-308]].map do |ac, ev, pv|
+        "<f><what>earned-value</what><ac>#{ac}</ac><ev>#{ev}</ev><pv>#{pv}</pv></f>"
+      end
+    xml = xslt('<r><xsl:apply-templates select="/fb/f"/></r>', "<fb>#{metrics.join}</fb>")
+    assert_equal(['Not enough data in the latest earned-value fact.'] * 2, xml.xpath('/r/p').map(&:text))
+  end
+
   def test_template_long
     xml = xslt(
       '<xsl:apply-templates select="/fb/f"/>',

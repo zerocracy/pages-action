@@ -14,8 +14,10 @@
     <xsl:variable name="ac" select="z:num(ac)"/>
     <xsl:variable name="ev" select="z:num(ev)"/>
     <xsl:variable name="pv" select="z:num(pv)"/>
+    <xsl:variable name="cpi" select="$ev div $ac"/>
+    <xsl:variable name="spi" select="$ev div $pv"/>
     <xsl:choose>
-      <xsl:when test="exists($ac) and exists($ev) and exists($pv) and $ac != 0 and $pv != 0">
+      <xsl:when test="abs($cpi) lt xs:double('INF') and abs($spi) lt xs:double('INF')">
         <p>
           <xsl:text>AC: </xsl:text>
           <xsl:value-of select="format-number($ac, '0')"/>
@@ -24,9 +26,9 @@
           <xsl:text>, PV: </xsl:text>
           <xsl:value-of select="format-number($pv, '0')"/>
           <xsl:text>, CPI: </xsl:text>
-          <xsl:copy-of select="z:index($ev div $ac)"/>
+          <xsl:copy-of select="z:index($cpi)"/>
           <xsl:text>, SPI: </xsl:text>
-          <xsl:copy-of select="z:index($ev div $pv)"/>
+          <xsl:copy-of select="z:index($spi)"/>
           <xsl:text>.</xsl:text>
         </p>
       </xsl:when>
