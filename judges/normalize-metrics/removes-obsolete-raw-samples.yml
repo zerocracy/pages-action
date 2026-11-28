@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2024-2026 Zerocracy
+# SPDX-License-Identifier: MIT
+---
+input:
+  -
+    _id: 1
+    what: quality-of-service
+    when: 2024-01-01T00:00:00Z
+    some_issue_lifetime: 10
+    average_issue_lifetime: 0
+    n_some_issue_lifetime: 0.0
+  -
+    _id: 2
+    what: quality-of-service
+    when: 2024-01-08T00:00:00Z
+    some_issue_lifetime: 20
+    average_issue_lifetime: 0
+    n_some_issue_lifetime: 1.0
+expected:
+  - /fb[count(f)=2]
+  - /fb[count(f[n_some_issue_lifetime])=0]
+  - /fb[count(f[n_average_issue_lifetime])=0]
+  - /fb/f[some_issue_lifetime=10 and average_issue_lifetime=0]
+  - /fb/f[some_issue_lifetime=20 and average_issue_lifetime=0]
