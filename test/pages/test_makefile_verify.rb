@@ -32,6 +32,14 @@ class TestMakefileVerify < Minitest::Test
     end
   end
 
+  def test_rejects_a_docker_run_that_omits_the_badge
+    fixture do |dir|
+      stdout, stderr, status = run_make(dir, %w[verify], 'PROBE_SKIP' => '-badge.svg')
+      refute_predicate(status, :success?, "#{stdout}\n#{stderr}")
+      refute_path_exists(File.join(dir, 'verified'))
+    end
+  end
+
   private
 
   def run_make(dir, targets, env = {})
@@ -58,7 +66,8 @@ class TestMakefileVerify < Minitest::Test
           test "${PROBE_FAIL:-no}" != yes
           sleep 0.1
           mkdir -p target/fb/pages
-          for suffix in -vitals.html .html .xml .json .yaml; do
+          for suffix in -vitals.html -badge.svg .html .xml .json .yaml; do
+            test "$suffix" != "${PROBE_SKIP:-}" || continue
             touch "target/fb/pages/simple${suffix}"
           done
         SH

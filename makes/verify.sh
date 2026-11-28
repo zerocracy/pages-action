@@ -6,8 +6,6 @@ set -e -o pipefail
 
 tree target/fb/
 
-test -e target/fb/pages/simple-vitals.html
-test -e target/fb/pages/simple.html
-test -e target/fb/pages/simple.xml
-test -e target/fb/pages/simple.json
-test -e target/fb/pages/simple.yaml
+for suffix in -vitals.html -badge.svg .html .xml .json .yaml; do
+    test -f "target/fb/pages/simple${suffix}"
+done
