@@ -26,31 +26,35 @@
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="description"/>
               </xsl:if>
-              <xsl:text> [ </xsl:text>
-              <xsl:value-of select="z:counted(stars, 'star')"/>
-              <xsl:text> · </xsl:text>
-              <xsl:value-of select="z:counted(forks, 'fork')"/>
-              <xsl:if test="language != ''">
-                <xsl:text> · </xsl:text>
-                <xsl:value-of select="language"/>
-              </xsl:if>
-              <xsl:text> · </xsl:text>
-              <xsl:value-of select="open_issues"/>
-              <xsl:text> open </xsl:text>
-              <xsl:value-of select="if (string(open_issues) = '1') then 'issue or pull request' else 'issues and pull requests'"/>
-              <xsl:if test="updated_at != ''">
-                <xsl:text> · updated </xsl:text>
-                <time class="relative-time">
-                  <xsl:attribute name="datetime">
-                    <xsl:value-of select="updated_at"/>
-                  </xsl:attribute>
-                  <xsl:attribute name="title">
+              <xsl:variable name="figures" as="xs:string*">
+                <xsl:if test="normalize-space(stars) != ''">
+                  <xsl:sequence select="z:counted(stars, 'star')"/>
+                </xsl:if>
+                <xsl:if test="normalize-space(forks) != ''">
+                  <xsl:sequence select="z:counted(forks, 'fork')"/>
+                </xsl:if>
+                <xsl:if test="normalize-space(language) != ''">
+                  <xsl:sequence select="string(language)"/>
+                </xsl:if>
+                <xsl:if test="normalize-space(open_issues) != ''">
+                  <xsl:variable name="noun" select="if (string(open_issues) = '1') then 'issue or pull request' else 'issues and pull requests'"/>
+                  <xsl:sequence select="concat(open_issues, ' open ', $noun)"/>
+                </xsl:if>
+              </xsl:variable>
+              <xsl:if test="exists($figures) or normalize-space(updated_at) != ''">
+                <xsl:text> [ </xsl:text>
+                <xsl:value-of select="string-join($figures, ' · ')"/>
+                <xsl:if test="normalize-space(updated_at) != ''">
+                  <xsl:if test="exists($figures)">
+                    <xsl:text> · </xsl:text>
+                  </xsl:if>
+                  <xsl:text>updated </xsl:text>
+                  <time class="relative-time" datetime="{updated_at}" title="{substring(updated_at, 1, 10)}">
                     <xsl:value-of select="substring(updated_at, 1, 10)"/>
-                  </xsl:attribute>
-                  <xsl:value-of select="substring(updated_at, 1, 10)"/>
-                </time>
+                  </time>
+                </xsl:if>
+                <xsl:text> ]</xsl:text>
               </xsl:if>
-              <xsl:text> ]</xsl:text>
             </li>
           </xsl:for-each>
         </ul>
