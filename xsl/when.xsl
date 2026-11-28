@@ -14,7 +14,7 @@
     at all answers with nothing, the way reading the property directly did.
     -->
     <xsl:param name="w" as="element()*"/>
-    <xsl:sequence select="min(for $v in ($w/v, $w[not(v)]) return xs:dateTime($v))"/>
+    <xsl:sequence select="min(for $v in ($w/v, $w[not(v)])[. castable as xs:dateTime] return xs:dateTime($v))"/>
   </xsl:function>
   <xsl:function name="z:day" as="xs:string">
     <!--
