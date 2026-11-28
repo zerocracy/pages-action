@@ -209,7 +209,7 @@ fi
 # The "judges" splits these lists on commas and keeps the spaces around each
 # name, so "when, what" would mean the columns "when" and " what".
 trimmed() {
-    sed -E 's/[[:space:]]*,[[:space:]]*/,/g; s/^[[:space:]]+//; s/[[:space:]]+$//' <<< "$1"
+    sed -E 's/[[:space:]]*,[[:space:]]*/,/g; s/^[[:space:]]+//; s/[[:space:]]+$//' <<< "${1//$'\n'/ }"
 }
 INPUT_COLUMNS=$(trimmed "${INPUT_COLUMNS}")
 INPUT_HIGHLIGHTED=$(trimmed "${INPUT_HIGHLIGHTED}")
