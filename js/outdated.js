@@ -23,13 +23,13 @@ const OUTDATED_THRESHOLD_HOURS = 24;
 function getMonthsDifference(startDate, endDate) {
   const shifted = (months) => {
     const moved = new Date(startDate.getTime());
-    moved.setDate(1);
-    moved.setMonth(moved.getMonth() + months);
-    const lastDay = new Date(moved.getFullYear(), moved.getMonth() + 1, 0).getDate();
-    moved.setDate(Math.min(startDate.getDate(), lastDay));
+    moved.setUTCDate(1);
+    moved.setUTCMonth(moved.getUTCMonth() + months);
+    const lastDay = new Date(Date.UTC(moved.getUTCFullYear(), moved.getUTCMonth() + 1, 0)).getUTCDate();
+    moved.setUTCDate(Math.min(startDate.getUTCDate(), lastDay));
     return moved;
   };
-  let totalMonths = (endDate.getFullYear() - startDate.getFullYear()) * 12 + endDate.getMonth() - startDate.getMonth();
+  let totalMonths = (endDate.getUTCFullYear() - startDate.getUTCFullYear()) * 12 + endDate.getUTCMonth() - startDate.getUTCMonth();
   while (totalMonths > 0 && shifted(totalMonths) > endDate) {
     totalMonths -= 1;
   }

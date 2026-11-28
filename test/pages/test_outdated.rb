@@ -8,6 +8,10 @@ require 'open3'
 require_relative '../test__helper'
 
 class TestOutdated < Minitest::Test
+  def test_counts_a_complete_utc_month_for_viewers_west_of_utc
+    assert_equal('one month ago', relative('2026-01-31T00:00:00Z', '2026-02-28T00:00:00Z', 'America/Los_Angeles'))
+  end
+
   def test_writes_relative_time_to_each_timestamp_element
     script = [
       'const OriginalDate = Date;',
@@ -124,14 +128,14 @@ class TestOutdated < Minitest::Test
 
   private
 
-  def relative(start, finish)
+  def relative(start, finish, zone = 'UTC')
     script = [
       'global.$ = () => {};',
       File.read(File.join(__dir__, '../../js/outdated.js')),
       "const s = new Date('#{start}');",
       "process.stdout.write(formatRelativeTime(new Date('#{finish}') - s, s));"
     ].join("\n")
-    out, status = Open3.capture2({ 'TZ' => 'UTC' }, 'node', '-e', script)
+    out, status = Open3.capture2({ 'TZ' => zone }, 'node', '-e', script)
     assert_predicate(status, :success?, out)
     out
   end
