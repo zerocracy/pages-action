@@ -26,6 +26,35 @@ class TestNormalizeMetrics < Minitest::Test
     assert_in_delta(1.0, f['n_average_issue_lifetime'].first, 0.0001, fb.to_json)
   end
 
+  def test_removes_normalized_samples_when_averages_arrive
+    values = [10, 20]
+    %w[quantity-of-deliverables quality-of-service].each do |what|
+      fb = Factbase.new
+      facts =
+        values.each_with_index.map do |value, day|
+          fact = fb.insert
+          fact._id = day + 1
+          fact.what = what
+          fact.when = Time.utc(2026, 10, day + 1)
+          fact.some_issue_lifetime = value
+          fact.some_review_lifetime = value
+          fact
+        end
+      load_it('normalize-metrics', fb)
+      assert_equal([[0.0], [1.0]], facts.map { |f| f['n_some_issue_lifetime'] })
+      facts.each { |f| f.average_issue_lifetime = f.some_issue_lifetime }
+      load_it('normalize-metrics', fb)
+      facts = fb.query('(always)').each.sort_by(&:_id)
+      facts.each { |f| assert_nil(f['n_some_issue_lifetime'], fb.to_json) }
+      assert_equal([[0.0], [1.0]], facts.map { |f| f['n_average_issue_lifetime'] })
+      assert_equal([[0.0], [1.0]], facts.map { |f| f['n_some_review_lifetime'] })
+      assert_equal([[10], [20]], facts.map { |f| f['some_issue_lifetime'] })
+      load_it('normalize-metrics', fb)
+      facts = fb.query('(always)').each.sort_by(&:_id)
+      facts.each { |f| assert_nil(f['n_some_issue_lifetime'], fb.to_json) }
+    end
+  end
+
   def test_keeps_zero_for_equal_values_beyond_float_range
     fb = Factbase.new
     2.times do |day|
