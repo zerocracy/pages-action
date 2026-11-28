@@ -10,6 +10,22 @@ require_relative '../test__helper'
 class TestClipboard < Minitest::Test
   def test_removes_the_checkmark_once_it_has_faded
     markdown = '[![Vitals](https://example.com/badge.svg)](https://example.com/vitals.html)'
+    result = clicked(markdown, '(text) => { copied = text; return Promise.resolve(); }')
+    assert_equal(markdown, result['copied'], 'the clicked badge Markdown must reach the clipboard')
+    assert_equal(%w[shown faded removed], result['log'], 'the checkmark stays in the page after it faded')
+  end
+
+  def test_shows_no_checkmark_when_the_copy_fails
+    assert_equal(
+      ['alert: Failed to copy to clipboard!'],
+      clicked('text', '() => Promise.reject(new Error())')['log'],
+      'a failed copy must alert and show no checkmark'
+    )
+  end
+
+  private
+
+  def clicked(markdown, write)
     script = [
       "const markdown = #{markdown.to_json};",
       'const log = [];',
@@ -24,7 +40,8 @@ class TestClipboard < Minitest::Test
       "  remove: () => log.push('removed')",
       '});',
       "global.$ = (arg) => (typeof arg === 'function' ? arg() : node());",
-      'const clipboard = { writeText: (text) => { copied = text; return Promise.resolve(); } };',
+      'global.alert = (m) => log.push(`alert: ${m}`);',
+      "const clipboard = { writeText: #{write} };",
       "Object.defineProperty(globalThis, 'navigator', { value: { clipboard } });",
       'global.window = { isSecureContext: true };',
       File.read(File.join(__dir__, '../../js/clipboard.js')),
@@ -33,8 +50,6 @@ class TestClipboard < Minitest::Test
     ].join("\n")
     out, status = Open3.capture2('node', '-e', script)
     assert_predicate(status, :success?, out)
-    result = JSON.parse(out)
-    assert_equal(markdown, result['copied'], 'the clicked badge Markdown must reach the clipboard')
-    assert_equal(%w[shown faded removed], result['log'], 'the checkmark stays in the page after it faded')
+    JSON.parse(out)
   end
 end
