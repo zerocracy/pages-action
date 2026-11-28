@@ -11,7 +11,7 @@ names =
       (eq what "who-has-name")
       (exists who)
       (exists name))'
-  ).each.to_a.sort_by do |f|
+  ).each.to_a.reject { |f| f.name.to_s.strip.empty? }.sort_by do |f|
     stamp = f['when']&.min
     [stamp.nil? ? 0 : 1, stamp || Time.at(0), f.name]
   end.to_h { |f| [f.who, f.name] }
