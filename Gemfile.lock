@@ -241,7 +241,7 @@ GEM
       parser (>= 3.3.7.2)
       prism (>= 1.7)
       racc
-    rubocop-elegant (0.5.1)
+    rubocop-elegant (0.8.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.75)
     rubocop-minitest (0.41.0)
